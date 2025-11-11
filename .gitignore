@@ -2,9 +2,8 @@
 /vendor
 /.env
 /bootstrap/cache/*
-!/bootstrap/cache/.gitkeep
 /storage
-!/storage/views/.gitkeep
-!/storage/framework/cache/.gitkeep
-!/storage/logs/.gitkeep
 .phpunit.result.cache
+/scripts
+
+!**/.gitkeep
