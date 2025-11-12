@@ -11,6 +11,7 @@ key:
 	php artisan key:generate
 
 serve:
+	php artisan migrate
 	php artisan serve
 
 .PHONY: test migrate fresh key serve

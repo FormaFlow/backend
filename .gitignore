@@ -5,5 +5,8 @@
 /storage
 .phpunit.result.cache
 /scripts
+/database/database.sqlite
+/composer.lock
+
 
 !**/.gitkeep

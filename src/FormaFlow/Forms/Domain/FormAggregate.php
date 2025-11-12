@@ -89,4 +89,29 @@ final class FormAggregate extends AggregateRoot
     {
         $this->version++;
     }
+
+    public static function fromPrimitives(
+        FormId $id,
+        string $userId,
+        FormName $name,
+        ?string $description,
+        bool $published,
+        int $version,
+        DateTime $createdAt,
+        array $fields
+    ): self {
+        $self = new self(
+            id: $id,
+            userId: $userId,
+            name: $name,
+            description: $description,
+            createdAt: $createdAt,
+        );
+
+        $self->published = $published;
+        $self->version = $version;
+        $self->fields = $fields;
+
+        return $self;
+    }
 }

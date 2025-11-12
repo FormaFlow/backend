@@ -11,7 +11,8 @@ final class PublishFormCommandHandler
 {
     public function __construct(
         private readonly FormRepository $repository,
-    ) {}
+    ) {
+    }
 
     public function handle(PublishFormCommand $command): void
     {

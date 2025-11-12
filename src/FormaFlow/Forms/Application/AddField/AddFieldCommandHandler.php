@@ -13,7 +13,8 @@ final class AddFieldCommandHandler
 {
     public function __construct(
         private readonly FormRepository $repository,
-    ) {}
+    ) {
+    }
 
     public function handle(AddFieldCommand $command): void
     {

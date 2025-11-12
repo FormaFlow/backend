@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('forms', function (Blueprint $table) {
+        Schema::create('forms', static function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('user_id');
             $table->string('name');

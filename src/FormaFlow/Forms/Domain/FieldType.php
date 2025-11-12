@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace FormaFlow\Forms\Domain;
 
+use InvalidArgumentException;
 use Shared\Domain\ValueObject;
 
 final class FieldType extends ValueObject
 {
-    private const VALID = ['text', 'number', 'date', 'boolean', 'select', 'currency', 'email'];
+    private const array VALID = ['text', 'number', 'date', 'boolean', 'select', 'currency', 'email'];
 
     public function __construct(
         private readonly string $type,
     ) {
         if (!in_array($type, self::VALID, true)) {
-            throw new \InvalidArgumentException('Invalid field type');
+            throw new InvalidArgumentException('Invalid field type');
         }
     }
 

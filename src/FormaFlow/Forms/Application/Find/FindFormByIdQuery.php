@@ -8,7 +8,11 @@ final class FindFormByIdQuery
 {
     public function __construct(
         private readonly string $formId,
-    ) {}
+    ) {
+    }
 
-    public function formId(): string { return $this->formId; }
+    public function formId(): string
+    {
+        return $this->formId;
+    }
 }

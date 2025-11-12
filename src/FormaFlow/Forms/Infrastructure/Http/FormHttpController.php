@@ -4,25 +4,28 @@ declare(strict_types=1);
 
 namespace FormaFlow\Forms\Infrastructure\Http;
 
-use FormaFlow\Forms\Application\Create\CreateFormCommand;
-use FormaFlow\Forms\Application\Create\CreateFormCommandHandler;
+use Exception;
 use FormaFlow\Forms\Application\AddField\AddFieldCommand;
 use FormaFlow\Forms\Application\AddField\AddFieldCommandHandler;
-use FormaFlow\Forms\Application\Publish\PublishFormCommand;
-use FormaFlow\Forms\Application\Publish\PublishFormCommandHandler;
+use FormaFlow\Forms\Application\Create\CreateFormCommand;
+use FormaFlow\Forms\Application\Create\CreateFormCommandHandler;
 use FormaFlow\Forms\Application\Find\FindFormByIdQuery;
 use FormaFlow\Forms\Application\Find\FindFormByIdQueryHandler;
 use FormaFlow\Forms\Application\Find\FindFormsByUserIdQuery;
 use FormaFlow\Forms\Application\Find\FindFormsByUserIdQueryHandler;
-use Shared\Infrastructure\Uuid;
+use FormaFlow\Forms\Application\Publish\PublishFormCommand;
+use FormaFlow\Forms\Application\Publish\PublishFormCommandHandler;
 use Illuminate\Http\Request;
+use Shared\Infrastructure\Uuid;
+use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 final class FormHttpController
 {
     public function index(
         Request $request,
         FindFormsByUserIdQueryHandler $handler,
-    ) {
+    ): Response {
         $query = new FindFormsByUserIdQuery($request->user()->id);
         $result = $handler->handle($query);
 
@@ -32,7 +35,7 @@ final class FormHttpController
     public function store(
         Request $request,
         CreateFormCommandHandler $handler,
-    ) {
+    ): Response {
         $validated = $request->validate([
             'name' => 'required|string|min:3|max:255',
             'description' => 'nullable|string',
@@ -47,18 +50,18 @@ final class FormHttpController
 
         $handler->handle($command);
 
-        return response()->json(['id' => $command->id()], 201);
+        return response()->json(['id' => $command->id()], Response::HTTP_CREATED);
     }
 
     public function show(
         string $id,
         FindFormByIdQueryHandler $handler,
-    ) {
+    ): Response {
         $query = new FindFormByIdQuery($id);
         $form = $handler->handle($query);
 
         if (!$form) {
-            return response()->json(['error' => 'Not found'], 404);
+            return response()->json(['error' => 'Not found'], Response::HTTP_NOT_FOUND);
         }
 
         return response()->json([
@@ -73,13 +76,13 @@ final class FormHttpController
     public function publish(
         string $id,
         PublishFormCommandHandler $handler,
-    ) {
+    ): Response {
         try {
             $command = new PublishFormCommand($id);
             $handler->handle($command);
             return response()->json(['message' => 'Form published']);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 400);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -87,7 +90,7 @@ final class FormHttpController
         string $id,
         Request $request,
         AddFieldCommandHandler $handler,
-    ) {
+    ): Response {
         $validated = $request->validate([
             'name' => 'required|string',
             'label' => 'required|string',
@@ -114,9 +117,9 @@ final class FormHttpController
             );
 
             $handler->handle($command);
-            return response()->json(['message' => 'Field added'], 201);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 400);
+            return response()->json(['message' => 'Field added'], Response::HTTP_CREATED);
+        } catch (Throwable $e) {
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
 }

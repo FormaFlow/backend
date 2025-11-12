@@ -22,6 +22,13 @@ final class FormFieldAdded extends DomainEvent
         return 'form.field.added';
     }
 
-    public function formId(): string { return $this->formId; }
-    public function field(): Field { return $this->field; }
+    public function formId(): string
+    {
+        return $this->formId;
+    }
+
+    public function field(): Field
+    {
+        return $this->field;
+    }
 }

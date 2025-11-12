@@ -13,7 +13,8 @@ final class CreateFormCommandHandler
 {
     public function __construct(
         private readonly FormRepository $repository,
-    ) {}
+    ) {
+    }
 
     public function handle(CreateFormCommand $command): void
     {

@@ -13,7 +13,8 @@ abstract class DomainEvent
     public function __construct(
         private readonly string $aggregateId,
         private readonly DateTime $occurredOn = new DateTime(),
-    ) {}
+    ) {
+    }
 
     public function aggregateId(): string
     {

@@ -6,11 +6,12 @@ namespace FormaFlow\Forms\Application\Find;
 
 use FormaFlow\Forms\Domain\FormRepository;
 
-final class FindFormsByUserIdQueryHandler
+final readonly class FindFormsByUserIdQueryHandler
 {
     public function __construct(
-        private readonly FormRepository $repository,
-    ) {}
+        private FormRepository $repository,
+    ) {
+    }
 
     /** @return array<string, mixed> */
     public function handle(FindFormsByUserIdQuery $query): array

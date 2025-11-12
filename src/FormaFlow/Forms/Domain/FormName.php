@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FormaFlow\Forms\Domain;
 
+use InvalidArgumentException;
 use Shared\Domain\ValueObject;
 
 final class FormName extends ValueObject
@@ -12,7 +13,7 @@ final class FormName extends ValueObject
         private readonly string $name,
     ) {
         if (strlen($name) < 3 || strlen($name) > 255) {
-            throw new \InvalidArgumentException('Invalid form name');
+            throw new InvalidArgumentException('Invalid form name');
         }
     }
 

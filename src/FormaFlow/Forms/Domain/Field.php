@@ -16,15 +16,51 @@ final class Field
         private readonly ?string $unit = null,
         private readonly ?string $category = null,
         private readonly int $order = 0,
-    ) {}
+    ) {
+    }
 
-    public function id(): string { return $this->id; }
-    public function name(): string { return $this->name; }
-    public function label(): string { return $this->label; }
-    public function type(): FieldType { return $this->type; }
-    public function isRequired(): bool { return $this->required; }
-    public function options(): ?array { return $this->options; }
-    public function unit(): ?string { return $this->unit; }
-    public function category(): ?string { return $this->category; }
-    public function order(): int { return $this->order; }
+    public function id(): string
+    {
+        return $this->id;
+    }
+
+    public function name(): string
+    {
+        return $this->name;
+    }
+
+    public function label(): string
+    {
+        return $this->label;
+    }
+
+    public function type(): FieldType
+    {
+        return $this->type;
+    }
+
+    public function isRequired(): bool
+    {
+        return $this->required;
+    }
+
+    public function options(): ?array
+    {
+        return $this->options;
+    }
+
+    public function unit(): ?string
+    {
+        return $this->unit;
+    }
+
+    public function category(): ?string
+    {
+        return $this->category;
+    }
+
+    public function order(): int
+    {
+        return $this->order;
+    }
 }

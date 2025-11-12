@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
+Route::get('/', static function () {
     return response()->json([
         'message' => 'FormaFlow API',
         'version' => '1.0.0',
@@ -12,9 +13,9 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/health-check', function () {
+Route::get('/health-check', static function () {
     return response()->json([
         'status' => 'ok',
-        'timestamp' => now(),
+        'timestamp' => Carbon::now(),
     ]);
 });

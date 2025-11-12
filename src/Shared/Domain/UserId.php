@@ -2,18 +2,16 @@
 
 declare(strict_types=1);
 
-namespace FormaFlow\Forms\Domain;
+namespace Shared\Domain;
 
 use InvalidArgumentException;
-use Shared\Domain\ValueObject;
 
-final class FormId extends ValueObject
+final class UserId extends ValueObject
 {
-    public function __construct(
-        private readonly string $id,
-    ) {
+    public function __construct(private readonly string $id)
+    {
         if (empty($id)) {
-            throw new InvalidArgumentException('FormId cannot be empty');
+            throw new InvalidArgumentException('UserId cannot be empty');
         }
     }
 

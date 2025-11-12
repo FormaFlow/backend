@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Unit\FormaFlow\Forms\Domain;
 
+use FormaFlow\Forms\Domain\Field;
+use FormaFlow\Forms\Domain\FieldType;
 use FormaFlow\Forms\Domain\FormAggregate;
 use FormaFlow\Forms\Domain\FormId;
 use FormaFlow\Forms\Domain\FormName;
-use FormaFlow\Forms\Domain\Field;
-use FormaFlow\Forms\Domain\FieldType;
 use PHPUnit\Framework\TestCase;
 
 final class FormAggregateTest extends TestCase
