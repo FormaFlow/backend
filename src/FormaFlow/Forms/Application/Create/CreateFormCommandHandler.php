@@ -9,10 +9,10 @@ use FormaFlow\Forms\Domain\FormId;
 use FormaFlow\Forms\Domain\FormName;
 use FormaFlow\Forms\Domain\FormRepository;
 
-final class CreateFormCommandHandler
+final readonly class CreateFormCommandHandler
 {
     public function __construct(
-        private readonly FormRepository $repository,
+        private FormRepository $repository,
     ) {
     }
 

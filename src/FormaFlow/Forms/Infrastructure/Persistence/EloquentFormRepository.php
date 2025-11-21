@@ -14,16 +14,20 @@ use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Shared\Domain\AggregateRoot;
+use Throwable;
 
 final class EloquentFormRepository implements FormRepository
 {
+    /**
+     * @throws Throwable
+     */
     public function save(AggregateRoot $aggregate): void
     {
         if (!$aggregate instanceof FormAggregate) {
             throw new InvalidArgumentException('Unsupported aggregate');
         }
 
-        DB::transaction(function () use ($aggregate): void {
+        DB::transaction(static function () use ($aggregate): void {
             $form = FormModel::query()->updateOrCreate(
                 ['id' => $aggregate->id()->value()],
                 [
@@ -64,15 +68,19 @@ final class EloquentFormRepository implements FormRepository
         });
     }
 
+    /**
+     * @throws Throwable
+     */
     public function delete(AggregateRoot $aggregate): void
     {
         if (!$aggregate instanceof FormAggregate) {
             throw new InvalidArgumentException('Unsupported aggregate');
         }
 
-        DB::transaction(function () use ($aggregate): void {
+        DB::transaction(static function () use ($aggregate): void {
             $model = FormModel::query()->find($aggregate->id()->value());
             if ($model) {
+                $model->fields()->delete();
                 $model->delete();
             }
         });
