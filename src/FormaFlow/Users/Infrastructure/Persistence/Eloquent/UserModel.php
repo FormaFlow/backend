@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace FormaFlow\Users\Infrastructure\Persistence\Eloquent;
 
-use Database\Factories\UserModelFactory;
+use Database\factories\UserModelFactory;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -22,7 +22,9 @@ final class UserModel extends Model implements AuthenticatableContract, Authoriz
     use Authenticatable;
 
     protected $table = 'users';
+
     public $incrementing = false;
+
     protected $keyType = 'string';
 
     protected $fillable = [
@@ -34,7 +36,10 @@ final class UserModel extends Model implements AuthenticatableContract, Authoriz
         'remember_token',
     ];
 
-    protected $hidden = ['password', 'remember_token'];
+    protected $hidden = [
+        'password',
+        'remember_token'
+    ];
 
     protected $casts = [
         'email_verified_at' => 'datetime',

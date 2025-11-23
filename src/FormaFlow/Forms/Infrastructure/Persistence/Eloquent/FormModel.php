@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace FormaFlow\Forms\Infrastructure\Persistence\Eloquent;
 
-use Database\Factories\FormModelFactory;
+use Database\factories\FormModelFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

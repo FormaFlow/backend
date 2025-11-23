@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\FormaFlow\Forms\Domain;
 
 use FormaFlow\Forms\Domain\FormName;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 final class FormNameTest extends TestCase
@@ -17,13 +18,13 @@ final class FormNameTest extends TestCase
 
     public function testThrowsOnShortName(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         new FormName('ab');
     }
 
     public function testThrowsOnLongName(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         new FormName(str_repeat('a', 256));
     }
 

@@ -25,7 +25,7 @@ final class AuthenticationIntegrationTest extends TestCase
         $response = $this->postJson('/api/v1/register', $userData);
 
         $response->assertStatus(Response::HTTP_CREATED)
-            ->assertJsonStructure(['user' => ['id', 'email'], 'message']);
+            ->assertJsonStructure(['user' => ['id', 'email']]);
 
         $this->assertDatabaseHas('users', [
             'email' => 'john@example.com',

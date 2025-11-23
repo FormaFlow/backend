@@ -2,6 +2,7 @@
 /vendor
 /.env
 /bootstrap/cache/*
+/bootstrap/cache/
 /storage
 .phpunit.result.cache
 /scripts

@@ -1,0 +1,252 @@
+<?php
+
+declare(strict_types=1);
+
+namespace FormaFlow\Entries\Infrastructure\Http;
+
+use FormaFlow\Entries\Application\Create\CreateEntryCommand;
+use FormaFlow\Entries\Application\Create\CreateEntryCommandHandler;
+use FormaFlow\Entries\Application\Update\UpdateEntryCommand;
+use FormaFlow\Entries\Application\Update\UpdateEntryCommandHandler;
+use FormaFlow\Entries\Domain\EntryId;
+use FormaFlow\Entries\Domain\EntryRepository;
+use FormaFlow\Forms\Domain\FormId;
+use FormaFlow\Forms\Domain\FormRepository;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Shared\Infrastructure\Uuid;
+use Symfony\Component\HttpFoundation\Response;
+
+final class EntryController extends Controller
+{
+    public function __construct(
+        private readonly EntryRepository $entryRepository,
+        private readonly FormRepository $formRepository,
+        private readonly CreateEntryCommandHandler $createHandler,
+        private readonly UpdateEntryCommandHandler $updateHandler,
+    ) {
+    }
+
+    public function index(Request $request): JsonResponse
+    {
+        $limit = $request->input('limit', 15);
+        $offset = $request->input('offset', 0);
+
+        $filters = [];
+        if ($request->has('form_id')) {
+            $filters['form_id'] = $request->input('form_id');
+        }
+
+        if ($request->has('date_from')) {
+            $filters['date_from'] = $request->input('date_from');
+        }
+
+        if ($request->has('date_to')) {
+            $filters['date_to'] = $request->input('date_to');
+        }
+
+        if ($request->has('tags')) {
+            $filters['tags'] = $request->input('tags');
+        }
+
+        if ($request->has('sort_by')) {
+            $filters['sort_by'] = $request->input('sort_by');
+            $filters['sort_order'] = $request->input('sort_order', 'asc');
+        }
+
+        $entries = $this->entryRepository->findByUserId(
+            $request->user()->id,
+            $filters,
+            (int)$limit,
+            (int)$offset
+        );
+
+        return response()->json([
+            'entries' => array_map(fn($entry) => [
+                'id' => $entry->id()->value(),
+                'form_id' => $entry->formId()->value(),
+                'data' => $entry->data(),
+                'created_at' => $entry->createdAt()->format('Y-m-d H:i:s'),
+            ], $entries),
+            'total' => count($entries),
+            'limit' => $limit,
+            'offset' => $offset,
+        ]);
+    }
+
+    public function store(Request $request): JsonResponse
+    {
+        $form = $this->formRepository->findById(new FormId($request->input('form_id')));
+
+        if ($form === null) {
+            return response()->json(['error' => 'Form not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        if (!$form->isPublished()) {
+            return response()->json(
+                ['error' => 'Cannot create entry from unpublished form'],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        // Validate against form fields
+        $rules = [];
+        foreach ($form->fields() as $field) {
+            $fieldRules = [];
+
+            if ($field->isRequired()) {
+                $fieldRules[] = 'required';
+            }
+
+            switch ($field->type()->value()) {
+                case 'number':
+                case 'currency':
+                    $fieldRules[] = 'numeric';
+                    break;
+                case 'email':
+                    $fieldRules[] = 'email';
+                    break;
+                case 'date':
+                    $fieldRules[] = 'date';
+                    break;
+                case 'boolean':
+                    $fieldRules[] = 'boolean';
+                    break;
+            }
+
+            $rules['data.' . $field->name()] = $fieldRules;
+        }
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $id = Uuid::generate();
+
+        $this->createHandler->handle(
+            new CreateEntryCommand(
+                id: $id,
+                formId: $request->input('form_id'),
+                userId: $request->user()->id,
+                data: $request->input('data'),
+            )
+        );
+
+        if ($request->has('tags')) {
+            $entryId = $id;
+            foreach ($request->input('tags') as $tag) {
+                DB::table('entry_tags')->insert([
+                    'entry_id' => $entryId,
+                    'tag' => $tag,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
+
+        $entry = $this->entryRepository->findById(new EntryId($id));
+
+        return response()->json([
+            'id' => $entry->id()->value(),
+            'form_id' => $entry->formId()->value(),
+            'data' => $entry->data(),
+            'created_at' => $entry->createdAt()->format('Y-m-d H:i:s'),
+        ], Response::HTTP_CREATED);
+    }
+
+    public function update(Request $request, string $id): JsonResponse
+    {
+        $entry = $this->entryRepository->findById(new EntryId($id));
+
+        if ($entry === null) {
+            return response()->json(['error' => 'Not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        if ($entry->userId() !== $request->user()->id) {
+            return response()->json(['error' => 'Forbidden'], Response::HTTP_FORBIDDEN);
+        }
+
+        $form = $this->formRepository->findById($entry->formId());
+        if ($form === null) {
+            return response()->json(['error' => 'Form not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        // Validate against form fields
+        $rules = [];
+        foreach ($form->fields() as $field) {
+            $fieldRules = [];
+
+            if ($field->isRequired()) {
+                $fieldRules[] = 'required';
+            }
+
+            switch ($field->type()->value()) {
+                case 'number':
+                case 'currency':
+                    $fieldRules[] = 'numeric';
+                    break;
+                case 'email':
+                    $fieldRules[] = 'email';
+                    break;
+                case 'date':
+                    $fieldRules[] = 'date';
+                    break;
+                case 'boolean':
+                    $fieldRules[] = 'boolean';
+                    break;
+            }
+
+            $rules['data.' . $field->name()] = $fieldRules;
+        }
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $command = new UpdateEntryCommand(
+            id: $id,
+            data: $request->input('data'),
+        );
+
+        $this->updateHandler->handle($command);
+
+        $updated = $this->entryRepository->findById(new EntryId($id));
+
+        return response()->json([
+            'id' => $updated->id()->value(),
+            'form_id' => $updated->formId()->value(),
+            'data' => $updated->data(),
+            'created_at' => $updated->createdAt()->format('Y-m-d H:i:s'),
+        ]);
+    }
+
+    public function destroy(Request $request, string $id): JsonResponse
+    {
+        $entry = $this->entryRepository->findById(new EntryId($id));
+
+        if ($entry === null) {
+            return response()->json(['error' => 'Not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        if ($entry->userId() !== $request->user()->id) {
+            return response()->json(['error' => 'Forbidden'], Response::HTTP_FORBIDDEN);
+        }
+
+        $this->entryRepository->delete($entry);
+
+        return response()->json(['message' => 'Entry deleted'], Response::HTTP_NO_CONTENT);
+    }
+}

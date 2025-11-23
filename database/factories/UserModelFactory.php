@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Database\Factories;
+namespace Database\factories;
 
 use Carbon\Carbon;
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;

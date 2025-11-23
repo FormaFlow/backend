@@ -123,6 +123,11 @@ final class FormApiTest extends TestCase
             'name' => 'test',
             'label' => 'Test',
             'type' => 'text',
+            'required' => false,
+            'options' => null,
+            'unit' => null,
+            'category' => null,
+            'order' => 0,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);

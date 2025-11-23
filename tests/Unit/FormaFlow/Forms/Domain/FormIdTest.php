@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\FormaFlow\Forms\Domain;
 
 use FormaFlow\Forms\Domain\FormId;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 final class FormIdTest extends TestCase
@@ -17,7 +18,7 @@ final class FormIdTest extends TestCase
 
     public function testThrowsOnEmptyId(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         new FormId('');
     }
 

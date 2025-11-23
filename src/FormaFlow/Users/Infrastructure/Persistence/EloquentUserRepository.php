@@ -60,7 +60,7 @@ final class EloquentUserRepository implements UserRepository
             id: new UserId((string)$model->id),
             name: new UserName((string)$model->name),
             email: $model->email,
-            password: $model->password, // Hashed
+            password: $model->password,
             emailVerifiedAt: $model->email_verified_at,
             rememberToken: $model->remember_token,
             createdAt: $model->created_at,

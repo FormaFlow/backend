@@ -9,6 +9,7 @@ use FormaFlow\Forms\Domain\FieldType;
 use FormaFlow\Forms\Domain\FormAggregate;
 use FormaFlow\Forms\Domain\FormId;
 use FormaFlow\Forms\Domain\FormName;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 final class FormAggregateTest extends TestCase
@@ -73,7 +74,7 @@ final class FormAggregateTest extends TestCase
 
     public function testThrowsWhenPublishingWithoutFields(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $form = new FormAggregate(
             id: new FormId('123'),
@@ -86,7 +87,7 @@ final class FormAggregateTest extends TestCase
 
     public function testThrowsWhenPublishingTwice(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $form = new FormAggregate(
             id: new FormId('123'),

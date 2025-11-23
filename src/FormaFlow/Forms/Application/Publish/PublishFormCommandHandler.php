@@ -6,6 +6,7 @@ namespace FormaFlow\Forms\Application\Publish;
 
 use FormaFlow\Forms\Domain\FormId;
 use FormaFlow\Forms\Domain\FormRepository;
+use InvalidArgumentException;
 
 final class PublishFormCommandHandler
 {
@@ -20,7 +21,7 @@ final class PublishFormCommandHandler
         $form = $this->repository->findById($formId);
 
         if (!$form) {
-            throw new \InvalidArgumentException('Form not found');
+            throw new InvalidArgumentException('Form not found');
         }
 
         $form->publish();

@@ -17,6 +17,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase;
 use InvalidArgumentException;
 use Shared\Domain\AggregateRoot;
+use Throwable;
 
 final class EloquentFormRepositoryTest extends TestCase
 {
@@ -31,7 +32,7 @@ final class EloquentFormRepositoryTest extends TestCase
     }
 
     /**
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function testSavesNewFormAggregate(): void
     {
@@ -55,7 +56,7 @@ final class EloquentFormRepositoryTest extends TestCase
     }
 
     /**
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function testUpdatesExistingFormAggregate(): void
     {
@@ -90,7 +91,7 @@ final class EloquentFormRepositoryTest extends TestCase
     }
 
     /**
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function testSavesFormWithFields(): void
     {
@@ -126,7 +127,7 @@ final class EloquentFormRepositoryTest extends TestCase
     }
 
     /**
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function testDeletesRemovedFieldsOnUpdate(): void
     {
@@ -217,6 +218,9 @@ final class EloquentFormRepositoryTest extends TestCase
             'label' => 'Username',
             'type' => 'text',
             'required' => true,
+            'unit' => null,
+            'options' => null,
+            'category' => null,
             'order' => 1,
             'created_at' => now(),
             'updated_at' => now(),
@@ -268,7 +272,7 @@ final class EloquentFormRepositoryTest extends TestCase
     }
 
     /**
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function testDeletesFormAggregate(): void
     {
@@ -287,7 +291,7 @@ final class EloquentFormRepositoryTest extends TestCase
     }
 
     /**
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function testDeletesFormCascadesFields(): void
     {
@@ -315,7 +319,7 @@ final class EloquentFormRepositoryTest extends TestCase
     }
 
     /**
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function testThrowsExceptionWhenSavingUnsupportedAggregate(): void
     {
@@ -329,7 +333,7 @@ final class EloquentFormRepositoryTest extends TestCase
     }
 
     /**
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function testThrowsExceptionWhenDeletingUnsupportedAggregate(): void
     {
@@ -343,7 +347,7 @@ final class EloquentFormRepositoryTest extends TestCase
     }
 
     /**
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function testSavesFieldWithAllProperties(): void
     {

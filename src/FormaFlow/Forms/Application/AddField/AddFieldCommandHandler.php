@@ -8,6 +8,7 @@ use FormaFlow\Forms\Domain\Field;
 use FormaFlow\Forms\Domain\FieldType;
 use FormaFlow\Forms\Domain\FormId;
 use FormaFlow\Forms\Domain\FormRepository;
+use InvalidArgumentException;
 
 final class AddFieldCommandHandler
 {
@@ -22,7 +23,7 @@ final class AddFieldCommandHandler
         $form = $this->repository->findById($formId);
 
         if (!$form) {
-            throw new \InvalidArgumentException('Form not found');
+            throw new InvalidArgumentException('Form not found');
         }
 
         $field = new Field(

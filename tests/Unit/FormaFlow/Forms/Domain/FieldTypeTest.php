@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\FormaFlow\Forms\Domain;
 
 use FormaFlow\Forms\Domain\FieldType;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 final class FieldTypeTest extends TestCase
@@ -17,7 +18,7 @@ final class FieldTypeTest extends TestCase
 
     public function testThrowsOnInvalidType(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         new FieldType('invalid');
     }
 
