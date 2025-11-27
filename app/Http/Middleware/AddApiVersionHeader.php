@@ -1,5 +1,4 @@
 <?php
-// app/Http/Middleware/AddApiVersionHeader.php
 
 declare(strict_types=1);
 

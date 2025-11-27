@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 
+Route::options('{any}', static function () {
+    return response('', Response::HTTP_OK);
+})->where('any', '.*');
+
 Route::prefix('v1')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
 
