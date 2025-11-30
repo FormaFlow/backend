@@ -71,6 +71,24 @@ final class FormAggregate extends AggregateRoot
         $this->recordEvent(new FormFieldAdded($this->id->value(), $field));
     }
 
+    public function removeField(string $fieldId): void
+    {
+        $fieldIndex = null;
+        foreach ($this->fields as $index => $field) {
+            if ($field->id() === $fieldId) {
+                $fieldIndex = $index;
+                break;
+            }
+        }
+
+        if ($fieldIndex === null) {
+            throw new InvalidArgumentException('Field not found');
+        }
+
+        array_splice($this->fields, $fieldIndex, 1);
+        $this->recordEvent(new FormFieldRemoved($this->id->value(), $fieldId));
+    }
+
     public function publish(): void
     {
         if ($this->published) {
