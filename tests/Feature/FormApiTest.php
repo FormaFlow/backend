@@ -18,7 +18,7 @@ final class FormApiTest extends TestCase
     use RefreshDatabase;
 
     protected ?UserModel $user = null;
-    protected string $baseUrl;
+    protected string $baseUrl = '/api/v1/forms';
 
     public function setUp(): void
     {
@@ -29,8 +29,6 @@ final class FormApiTest extends TestCase
             'email' => 'test@example.com',
             'password' => bcrypt('password'),
         ]);
-
-        $this->baseUrl = '/api/v1/forms';
     }
 
     public function test_returns_empty_list_of_forms_for_authenticated_user(): void
