@@ -71,14 +71,10 @@ final class EloquentFormRepository implements FormRepository
     /**
      * @throws Throwable
      */
-    public function delete(AggregateRoot $aggregate): void
+    public function delete(FormId $id): void
     {
-        if (!$aggregate instanceof FormAggregate) {
-            throw new InvalidArgumentException('Unsupported aggregate');
-        }
-
-        DB::transaction(static function () use ($aggregate): void {
-            $model = FormModel::query()->find($aggregate->id()->value());
+        DB::transaction(static function () use ($id): void {
+            $model = FormModel::query()->find($id->value());
             if ($model) {
                 $model->fields()->delete();
                 $model->delete();
