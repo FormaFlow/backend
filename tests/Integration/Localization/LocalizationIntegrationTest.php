@@ -23,7 +23,6 @@ final class LocalizationIntegrationTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        // Response should contain Russian text if localized
         $this->assertNotEmpty($response->json());
     }
 
@@ -49,7 +48,6 @@ final class LocalizationIntegrationTest extends TestCase
             ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        // Should contain Russian error message
     }
 
     public function test_api_version_is_correctly_identified(): void

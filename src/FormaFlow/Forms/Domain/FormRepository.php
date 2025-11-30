@@ -12,6 +12,4 @@ interface FormRepository extends Repository
 
     /** @return FormAggregate[] */
     public function findByUserId(string $userId): array;
-
-    public function delete(FormId $id): void;
 }

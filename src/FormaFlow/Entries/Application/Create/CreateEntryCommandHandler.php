@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FormaFlow\Entries\Application\Create;
 
+use Carbon\Carbon;
 use FormaFlow\Entries\Domain\EntryAggregate;
 use FormaFlow\Entries\Domain\EntryCreated;
 use FormaFlow\Entries\Domain\EntryId;
@@ -39,13 +40,7 @@ final class CreateEntryCommandHandler
             data: $command->data,
         );
 
-        $entry->recordEvent(
-            new EntryCreated(
-                $command->id,
-                $command->formId,
-                $command->userId
-            )
-        );
+        $entry->recordEvent(new EntryCreated($command->id));
 
         $this->entryRepository->save($entry);
     }

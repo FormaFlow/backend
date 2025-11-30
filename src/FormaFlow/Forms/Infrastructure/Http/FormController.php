@@ -10,12 +10,16 @@ use FormaFlow\Forms\Application\AddField\AddFieldCommand;
 use FormaFlow\Forms\Application\AddField\AddFieldCommandHandler;
 use FormaFlow\Forms\Application\Create\CreateFormCommand;
 use FormaFlow\Forms\Application\Create\CreateFormCommandHandler;
+use FormaFlow\Forms\Application\Delete\DeleteFormCommand;
+use FormaFlow\Forms\Application\Delete\DeleteFormCommandHandler;
 use FormaFlow\Forms\Application\Find\FindFormByIdQuery;
 use FormaFlow\Forms\Application\Find\FindFormByIdQueryHandler;
 use FormaFlow\Forms\Application\Find\FindFormsByUserIdQuery;
 use FormaFlow\Forms\Application\Find\FindFormsByUserIdQueryHandler;
 use FormaFlow\Forms\Application\Publish\PublishFormCommand;
 use FormaFlow\Forms\Application\Publish\PublishFormCommandHandler;
+use FormaFlow\Forms\Application\RemoveField\RemoveFieldCommand;
+use FormaFlow\Forms\Application\RemoveField\RemoveFieldCommandHandler;
 use FormaFlow\Forms\Domain\FormAggregate;
 use FormaFlow\Forms\Domain\FormId;
 use FormaFlow\Forms\Domain\FormName;
@@ -272,7 +276,6 @@ final class FormController
             $values = str_getcsv($line, $delimiter);
             $data = array_combine($headers, $values);
 
-            // Validate
             $valid = true;
             foreach ($form->fields() as $field) {
                 if ($field->isRequired() && empty($data[$field->name()])) {
@@ -281,7 +284,6 @@ final class FormController
                     break;
                 }
 
-                // Type validation
                 if (isset($data[$field->name()])) {
                     switch ($field->type()->value()) {
                         case 'number':
@@ -297,7 +299,7 @@ final class FormController
 
             if ($valid) {
                 $entryId = Uuid::generate();
-                EntryModel::create([
+                EntryModel::query()->create([
                     'id' => $entryId,
                     'form_id' => $id,
                     'user_id' => $request->user()->id,
@@ -311,5 +313,42 @@ final class FormController
             'imported' => $imported,
             'errors' => $errors,
         ]);
+    }
+
+    public function destroy(
+        Request $request,
+        string $id,
+        DeleteFormCommandHandler $handler
+    ): Response {
+        $form = $this->formRepository->findById(new FormId($id));
+        if (!$form) {
+            return response()->json(['error' => 'Not found'], Response::HTTP_NOT_FOUND);
+        }
+        if ($form->userId() !== $request->user()->id) {
+            return response()->json(['error' => 'Forbidden'], Response::HTTP_FORBIDDEN);
+        }
+        $handler->handle(new DeleteFormCommand($id));
+        return response()->json(['message' => 'Form deleted'], Response::HTTP_OK);
+    }
+
+    public function removeField(
+        Request $request,
+        string $formId,
+        string $fieldId,
+        RemoveFieldCommandHandler $handler
+    ): Response {
+        $form = $this->formRepository->findById(new FormId($formId));
+        if (!$form) {
+            return response()->json(['error' => 'Not found'], Response::HTTP_NOT_FOUND);
+        }
+        if ($form->userId() !== $request->user()->id) {
+            return response()->json(['error' => 'Forbidden'], Response::HTTP_FORBIDDEN);
+        }
+        try {
+            $handler->handle(new RemoveFieldCommand($formId, $fieldId));
+            return response()->json(['message' => 'Field removed']);
+        } catch (\Throwable $e) {
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
     }
 }

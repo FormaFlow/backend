@@ -19,9 +19,9 @@ final class InMemoryFormRepository implements FormRepository
         $this->forms[$aggregate->id()->value()] = $aggregate;
     }
 
-    public function delete(FormId $id): void
+    public function delete(FormAggregate|AggregateRoot $aggregate): void
     {
-        unset($this->forms[$id->value()]);
+        unset($this->forms[$aggregate->id()->value()]);
     }
 
     public function findById(FormId $id): ?FormAggregate

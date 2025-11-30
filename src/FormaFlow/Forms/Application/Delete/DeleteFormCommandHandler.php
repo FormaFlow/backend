@@ -24,6 +24,6 @@ final class DeleteFormCommandHandler
             throw new InvalidArgumentException('Form not found');
         }
 
-        $this->formRepository->delete($formId);
+        $this->formRepository->delete($form);
     }
 }

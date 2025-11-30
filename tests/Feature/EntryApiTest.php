@@ -176,7 +176,7 @@ final class EntryApiTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $updated = EntryModel::find($entry->id);
+        $updated = EntryModel::query()->find($entry->id);
         $this->assertEquals(200.75, $updated->data['amount']);
     }
 
@@ -427,7 +427,7 @@ final class EntryApiTest extends TestCase
 
         $response->assertStatus(Response::HTTP_CREATED);
 
-        $entry = EntryModel::where('form_id', $this->form->id)->first();
+        $entry = EntryModel::query()->where('form_id', $this->form->id)->first();
         $this->assertNotNull($entry);
 
         $tags = DB::table('entry_tags')->where('entry_id', $entry->id)->pluck('tag')->toArray();

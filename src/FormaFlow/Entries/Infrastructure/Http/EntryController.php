@@ -92,7 +92,6 @@ final class EntryController extends Controller
             );
         }
 
-        // Validate against form fields
         $rules = [];
         foreach ($form->fields() as $field) {
             $fieldRules = [];
@@ -179,7 +178,6 @@ final class EntryController extends Controller
             return response()->json(['error' => 'Form not found'], Response::HTTP_NOT_FOUND);
         }
 
-        // Validate against form fields
         $rules = [];
         foreach ($form->fields() as $field) {
             $fieldRules = [];

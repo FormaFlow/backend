@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FormaFlow\Forms\Domain;
 
+use Carbon\Carbon;
 use DateTime;
 use InvalidArgumentException;
 use Shared\Domain\AggregateRoot;
@@ -86,7 +87,7 @@ final class FormAggregate extends AggregateRoot
         }
 
         array_splice($this->fields, $fieldIndex, 1);
-        $this->recordEvent(new FormFieldRemoved($this->id->value(), $fieldId));
+        $this->recordEvent(new FormFieldRemoved($this->id->value()));
     }
 
     public function publish(): void

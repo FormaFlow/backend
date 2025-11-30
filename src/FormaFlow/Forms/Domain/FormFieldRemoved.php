@@ -8,19 +8,13 @@ use Shared\Domain\DomainEvent;
 
 final class FormFieldRemoved extends DomainEvent
 {
-    public function __construct(
-        private readonly string $formId,
-        private readonly string $fieldId,
-    ) {
-    }
-
-    public function formId(): string
+    public static function eventName(): string
     {
-        return $this->formId;
+        return 'delete';
     }
 
     public function fieldId(): string
     {
-        return $this->fieldId;
+        return $this->aggregateId();
     }
 }

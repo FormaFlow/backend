@@ -42,7 +42,7 @@ final class EntryAggregate extends AggregateRoot
     public function updateData(array $data): void
     {
         $this->data = $data;
-        $this->recordEvent(new EntryUpdated($this->id->value(), $this->formId->value()));
+        $this->recordEvent(new EntryUpdated($this->id->value()));
     }
 
     public function createdAt(): DateTime

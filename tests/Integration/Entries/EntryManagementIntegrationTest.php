@@ -169,7 +169,7 @@ final class EntryManagementIntegrationTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $updated = EntryModel::find($entry->id);
+        $updated = EntryModel::query()->find($entry->id);
         $this->assertEquals(150.75, $updated->data['amount']);
     }
 
@@ -321,7 +321,7 @@ final class EntryManagementIntegrationTest extends TestCase
 
         $response->assertStatus(Response::HTTP_CREATED);
 
-        $entry = EntryModel::where('form_id', $this->form->id)->first();
+        $entry = EntryModel::query()->where('form_id', $this->form->id)->first();
         $this->assertNotNull($entry);
 
         $tags = DB::table('entry_tags')->where('entry_id', $entry->id)->pluck('tag')->toArray();
@@ -369,7 +369,6 @@ final class EntryManagementIntegrationTest extends TestCase
 
     public function test_csv_import_validates_data_against_form_schema(): void
     {
-//        $this->markTestIncomplete('Should implement CSV import');
         $csvContent = "amount,date,category\ninvalid,2025-01-15,income"; // invalid amount
 
         $response = $this->actingAs($this->user, 'sanctum')

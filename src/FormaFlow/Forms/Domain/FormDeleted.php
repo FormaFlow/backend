@@ -8,13 +8,13 @@ use Shared\Domain\DomainEvent;
 
 final class FormDeleted extends DomainEvent
 {
-    public function __construct(
-        private readonly string $formId,
-    ) {
+    public static function eventName(): string
+    {
+        return 'delete';
     }
 
     public function formId(): string
     {
-        return $this->formId;
+        return $this->aggregateId();
     }
 }

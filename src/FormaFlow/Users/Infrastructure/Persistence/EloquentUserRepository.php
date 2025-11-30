@@ -12,10 +12,14 @@ use InvalidArgumentException;
 use Shared\Domain\AggregateRoot;
 use Shared\Domain\UserId;
 use Shared\Domain\UserName;
+use Throwable;
 
 final class EloquentUserRepository implements UserRepository
 {
-    public function save(AggregateRoot $aggregate): void
+    /**
+     * @throws Throwable
+     */
+    public function save(UserAggregate|AggregateRoot $aggregate): void
     {
         if (!$aggregate instanceof UserAggregate) {
             throw new InvalidArgumentException('Unsupported aggregate');
@@ -35,7 +39,10 @@ final class EloquentUserRepository implements UserRepository
         });
     }
 
-    public function delete(AggregateRoot $aggregate): void
+    /**
+     * @throws Throwable
+     */
+    public function delete(UserAggregate|AggregateRoot $aggregate): void
     {
         if (!$aggregate instanceof UserAggregate) {
             throw new InvalidArgumentException('Unsupported aggregate');

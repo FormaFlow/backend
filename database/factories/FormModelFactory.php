@@ -18,7 +18,7 @@ class FormModelFactory extends Factory
     {
         return [
             'id' => (string)Str::uuid(),
-            'user_id' => (string)Str::uuid(), // Или свяжите с User, если нужно
+            'user_id' => (string)Str::uuid(),
             'name' => fake()->words(3, true),
             'description' => fake()->sentence(),
             'published' => false,

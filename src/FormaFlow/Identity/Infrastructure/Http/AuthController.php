@@ -31,7 +31,7 @@ final class AuthController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $user = UserModel::create([
+        $user = UserModel::query()->create([
             'id' => Uuid::generate(),
             'name' => $request->input('name'),
             'email' => $request->input('email'),
