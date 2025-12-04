@@ -151,7 +151,7 @@ final class EntryApiTest extends TestCase
 
         $response
             ->assertStatus(Response::HTTP_BAD_REQUEST)
-            ->assertJson(['error' => 'Cannot create entry from unpublished form']);
+            ->assertJson(['message' => 'Cannot create entry from unpublished form']);
     }
 
     public function test_user_can_update_existing_entry(): void

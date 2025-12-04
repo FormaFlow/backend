@@ -10,15 +10,16 @@ use FormaFlow\Entries\Application\Update\UpdateEntryCommand;
 use FormaFlow\Entries\Application\Update\UpdateEntryCommandHandler;
 use FormaFlow\Entries\Domain\EntryId;
 use FormaFlow\Entries\Domain\EntryRepository;
+use FormaFlow\Entries\Infrastructure\Persistence\Eloquent\EntryTagModel;
 use FormaFlow\Forms\Domain\FormId;
 use FormaFlow\Forms\Domain\FormRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Shared\Infrastructure\Uuid;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 final class EntryController extends Controller
 {
@@ -85,13 +86,6 @@ final class EntryController extends Controller
             return response()->json(['error' => 'Form not found'], Response::HTTP_NOT_FOUND);
         }
 
-        if (!$form->isPublished()) {
-            return response()->json(
-                ['error' => 'Cannot create entry from unpublished form'],
-                Response::HTTP_BAD_REQUEST
-            );
-        }
-
         $rules = [];
         foreach ($form->fields() as $field) {
             $fieldRules = [];
@@ -130,28 +124,38 @@ final class EntryController extends Controller
 
         $id = Uuid::generate();
 
-        $this->createHandler->handle(
-            new CreateEntryCommand(
-                id: $id,
-                formId: $request->input('form_id'),
-                userId: $request->user()->id,
-                data: $request->input('data'),
-            )
-        );
+        try {
+            $this->createHandler->handle(
+                new CreateEntryCommand(
+                    id: $id,
+                    formId: $request->input('form_id'),
+                    userId: $request->user()->id,
+                    data: $request->input('data'),
+                )
+            );
+        } catch (Throwable $exception) {
+            return response()->json([
+                'message' => $exception->getMessage(),
+                'errors' => [$exception->getMessage()],
+            ], Response::HTTP_BAD_REQUEST);
+        }
 
+        // TODO refactor
         if ($request->has('tags')) {
             $entryId = $id;
             foreach ($request->input('tags') as $tag) {
-                DB::table('entry_tags')->insert([
+                EntryTagModel::query()->create([
                     'entry_id' => $entryId,
                     'tag' => $tag,
-                    'created_at' => now(),
-                    'updated_at' => now(),
                 ]);
             }
         }
 
         $entry = $this->entryRepository->findById(new EntryId($id));
+
+        if (null === $entry) {
+            return response()->json(['error' => 'Entry not found'], Response::HTTP_NOT_FOUND);
+        }
 
         return response()->json([
             'id' => $entry->id()->value(),
@@ -219,9 +223,20 @@ final class EntryController extends Controller
             data: $request->input('data'),
         );
 
-        $this->updateHandler->handle($command);
+        try {
+            $this->updateHandler->handle($command);
+        } catch (Throwable $exception) {
+            return response()->json([
+                'message' => 'Cannot update entry',
+                'errors' => [$exception->getMessage()],
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
 
         $updated = $this->entryRepository->findById(new EntryId($id));
+
+        if (null === $updated) {
+            return response()->json(['error' => 'Entry not found'], Response::HTTP_NOT_FOUND);
+        }
 
         return response()->json([
             'id' => $updated->id()->value(),

@@ -109,7 +109,7 @@ final class EntryManagementIntegrationTest extends TestCase
             ->postJson('/api/v1/entries', $entryData);
 
         $response->assertStatus(Response::HTTP_BAD_REQUEST)
-            ->assertJson(['error' => 'Cannot create entry from unpublished form']);
+            ->assertJson(['message' => 'Cannot create entry from unpublished form']);
     }
 
     public function test_entry_validation_enforces_required_fields(): void
