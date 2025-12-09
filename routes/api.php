@@ -78,6 +78,7 @@ Route::prefix('v1')->group(function () {
 
         Route::prefix('entries')->group(function () {
             Route::get('/', [EntryController::class, 'index']);
+            Route::get('/{id}', [EntryController::class, 'show']);
             Route::post('/', [EntryController::class, 'store']);
             Route::patch('{id}', [EntryController::class, 'update']);
             Route::delete('{id}', [EntryController::class, 'destroy']);

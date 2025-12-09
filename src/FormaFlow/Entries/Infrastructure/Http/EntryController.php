@@ -78,6 +78,32 @@ final class EntryController extends Controller
         ]);
     }
 
+    public function show(Request $request, string $id): JsonResponse
+    {
+        $entry = $this->entryRepository->findById(new EntryId($id));
+
+        if ($entry === null) {
+            return response()->json(['error' => 'Entry not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        if ($entry->userId() !== $request->user()->id) {
+            return response()->json(['error' => 'Forbidden'], Response::HTTP_FORBIDDEN);
+        }
+
+        $tags = EntryTagModel::query()
+            ->where('entry_id', $id)
+            ->pluck('tag')
+            ->toArray();
+
+        return response()->json([
+            'id' => $entry->id()->value(),
+            'form_id' => $entry->formId()->value(),
+            'data' => $entry->data(),
+            'tags' => $tags,
+            'created_at' => $entry->createdAt()->format('Y-m-d H:i:s'),
+        ]);
+    }
+
     public function store(Request $request): JsonResponse
     {
         $form = $this->formRepository->findById(new FormId($request->input('form_id')));

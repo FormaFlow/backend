@@ -668,6 +668,85 @@ final class EntryApiTest extends TestCase
             ->assertJsonCount(3, 'entries');
     }
 
+    public function test_can_retrieve_single_entry_by_id(): void
+    {
+        $entry = EntryModel::factory()->create([
+            'form_id' => $this->form->id,
+            'user_id' => $this->user->id,
+            'data' => ['amount' => 123.45, 'date' => '2025-01-20', 'category' => 'food'],
+        ]);
+
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
+            ->getJson("{$this->baseUrl}/{$entry->id}");
+
+        $response
+            ->assertStatus(Response::HTTP_OK)
+            ->assertJson([
+                'id' => $entry->id,
+                'form_id' => $entry->form_id,
+                'data' => [
+                    'amount' => 123.45,
+                    'date' => '2025-01-20',
+                    'category' => 'food',
+                ],
+            ])
+            ->assertJsonStructure(['id', 'form_id', 'data', 'tags', 'created_at']);
+    }
+
+    public function test_cannot_retrieve_non_existent_entry(): void
+    {
+        $fakeId = 'non-existent-entry-id';
+
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
+            ->getJson("{$this->baseUrl}/{$fakeId}");
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
+    }
+
+    public function test_cannot_retrieve_another_users_entry(): void
+    {
+        $otherUser = UserModel::factory()->create();
+        $otherForm = FormModel::factory()->forUser($otherUser)->published()->create();
+        $entry = EntryModel::factory()->create([
+            'form_id' => $otherForm->id,
+            'user_id' => $otherUser->id,
+            'data' => ['amount' => 100],
+        ]);
+
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
+            ->getJson("{$this->baseUrl}/{$entry->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_can_retrieve_entry_with_tags_by_id(): void
+    {
+        $entry = EntryModel::factory()->create([
+            'form_id' => $this->form->id,
+            'user_id' => $this->user->id,
+            'data' => ['amount' => 50.00],
+        ]);
+
+        DB::table('entry_tags')->insert([
+            ['entry_id' => $entry->id, 'tag' => 'tag1'],
+            ['entry_id' => $entry->id, 'tag' => 'tag2'],
+        ]);
+
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
+            ->getJson("{$this->baseUrl}/{$entry->id}");
+
+        $response
+            ->assertStatus(Response::HTTP_OK)
+            ->assertJson([
+                'id' => $entry->id,
+                'tags' => ['tag1', 'tag2'],
+            ]);
+    }
+
     public function test_returns_not_found_for_nonexistent_entry(): void
     {
         $fakeId = 'non-existent-entry-id';
