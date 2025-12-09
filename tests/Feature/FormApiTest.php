@@ -209,4 +209,48 @@ final class FormApiTest extends TestCase
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonValidationErrors(['type']);
     }
+
+    public function test_updates_a_field_in_existing_form(): void
+    {
+        $form = FormModel::factory()->create([
+            'user_id' => $this->user->id,
+            'name' => 'Form with Field to Update',
+        ]);
+
+        $field = DB::table('form_fields')->insert([
+            'id' => 'field-to-update',
+            'form_id' => $form->id,
+            'name' => 'old_name',
+            'label' => 'Old Label',
+            'type' => 'text',
+            'required' => false,
+            'options' => null,
+            'unit' => null,
+            'category' => null,
+            'order' => 0,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+
+        $updateData = [
+            'name' => 'new_name',
+            'label' => 'New Label',
+            'required' => true,
+        ];
+
+        $response = $this->actingAs($this->user, 'sanctum')->patchJson(
+            "{$this->baseUrl}/{$form->id}/fields/field-to-update",
+            $updateData
+        );
+
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJson(['message' => 'Field updated']);
+
+        $this->assertDatabaseHas('form_fields', [
+            'id' => 'field-to-update',
+            'name' => 'new_name',
+            'label' => 'New Label',
+            'required' => true,
+        ]);
+    }
 }

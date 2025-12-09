@@ -71,6 +71,7 @@ Route::prefix('v1')->group(function () {
             Route::patch('{id}', [FormController::class, 'update']);
             Route::delete('{id}', [FormController::class, 'destroy']);
             Route::delete('{formId}/fields/{fieldId}', [FormController::class, 'removeField']);
+            Route::patch('{formId}/fields/{fieldId}', [FormController::class, 'updateField']);
             Route::post('{id}/publish', [FormController::class, 'publish']);
             Route::post('{id}/fields', [FormController::class, 'addField']);
             Route::post('{id}/entries/import', [FormController::class, 'importEntries']);
@@ -78,6 +79,7 @@ Route::prefix('v1')->group(function () {
 
         Route::prefix('entries')->group(function () {
             Route::get('/', [EntryController::class, 'index']);
+            Route::get('/stats', [EntryController::class, 'stats']);
             Route::get('/{id}', [EntryController::class, 'show']);
             Route::post('/', [EntryController::class, 'store']);
             Route::patch('{id}', [EntryController::class, 'update']);

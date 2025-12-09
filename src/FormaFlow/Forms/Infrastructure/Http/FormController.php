@@ -20,6 +20,8 @@ use FormaFlow\Forms\Application\Publish\PublishFormCommand;
 use FormaFlow\Forms\Application\Publish\PublishFormCommandHandler;
 use FormaFlow\Forms\Application\RemoveField\RemoveFieldCommand;
 use FormaFlow\Forms\Application\RemoveField\RemoveFieldCommandHandler;
+use FormaFlow\Forms\Application\UpdateField\UpdateFieldCommand;
+use FormaFlow\Forms\Application\UpdateField\UpdateFieldCommandHandler;
 use FormaFlow\Forms\Domain\FormAggregate;
 use FormaFlow\Forms\Domain\FormId;
 use FormaFlow\Forms\Domain\FormName;
@@ -206,6 +208,41 @@ final class FormController
 
             $handler->handle($command);
             return response()->json(['message' => 'Field added'], Response::HTTP_CREATED);
+        } catch (Throwable $e) {
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function updateField(
+        Request $request,
+        string $formId,
+        string $fieldId,
+        UpdateFieldCommandHandler $handler,
+    ): Response {
+        $form = $this->formRepository->findById(new FormId($formId));
+        if (!$form) {
+            return response()->json(['error' => 'Not found'], Response::HTTP_NOT_FOUND);
+        }
+        if ($form->userId() !== $request->user()->id) {
+            return response()->json(['error' => 'Forbidden'], Response::HTTP_FORBIDDEN);
+        }
+
+        $validated = $request->validate([
+            'name' => 'sometimes|string',
+            'label' => 'sometimes|string',
+            'type' => 'sometimes|in:text,number,date,boolean,select,currency,email',
+            'required' => 'sometimes|boolean',
+            'options' => 'sometimes|nullable|array',
+            'unit' => 'sometimes|nullable|string',
+            'category' => 'sometimes|nullable|string',
+            'order' => 'sometimes|integer',
+        ]);
+
+        try {
+            $command = new UpdateFieldCommand($formId, $fieldId, $validated);
+
+            $handler->handle($command);
+            return response()->json(['message' => 'Field updated']);
         } catch (Throwable $e) {
             return response()->json(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }

@@ -9,11 +9,16 @@ use FormaFlow\Entries\Domain\EntryId;
 use FormaFlow\Entries\Domain\EntryRepository;
 use FormaFlow\Entries\Infrastructure\Persistence\Eloquent\EntryModel;
 use FormaFlow\Forms\Domain\FormId;
+use FormaFlow\Forms\Domain\FormRepository;
+use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Shared\Domain\AggregateRoot;
 
 final class EloquentEntryRepository implements EntryRepository
 {
+    public function __construct(private readonly FormRepository $formRepository)
+    {
+    }
     public function save(EntryAggregate|AggregateRoot $aggregate): void
     {
         if (!$aggregate instanceof EntryAggregate) {
@@ -87,7 +92,8 @@ final class EloquentEntryRepository implements EntryRepository
             } else {
                 $query->orderBy($filters['sort_by'], $sortOrder);
             }
-        } else {
+        }
+        else {
             $query->orderBy('created_at', 'desc');
         }
 
@@ -120,5 +126,50 @@ final class EloquentEntryRepository implements EntryRepository
             data: $model->data,
             createdAt: $model->created_at,
         ))->toArray();
+    }
+
+    public function getSumOfNumericFieldsByDateRange(
+        FormId $formId,
+        string $userId,
+        \DateTimeImmutable $startDate,
+        ?\DateTimeImmutable $endDate = null
+    ): array {
+        $form = $this->formRepository->findById($formId);
+
+        if (null === $form) {
+            return [];
+        }
+
+        $numericFields = [];
+        foreach ($form->fields() as $field) {
+            if (in_array($field->type()->value(), ['number', 'currency'])) {
+                $numericFields[] = $field->name();
+            }
+        }
+
+        if (empty($numericFields)) {
+            return [];
+        }
+
+        $query = EntryModel::query()
+            ->where('form_id', $formId->value())
+            ->where('user_id', $userId);
+
+        if ($endDate) {
+            $query->whereBetween('created_at', [$startDate, $endDate]);
+        } else {
+            $query->whereDate('created_at', $startDate);
+        }
+
+        $results = [];
+        foreach ($numericFields as $field) {
+            $sum = (clone $query)->sum(DB::raw("CAST(json_extract(data, '$.{$field}') AS DECIMAL(10, 2))"));
+            $results[] = [
+                'field' => $field,
+                'total_sum' => (float)$sum,
+            ];
+        }
+
+        return $results;
     }
 }

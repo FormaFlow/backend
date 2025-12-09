@@ -46,7 +46,8 @@ final class AuthenticationIntegrationTest extends TestCase
             'password' => bcrypt('password123'),
         ]);
 
-        $response = $this->postJson('/api/v1/login', [
+        $response = $this->withoutMiddleware(\Illuminate\Routing\Middleware\ThrottleRequests::class)
+            ->postJson('/api/v1/login', [
             'email' => 'test@example.com',
             'password' => 'password123',
         ]);
@@ -62,7 +63,8 @@ final class AuthenticationIntegrationTest extends TestCase
             'password' => bcrypt('password123'),
         ]);
 
-        $response = $this->postJson('/api/v1/login', [
+        $response = $this->withoutMiddleware(\Illuminate\Routing\Middleware\ThrottleRequests::class)
+            ->postJson('/api/v1/login', [
             'email' => 'test@example.com',
             'password' => 'wrongpassword',
         ]);

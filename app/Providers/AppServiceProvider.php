@@ -6,6 +6,7 @@ namespace App\Providers;
 
 use App\Policies\FormPolicy;
 use FormaFlow\Entries\Application\Create\CreateEntryCommandHandler;
+use FormaFlow\Entries\Application\Stats\GetEntriesStatsQueryHandler;
 use FormaFlow\Entries\Application\Update\UpdateEntryCommandHandler;
 use FormaFlow\Entries\Domain\EntryRepository;
 use FormaFlow\Entries\Infrastructure\Persistence\EloquentEntryRepository;
@@ -34,6 +35,7 @@ final class AppServiceProvider extends ServiceProvider
         $this->app->singleton(AddFieldCommandHandler::class);
         $this->app->singleton(CreateEntryCommandHandler::class);
         $this->app->singleton(UpdateEntryCommandHandler::class);
+        $this->app->singleton(GetEntriesStatsQueryHandler::class);
     }
 
     public function boot(): void
