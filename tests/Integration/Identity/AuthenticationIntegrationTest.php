@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Tests\Integration\Identity;
 
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase;
+use Illuminate\Support\Facades\RateLimiter;
 use Symfony\Component\HttpFoundation\Response;
 
 final class AuthenticationIntegrationTest extends TestCase
@@ -41,13 +43,16 @@ final class AuthenticationIntegrationTest extends TestCase
 
     public function test_user_can_login_with_valid_credentials(): void
     {
+        RateLimiter::for('login', function () {
+            return Limit::none();
+        });
+
         $user = UserModel::factory()->create([
             'email' => 'test@example.com',
             'password' => bcrypt('password123'),
         ]);
 
-        $response = $this->withoutMiddleware(\Illuminate\Routing\Middleware\ThrottleRequests::class)
-            ->postJson('/api/v1/login', [
+        $response = $this->postJson('/api/v1/login', [
             'email' => 'test@example.com',
             'password' => 'password123',
         ]);
@@ -58,13 +63,16 @@ final class AuthenticationIntegrationTest extends TestCase
 
     public function test_user_cannot_login_with_invalid_credentials(): void
     {
+        RateLimiter::for('login', function () {
+            return Limit::none();
+        });
+
         UserModel::factory()->create([
             'email' => 'test@example.com',
             'password' => bcrypt('password123'),
         ]);
 
-        $response = $this->withoutMiddleware(\Illuminate\Routing\Middleware\ThrottleRequests::class)
-            ->postJson('/api/v1/login', [
+        $response = $this->postJson('/api/v1/login', [
             'email' => 'test@example.com',
             'password' => 'wrongpassword',
         ]);

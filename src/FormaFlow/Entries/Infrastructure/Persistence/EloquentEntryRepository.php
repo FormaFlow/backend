@@ -97,18 +97,22 @@ final class EloquentEntryRepository implements EntryRepository
             $query->orderBy('created_at', 'desc');
         }
 
+        $total = $query->count();
+
         $models = $query
             ->limit($limit)
             ->offset($offset)
             ->get();
 
-        return $models->map(fn($model) => EntryAggregate::fromPrimitives(
+        $entries = $models->map(fn($model) => EntryAggregate::fromPrimitives(
             id: new EntryId($model->id),
             formId: new FormId($model->form_id),
             userId: $model->user_id,
             data: $model->data,
             createdAt: $model->created_at,
         ))->toArray();
+        
+        return [$entries, $total];
     }
 
     public function findByFormId(string $formId, int $limit = 15, int $offset = 0): array

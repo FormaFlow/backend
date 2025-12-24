@@ -10,6 +10,9 @@ interface EntryRepository extends Repository
 {
     public function findById(EntryId $id): ?EntryAggregate;
 
+    /**
+     * @return array{0: EntryAggregate[], 1: int}
+     */
     public function findByUserId(string $userId, array $filters = [], int $limit = 15, int $offset = 0): array;
 
     public function findByFormId(string $formId, int $limit = 15, int $offset = 0): array;

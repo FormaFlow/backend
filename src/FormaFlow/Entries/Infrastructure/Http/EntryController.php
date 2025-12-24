@@ -24,183 +24,100 @@ use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 
-
 final class EntryController extends Controller
-
 {
-
     public function __construct(
-
         private readonly EntryRepository $entryRepository,
-
         private readonly FormRepository $formRepository,
-
         private readonly CreateEntryCommandHandler $createHandler,
-
         private readonly UpdateEntryCommandHandler $updateHandler,
-
         private readonly GetEntriesStatsQueryHandler $statsHandler,
-
     ) {
-
     }
 
 
-
     public function index(Request $request): JsonResponse
-
     {
-
         $limit = $request->input('limit', 15);
 
+        if ($limit > 100) {
+            $limit = 100;
+        }
+
         $offset = $request->input('offset', 0);
-
-
 
         $filters = [];
 
         if ($request->has('form_id')) {
-
             $filters['form_id'] = $request->input('form_id');
-
         }
-
-
 
         if ($request->has('date_from')) {
-
             $filters['date_from'] = $request->input('date_from');
-
         }
-
-
 
         if ($request->has('date_to')) {
-
             $filters['date_to'] = $request->input('date_to');
-
         }
-
-
 
         if ($request->has('tags')) {
-
             $filters['tags'] = $request->input('tags');
-
         }
 
-
-
         if ($request->has('sort_by')) {
-
             $filters['sort_by'] = $request->input('sort_by');
 
             $filters['sort_order'] = $request->input('sort_order', 'asc');
-
         }
 
-
-
-        $entries = $this->entryRepository->findByUserId(
-
+        [$entries, $total] = $this->entryRepository->findByUserId(
             $request->user()->id,
-
             $filters,
-
             (int)$limit,
-
-            (int)$offset
-
+            (int)$offset,
         );
 
-
-
         return response()->json([
-
             'entries' => array_map(fn($entry) => [
-
                 'id' => $entry->id()->value(),
-
                 'form_id' => $entry->formId()->value(),
-
                 'data' => $entry->data(),
-
                 'created_at' => $entry->createdAt()->format('Y-m-d H:i:s'),
-
             ], $entries),
-
-            'total' => count($entries),
-
+            'total' => $total,
             'limit' => $limit,
-
             'offset' => $offset,
-
         ]);
-
     }
-
 
 
     public function stats(Request $request): JsonResponse
-
     {
-
         $validator = Validator::make($request->all(), [
-
             'form_id' => 'required|string',
-
         ]);
 
-
-
         if ($validator->fails()) {
-
             return response()->json([
-
                 'message' => 'Validation failed',
-
                 'errors' => $validator->errors(),
-
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
-
         }
 
-
-
         $query = new GetEntriesStatsQuery(
-
             formId: $request->input('form_id'),
-
             userId: $request->user()->id,
-
         );
 
+        $result = $this->statsHandler->handle($query);
 
-
-                $result = $this->statsHandler->handle($query);
-
-
-
-        
-
-
-
-                return response()->json([
-
-
-
-                    'stats' => $result->stats,
-
-
-
-                ]);
-
+        return response()->json([
+            'stats' => $result->stats,
+        ]);
     }
 
 
-
     public function show(Request $request, string $id): JsonResponse
-
     {
         $entry = $this->entryRepository->findById(new EntryId($id));
 

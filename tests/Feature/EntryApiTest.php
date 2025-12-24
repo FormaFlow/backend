@@ -794,13 +794,11 @@ final class EntryApiTest extends TestCase
 
         $response = $this
             ->actingAs($this->user, 'sanctum')
-            ->getJson("{$this->baseUrl}?limit=100");
+            ->getJson("{$this->baseUrl}?limit=120");
 
-        $response->assertStatus(Response::HTTP_OK);
-
-        $count = count($response->json('entries'));
-        $this->assertLessThanOrEqual(100, $count);
-
-        $this->markTestIncomplete('Must implement maximum pagination limit to 100');
+        $response
+            ->assertStatus(Response::HTTP_OK)
+            ->assertJsonCount(100, 'entries')
+            ->assertJson(['limit' => 100]);
     }
 }

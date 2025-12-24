@@ -212,7 +212,7 @@ final class EntryManagementIntegrationTest extends TestCase
         $response->assertStatus(Response::HTTP_OK)
             ->assertJsonStructure(['entries', 'total', 'limit', 'offset'])
             ->assertJsonCount(10, 'entries')
-            ->assertJson(['total' => 10, 'limit' => 10]);
+            ->assertJson(['total' => 25, 'limit' => 10]);
     }
 
     public function test_user_can_filter_entries_by_date_range(): void
