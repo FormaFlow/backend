@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FormaFlow\Entries\Infrastructure\Persistence;
 
+use DateTimeImmutable;
 use FormaFlow\Entries\Domain\EntryAggregate;
 use FormaFlow\Entries\Domain\EntryId;
 use FormaFlow\Entries\Domain\EntryRepository;
@@ -19,6 +20,7 @@ final class EloquentEntryRepository implements EntryRepository
     public function __construct(private readonly FormRepository $formRepository)
     {
     }
+
     public function save(EntryAggregate|AggregateRoot $aggregate): void
     {
         if (!$aggregate instanceof EntryAggregate) {
@@ -92,8 +94,7 @@ final class EloquentEntryRepository implements EntryRepository
             } else {
                 $query->orderBy($filters['sort_by'], $sortOrder);
             }
-        }
-        else {
+        } else {
             $query->orderBy('created_at', 'desc');
         }
 
@@ -111,7 +112,7 @@ final class EloquentEntryRepository implements EntryRepository
             data: $model->data,
             createdAt: $model->created_at,
         ))->toArray();
-        
+
         return [$entries, $total];
     }
 
@@ -135,8 +136,8 @@ final class EloquentEntryRepository implements EntryRepository
     public function getSumOfNumericFieldsByDateRange(
         FormId $formId,
         string $userId,
-        \DateTimeImmutable $startDate,
-        ?\DateTimeImmutable $endDate = null
+        DateTimeImmutable $startDate,
+        ?DateTimeImmutable $endDate = null
     ): array {
         $form = $this->formRepository->findById($formId);
 

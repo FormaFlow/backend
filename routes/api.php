@@ -5,6 +5,8 @@ declare(strict_types=1);
 use FormaFlow\Entries\Infrastructure\Http\EntryController;
 use FormaFlow\Forms\Infrastructure\Http\FormController;
 use FormaFlow\Identity\Infrastructure\Http\AuthController;
+use FormaFlow\Reports\Infrastructure\Http\DashboardController;
+use FormaFlow\Reports\Infrastructure\Http\ReportController;
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -84,6 +86,24 @@ Route::prefix('v1')->group(function () {
             Route::post('/', [EntryController::class, 'store']);
             Route::patch('{id}', [EntryController::class, 'update']);
             Route::delete('{id}', [EntryController::class, 'destroy']);
+        });
+
+        Route::prefix('reports')->group(function () {
+            Route::post('/', [ReportController::class, 'generate']);
+            Route::post('/time-series', [ReportController::class, 'timeSeries']);
+            Route::post('/grouped', [ReportController::class, 'grouped']);
+            Route::post('/export', [ReportController::class, 'export']);
+            Route::get('/weekly-summary', [ReportController::class, 'weeklySummary']);
+            Route::get('/monthly-summary', [ReportController::class, 'monthlySummary']);
+            Route::get('/predefined/budget', [ReportController::class, 'predefinedBudget']);
+            Route::get('/predefined/medicine', [ReportController::class, 'predefinedMedicine']);
+            Route::get('/predefined/weight', [ReportController::class, 'predefinedWeight']);
+        });
+
+        Route::prefix('dashboard')->group(function () {
+            Route::get('/week', [DashboardController::class, 'weekSummary']);
+            Route::get('/month', [DashboardController::class, 'monthSummary']);
+            Route::get('/trends', [DashboardController::class, 'trends']);
         });
     });
 });

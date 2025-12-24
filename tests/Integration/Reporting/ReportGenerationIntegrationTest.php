@@ -23,8 +23,6 @@ final class ReportGenerationIntegrationTest extends TestCase
     {
         parent::setUp();
 
-        $this->markTestIncomplete('Should implement reporting');
-
         $this->user = UserModel::factory()->create();
         $this->budgetForm = FormModel::factory()->forUser($this->user)->published()->create([
             'name' => 'Budget Tracker',
@@ -218,7 +216,7 @@ final class ReportGenerationIntegrationTest extends TestCase
             ]);
 
         $response->assertStatus(Response::HTTP_OK)
-            ->assertHeader('Content-Type', 'text/csv')
+            ->assertHeader('Content-Type', 'text/csv; charset=UTF-8')
             ->assertHeader('Content-Disposition', 'attachment; filename="report.csv"');
 
         $content = $response->getContent();
