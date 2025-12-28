@@ -88,7 +88,8 @@ final class ReportGenerationIntegrationTest extends TestCase
 
     public function test_user_can_generate_sum_aggregation_report(): void
     {
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->postJson('/api/v1/reports', [
                 'form_id' => $this->budgetForm->id,
                 'aggregation' => 'sum',
@@ -106,7 +107,8 @@ final class ReportGenerationIntegrationTest extends TestCase
 
     public function test_user_can_generate_average_aggregation_report(): void
     {
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->postJson('/api/v1/reports', [
                 'form_id' => $this->budgetForm->id,
                 'aggregation' => 'avg',
@@ -123,7 +125,8 @@ final class ReportGenerationIntegrationTest extends TestCase
 
     public function test_user_can_generate_min_max_aggregation_report(): void
     {
-        $responseMin = $this->actingAs($this->user, 'sanctum')
+        $responseMin = $this
+            ->actingAs($this->user, 'sanctum')
             ->postJson('/api/v1/reports', [
                 'form_id' => $this->budgetForm->id,
                 'aggregation' => 'min',
@@ -135,7 +138,8 @@ final class ReportGenerationIntegrationTest extends TestCase
         $responseMin->assertStatus(Response::HTTP_OK);
         $this->assertEquals(200, $responseMin->json('result'));
 
-        $responseMax = $this->actingAs($this->user, 'sanctum')
+        $responseMax = $this
+            ->actingAs($this->user, 'sanctum')
             ->postJson('/api/v1/reports', [
                 'form_id' => $this->budgetForm->id,
                 'aggregation' => 'max',
@@ -150,7 +154,8 @@ final class ReportGenerationIntegrationTest extends TestCase
 
     public function test_user_can_generate_count_aggregation_report(): void
     {
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->postJson('/api/v1/reports', [
                 'form_id' => $this->budgetForm->id,
                 'aggregation' => 'count',
@@ -164,7 +169,8 @@ final class ReportGenerationIntegrationTest extends TestCase
 
     public function test_user_can_generate_time_series_report(): void
     {
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->postJson('/api/v1/reports/time-series', [
                 'form_id' => $this->budgetForm->id,
                 'field' => 'amount',
@@ -183,7 +189,8 @@ final class ReportGenerationIntegrationTest extends TestCase
 
     public function test_user_can_group_report_by_field(): void
     {
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->postJson('/api/v1/reports/grouped', [
                 'form_id' => $this->budgetForm->id,
                 'group_by' => 'category',
@@ -207,7 +214,8 @@ final class ReportGenerationIntegrationTest extends TestCase
 
     public function test_user_can_export_report_as_csv(): void
     {
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->postJson('/api/v1/reports/export', [
                 'form_id' => $this->budgetForm->id,
                 'format' => 'csv',
@@ -226,7 +234,8 @@ final class ReportGenerationIntegrationTest extends TestCase
 
     public function test_user_can_export_report_as_json(): void
     {
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->postJson('/api/v1/reports/export', [
                 'form_id' => $this->budgetForm->id,
                 'format' => 'json',
@@ -241,7 +250,8 @@ final class ReportGenerationIntegrationTest extends TestCase
 
     public function test_user_can_generate_weekly_summary_report(): void
     {
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->getJson('/api/v1/reports/weekly-summary?form_id=' . $this->budgetForm->id);
 
         $response->assertStatus(Response::HTTP_OK)
@@ -257,7 +267,8 @@ final class ReportGenerationIntegrationTest extends TestCase
 
     public function test_user_can_generate_monthly_summary_report(): void
     {
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->getJson('/api/v1/reports/monthly-summary?form_id=' . $this->budgetForm->id . '&month=2025-01');
 
         $response->assertStatus(Response::HTTP_OK)
@@ -272,7 +283,8 @@ final class ReportGenerationIntegrationTest extends TestCase
 
     public function test_user_can_access_predefined_budget_report(): void
     {
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->getJson('/api/v1/reports/predefined/budget?date_from=2025-01-01&date_to=2025-01-31');
 
         $response->assertStatus(Response::HTTP_OK)
@@ -312,7 +324,8 @@ final class ReportGenerationIntegrationTest extends TestCase
             ],
         ]);
 
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->getJson('/api/v1/reports/predefined/medicine?date_from=2025-01-01&date_to=2025-01-31');
 
         $response->assertStatus(Response::HTTP_OK)
@@ -342,7 +355,8 @@ final class ReportGenerationIntegrationTest extends TestCase
             ],
         ]);
 
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->getJson('/api/v1/reports/predefined/weight?date_from=2025-01-01&date_to=2025-01-31');
 
         $response->assertStatus(Response::HTTP_OK)
@@ -362,7 +376,8 @@ final class ReportGenerationIntegrationTest extends TestCase
             ['entry_id' => $entry->id, 'tag' => 'recurring'],
         ]);
 
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->postJson('/api/v1/reports', [
                 'form_id' => $this->budgetForm->id,
                 'aggregation' => 'sum',
@@ -375,7 +390,8 @@ final class ReportGenerationIntegrationTest extends TestCase
 
     public function test_dashboard_shows_week_summary(): void
     {
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->getJson('/api/v1/dashboard/week');
 
         $response->assertStatus(Response::HTTP_OK)
@@ -388,7 +404,8 @@ final class ReportGenerationIntegrationTest extends TestCase
 
     public function test_dashboard_shows_month_summary(): void
     {
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->getJson('/api/v1/dashboard/month');
 
         $response->assertStatus(Response::HTTP_OK)
@@ -401,7 +418,8 @@ final class ReportGenerationIntegrationTest extends TestCase
 
     public function test_dashboard_shows_trends(): void
     {
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->getJson('/api/v1/dashboard/trends');
 
         $response->assertStatus(Response::HTTP_OK)

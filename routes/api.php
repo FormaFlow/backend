@@ -90,6 +90,8 @@ Route::prefix('v1')->group(function () {
 
         Route::prefix('reports')->group(function () {
             Route::post('/', [ReportController::class, 'generate']);
+            Route::post('/summary', [ReportController::class, 'summary']);
+            Route::post('/multi-time-series', [ReportController::class, 'multiTimeSeries']);
             Route::post('/time-series', [ReportController::class, 'timeSeries']);
             Route::post('/grouped', [ReportController::class, 'grouped']);
             Route::post('/export', [ReportController::class, 'export']);

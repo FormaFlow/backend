@@ -33,7 +33,8 @@ final class FormApiTest extends TestCase
 
     public function test_returns_empty_list_of_forms_for_authenticated_user(): void
     {
-        $response = $this->actingAs($this->user, 'sanctum')->getJson($this->baseUrl);
+        $response = $this
+            ->actingAs($this->user, 'sanctum')->getJson($this->baseUrl);
 
         $response
             ->assertStatus(Response::HTTP_OK)
@@ -52,7 +53,8 @@ final class FormApiTest extends TestCase
             'description' => 'A form for testing',
         ];
 
-        $response = $this->actingAs($this->user, 'sanctum')->postJson($this->baseUrl, $formData);
+        $response = $this
+            ->actingAs($this->user, 'sanctum')->postJson($this->baseUrl, $formData);
 
         $response->assertStatus(Response::HTTP_CREATED)
             ->assertJsonStructure(['id'])
@@ -84,7 +86,8 @@ final class FormApiTest extends TestCase
             'description' => 'A form for testing',
         ]);
 
-        $response = $this->actingAs($this->user, 'sanctum')->getJson("{$this->baseUrl}/{$form->id}");
+        $response = $this
+            ->actingAs($this->user, 'sanctum')->getJson("{$this->baseUrl}/{$form->id}");
 
         $response
             ->assertStatus(Response::HTTP_OK)
@@ -101,7 +104,8 @@ final class FormApiTest extends TestCase
     {
         $fakeId = (new FormId('fake-uuid-123'))->value();
 
-        $response = $this->actingAs($this->user, 'sanctum')->getJson("{$this->baseUrl}/{$fakeId}");
+        $response = $this
+            ->actingAs($this->user, 'sanctum')->getJson("{$this->baseUrl}/{$fakeId}");
 
         $response
             ->assertStatus(Response::HTTP_NOT_FOUND)
@@ -130,7 +134,8 @@ final class FormApiTest extends TestCase
             'updated_at' => Carbon::now(),
         ]);
 
-        $response = $this->actingAs($this->user, 'sanctum')->postJson("{$this->baseUrl}/{$form->id}/publish");
+        $response = $this
+            ->actingAs($this->user, 'sanctum')->postJson("{$this->baseUrl}/{$form->id}/publish");
 
         $response->assertStatus(Response::HTTP_OK)
             ->assertJson(['message' => 'Form published']);
@@ -148,7 +153,8 @@ final class FormApiTest extends TestCase
             'name' => 'Empty Form',
         ]);
 
-        $response = $this->actingAs($this->user, 'sanctum')->postJson("{$this->baseUrl}/{$form->id}/publish");
+        $response = $this
+            ->actingAs($this->user, 'sanctum')->postJson("{$this->baseUrl}/{$form->id}/publish");
 
         $response
             ->assertStatus(Response::HTTP_BAD_REQUEST)
@@ -171,10 +177,11 @@ final class FormApiTest extends TestCase
             'order' => 1,
         ];
 
-        $response = $this->actingAs($this->user, 'sanctum')->postJson(
-            "{$this->baseUrl}/{$form->id}/fields",
-            $fieldData
-        );
+        $response = $this
+            ->actingAs($this->user, 'sanctum')->postJson(
+                "{$this->baseUrl}/{$form->id}/fields",
+                $fieldData
+            );
 
         $response->assertStatus(Response::HTTP_CREATED)
             ->assertJson(['message' => 'Field added']);
@@ -200,10 +207,11 @@ final class FormApiTest extends TestCase
             'type' => 'invalid-type', // Not in enum
         ];
 
-        $response = $this->actingAs($this->user, 'sanctum')->postJson(
-            "{$this->baseUrl}/{$form->id}/fields",
-            $invalidData
-        );
+        $response = $this
+            ->actingAs($this->user, 'sanctum')->postJson(
+                "{$this->baseUrl}/{$form->id}/fields",
+                $invalidData
+            );
 
         $response
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
@@ -238,10 +246,11 @@ final class FormApiTest extends TestCase
             'required' => true,
         ];
 
-        $response = $this->actingAs($this->user, 'sanctum')->patchJson(
-            "{$this->baseUrl}/{$form->id}/fields/field-to-update",
-            $updateData
-        );
+        $response = $this
+            ->actingAs($this->user, 'sanctum')->patchJson(
+                "{$this->baseUrl}/{$form->id}/fields/field-to-update",
+                $updateData
+            );
 
         $response->assertStatus(Response::HTTP_OK)
             ->assertJson(['message' => 'Field updated']);

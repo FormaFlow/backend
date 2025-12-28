@@ -84,7 +84,8 @@ final class EntryManagementIntegrationTest extends TestCase
             ],
         ];
 
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->postJson('/api/v1/entries', $entryData);
 
         $response->assertStatus(Response::HTTP_CREATED)
@@ -105,7 +106,8 @@ final class EntryManagementIntegrationTest extends TestCase
             'data' => ['amount' => 100],
         ];
 
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->postJson('/api/v1/entries', $entryData);
 
         $response->assertStatus(Response::HTTP_BAD_REQUEST)
@@ -122,7 +124,8 @@ final class EntryManagementIntegrationTest extends TestCase
             ],
         ];
 
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->postJson('/api/v1/entries', $entryData);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
@@ -140,7 +143,8 @@ final class EntryManagementIntegrationTest extends TestCase
             ],
         ];
 
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->postJson('/api/v1/entries', $entryData);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
@@ -164,7 +168,8 @@ final class EntryManagementIntegrationTest extends TestCase
             ],
         ];
 
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->patchJson("/api/v1/entries/{$entry->id}", $updateData);
 
         $response->assertStatus(Response::HTTP_OK);
@@ -184,7 +189,8 @@ final class EntryManagementIntegrationTest extends TestCase
             'updated_at' => Carbon::now(),
         ]);
 
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->deleteJson("/api/v1/entries/{$entry->id}");
 
         $response->assertStatus(Response::HTTP_NO_CONTENT);
@@ -206,7 +212,8 @@ final class EntryManagementIntegrationTest extends TestCase
             ]);
         }
 
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->getJson('/api/v1/entries?limit=10&offset=0');
 
         $response->assertStatus(Response::HTTP_OK)
@@ -236,7 +243,8 @@ final class EntryManagementIntegrationTest extends TestCase
             ],
         ]);
 
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->getJson('/api/v1/entries?date_from=2025-01-01&date_to=2025-01-31');
 
         $response->assertStatus(Response::HTTP_OK)
@@ -266,7 +274,8 @@ final class EntryManagementIntegrationTest extends TestCase
             ],
         ]);
 
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->getJson("/api/v1/entries?form_id={$this->form->id}");
 
         $response->assertStatus(Response::HTTP_OK)
@@ -294,7 +303,8 @@ final class EntryManagementIntegrationTest extends TestCase
             ],
         ]);
 
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->getJson('/api/v1/entries?sort_by=data.amount&sort_order=asc');
 
         $response->assertStatus(Response::HTTP_OK);
@@ -316,7 +326,8 @@ final class EntryManagementIntegrationTest extends TestCase
             'tags' => ['salary', 'monthly', 'recurring'],
         ];
 
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->postJson('/api/v1/entries', $entryData);
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -344,7 +355,8 @@ final class EntryManagementIntegrationTest extends TestCase
             ['entry_id' => $entry->id, 'tag' => 'important'],
         ]);
 
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->getJson('/api/v1/entries?tags=important');
 
         $response->assertStatus(Response::HTTP_OK)
@@ -355,7 +367,8 @@ final class EntryManagementIntegrationTest extends TestCase
     {
         $csvContent = "amount,date,category\n100,2025-01-15,income\n200,2025-01-16,expense";
 
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->postJson("/api/v1/forms/{$this->form->id}/entries/import", [
                 'csv_data' => $csvContent,
                 'delimiter' => ',',
@@ -371,7 +384,8 @@ final class EntryManagementIntegrationTest extends TestCase
     {
         $csvContent = "amount,date,category\ninvalid,2025-01-15,income"; // invalid amount
 
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->postJson("/api/v1/forms/{$this->form->id}/entries/import", [
                 'csv_data' => $csvContent,
             ]);
@@ -396,7 +410,8 @@ final class EntryManagementIntegrationTest extends TestCase
             'updated_at' => Carbon::now(),
         ]);
 
-        $this->actingAs($this->user, 'sanctum')
+        $this
+            ->actingAs($this->user, 'sanctum')
             ->patchJson("/api/v1/entries/{$entry->id}", [
                 'data' => ['amount' => 200],
             ]);

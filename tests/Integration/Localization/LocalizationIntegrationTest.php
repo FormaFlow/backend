@@ -17,7 +17,8 @@ final class LocalizationIntegrationTest extends TestCase
     {
         $user = UserModel::factory()->create();
 
-        $response = $this->actingAs($user, 'sanctum')
+        $response = $this
+            ->actingAs($user, 'sanctum')
             ->withHeader('Accept-Language', 'ru')
             ->getJson('/api/v1/forms');
 
@@ -30,7 +31,8 @@ final class LocalizationIntegrationTest extends TestCase
     {
         $user = UserModel::factory()->create();
 
-        $response = $this->actingAs($user, 'sanctum')
+        $response = $this
+            ->actingAs($user, 'sanctum')
             ->withHeader('Accept-Language', 'en')
             ->getJson('/api/v1/forms');
 
@@ -41,7 +43,8 @@ final class LocalizationIntegrationTest extends TestCase
     {
         $user = UserModel::factory()->create();
 
-        $response = $this->actingAs($user, 'sanctum')
+        $response = $this
+            ->actingAs($user, 'sanctum')
             ->withHeader('Accept-Language', 'ru')
             ->postJson('/api/v1/forms', [
                 'name' => 'ab', // Too short
@@ -56,11 +59,5 @@ final class LocalizationIntegrationTest extends TestCase
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED); // Not authenticated
         $response->assertHeader('API-Version', 'v1');
-    }
-
-    public function test_api_v2_endpoints_are_accessible(): void
-    {
-        // TODO: Implement when v2 is ready
-        $this->markTestIncomplete('API v2 not implemented yet');
     }
 }

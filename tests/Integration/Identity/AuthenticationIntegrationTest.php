@@ -97,7 +97,8 @@ final class AuthenticationIntegrationTest extends TestCase
     {
         $user = UserModel::factory()->create();
 
-        $response = $this->actingAs($user, 'sanctum')
+        $response = $this
+            ->actingAs($user, 'sanctum')
             ->postJson('/api/v1/logout');
 
         $response->assertStatus(Response::HTTP_OK)
@@ -138,7 +139,8 @@ final class AuthenticationIntegrationTest extends TestCase
     {
         $user = UserModel::factory()->create(['email_verified_at' => null]);
 
-        $response = $this->actingAs($user, 'sanctum')
+        $response = $this
+            ->actingAs($user, 'sanctum')
             ->getJson('/api/v1/profile');
 
         $response->assertStatus(Response::HTTP_OK)

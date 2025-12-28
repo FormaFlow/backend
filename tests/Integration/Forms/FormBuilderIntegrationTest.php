@@ -31,7 +31,8 @@ final class FormBuilderIntegrationTest extends TestCase
             'description' => 'Track income and expenses',
         ];
 
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->postJson('/api/v1/forms', $formData);
 
         $response->assertStatus(Response::HTTP_CREATED)
@@ -55,7 +56,8 @@ final class FormBuilderIntegrationTest extends TestCase
             'required' => true,
         ];
 
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->postJson("/api/v1/forms/{$form->id}/fields", $fieldData);
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -80,7 +82,8 @@ final class FormBuilderIntegrationTest extends TestCase
             'options' => ['min' => 0, 'max' => 999999.99],
         ];
 
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->postJson("/api/v1/forms/{$form->id}/fields", $fieldData);
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -104,7 +107,8 @@ final class FormBuilderIntegrationTest extends TestCase
             'required' => true,
         ];
 
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->postJson("/api/v1/forms/{$form->id}/fields", $fieldData);
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -124,7 +128,8 @@ final class FormBuilderIntegrationTest extends TestCase
             ],
         ];
 
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->postJson("/api/v1/forms/{$form->id}/fields", $fieldData);
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -141,7 +146,8 @@ final class FormBuilderIntegrationTest extends TestCase
             'required' => false,
         ];
 
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->postJson("/api/v1/forms/{$form->id}/fields", $fieldData);
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -161,7 +167,8 @@ final class FormBuilderIntegrationTest extends TestCase
             ],
         ];
 
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->postJson("/api/v1/forms/{$form->id}/fields", $fieldData);
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -176,11 +183,13 @@ final class FormBuilderIntegrationTest extends TestCase
         $field3 = ['name' => 'field3', 'label' => 'Field 3', 'type' => 'text', 'order' => 3];
 
         foreach ([$field1, $field2, $field3] as $fieldData) {
-            $this->actingAs($this->user, 'sanctum')
+            $this
+                ->actingAs($this->user, 'sanctum')
                 ->postJson("/api/v1/forms/{$form->id}/fields", $fieldData);
         }
 
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->getJson("/api/v1/forms/{$form->id}");
 
         $fields = $response->json('fields');
@@ -204,7 +213,8 @@ final class FormBuilderIntegrationTest extends TestCase
             ],
         ];
 
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->postJson("/api/v1/forms/{$form->id}/fields", $fieldData);
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -229,7 +239,8 @@ final class FormBuilderIntegrationTest extends TestCase
             'updated_at' => Carbon::now(),
         ]);
 
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->postJson("/api/v1/forms/{$form->id}/publish");
 
         $response->assertStatus(Response::HTTP_OK);
@@ -244,7 +255,8 @@ final class FormBuilderIntegrationTest extends TestCase
     {
         $form = FormModel::factory()->forUser($this->user)->create();
 
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->postJson("/api/v1/forms/{$form->id}/publish");
 
         $response->assertStatus(Response::HTTP_BAD_REQUEST)
@@ -255,7 +267,8 @@ final class FormBuilderIntegrationTest extends TestCase
     {
         $form = FormModel::factory()->forUser($this->user)->published()->create(['version' => 1]);
 
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->patchJson("/api/v1/forms/{$form->id}", [
                 'name' => 'Updated Form Name',
             ]);
@@ -272,7 +285,8 @@ final class FormBuilderIntegrationTest extends TestCase
     {
         $form = FormModel::factory()->forUser($this->user)->create(['version' => 1]);
 
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->patchJson("/api/v1/forms/{$form->id}", [
                 'name' => 'Updated Form Name',
             ]);
@@ -291,7 +305,8 @@ final class FormBuilderIntegrationTest extends TestCase
         $otherUser = UserModel::factory()->create();
         FormModel::factory()->forUser($otherUser)->create();
 
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->getJson('/api/v1/forms');
 
         $response->assertStatus(Response::HTTP_OK)
@@ -303,7 +318,8 @@ final class FormBuilderIntegrationTest extends TestCase
         $otherUser = UserModel::factory()->create();
         $otherForm = FormModel::factory()->forUser($otherUser)->create();
 
-        $response = $this->actingAs($this->user, 'sanctum')
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
             ->getJson("/api/v1/forms/{$otherForm->id}");
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);

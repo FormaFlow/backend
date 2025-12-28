@@ -27,6 +27,7 @@ final class EntryModel extends Model
         'form_id',
         'user_id',
         'data',
+        'created_at',
     ];
 
     protected $casts = [

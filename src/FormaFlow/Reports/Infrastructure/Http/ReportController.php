@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FormaFlow\Reports\Infrastructure\Http;
 
+use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -12,6 +13,147 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class ReportController extends Controller
 {
+    public function summary(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'form_id' => 'required|string',
+            'date_from' => 'nullable|date',
+            'date_to' => 'nullable|date',
+        ]);
+
+        $form = FormModel::with('fields')->find($validated['form_id']);
+        if (!$form) {
+            return response()->json(['error' => 'Form not found'], 404);
+        }
+
+        if ($form->user_id !== $request->user()->id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $query = DB::table('entries')
+            ->where('form_id', $form->id);
+
+        if (isset($validated['date_from'])) {
+            $query->whereDate('created_at', '>=', $validated['date_from']);
+        }
+        if (isset($validated['date_to'])) {
+            $query->whereDate('created_at', '<=', $validated['date_to']);
+        }
+
+        // Clone query for aggregation to avoid modifying the base query if we were to reuse it, 
+        // though here we build it once.
+        $totalEntries = $query->count();
+
+        $stats = [];
+        $numericFields = $form->fields->filter(fn($f) => in_array($f->type, ['number', 'currency']));
+
+        foreach ($numericFields as $field) {
+            // Re-instantiate query builder or clone? Query builder is mutable.
+            // Simplest is to just call aggregate on the base query with specific selects.
+            // But we need multiple aggregates for multiple fields.
+            // Doing one query per field might be slow but safe for JSON extraction logic.
+            // Optimization: Build one giant SELECT statement.
+            
+            // For now, let's keep it simple: One query to get all aggregations is complex with JSON extract in SQL.
+            // Let's do a loop.
+            
+            $q = clone $query;
+            $jsonField = "json_extract(data, '$.\"{$field->name}\"')";
+            
+            // We can get sum, avg, min, max in one go
+            $fieldStats = $q->select(
+                DB::raw("SUM($jsonField) as total"),
+                DB::raw("AVG($jsonField) as average"),
+                DB::raw("MIN($jsonField) as minimum"),
+                DB::raw("MAX($jsonField) as maximum")
+            )->first();
+
+            $stats[] = [
+                'field' => $field->name,
+                'label' => $field->label,
+                'type' => $field->type,
+                'sum' => $fieldStats->total ?? 0,
+                'avg' => $fieldStats->average ?? 0,
+                'min' => $fieldStats->minimum ?? 0,
+                'max' => $fieldStats->maximum ?? 0,
+            ];
+        }
+
+        return response()->json([
+            'total_entries' => $totalEntries,
+            'stats' => $stats,
+        ]);
+    }
+
+    public function multiTimeSeries(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'form_id' => 'required|string',
+            'period' => 'required|string|in:daily,weekly,monthly',
+            'date_from' => 'nullable|date',
+            'date_to' => 'nullable|date',
+        ]);
+
+        $form = FormModel::with('fields')->find($validated['form_id']);
+        if (!$form || $form->user_id !== $request->user()->id) {
+            return response()->json(['error' => 'Form not found or unauthorized'], 404);
+        }
+
+        $numericFields = $form->fields->filter(fn($f) => in_array($f->type, ['number', 'currency']));
+        
+        $query = DB::table('entries')
+            ->where('form_id', $form->id);
+
+        if (isset($validated['date_from'])) {
+            $query->whereDate('created_at', '>=', $validated['date_from']);
+        }
+        if (isset($validated['date_to'])) {
+            $query->whereDate('created_at', '<=', $validated['date_to']);
+        }
+
+        $dateFormat = match ($validated['period']) {
+            'daily' => '%Y-%m-%d',
+            'weekly' => '%Y-%W',
+            'monthly' => '%Y-%m',
+        };
+
+        $selects = [DB::raw("strftime('{$dateFormat}', created_at) as date")];
+        
+        foreach ($numericFields as $field) {
+            $jsonField = "json_extract(data, '$.\"{$field->name}\"')";
+            // Default to SUM for now. Maybe user wants AVG? 
+            // The prompt says "output all fields", implied Sum usually.
+            $selects[] = DB::raw("SUM($jsonField) as \"{$field->name}\"");
+        }
+
+        if ($numericFields->isEmpty()) {
+             // Return just counts if no numeric fields?
+             $selects[] = DB::raw("COUNT(*) as count");
+        }
+
+        $data = $query->select($selects)
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+            
+        // Transform data to ensure numbers are numbers (SQLite might return strings)
+        $transformed = $data->map(function($item) use ($numericFields) {
+            $res = ['date' => $item->date];
+            foreach ($numericFields as $field) {
+                $res[$field->name] = (float)($item->{$field->name} ?? 0);
+            }
+            if ($numericFields->isEmpty()) {
+                $res['count'] = (int)($item->count ?? 0);
+            }
+            return $res;
+        });
+
+        return response()->json([
+            'data' => $transformed,
+            'fields' => $numericFields->values()->map(fn($f) => ['name' => $f->name, 'label' => $f->label])
+        ]);
+    }
+
     public function generate(Request $request): JsonResponse
     {
         $validated = $request->validate([
@@ -203,7 +345,7 @@ final class ReportController extends Controller
         // Add standard headers
         $csvHeaders = array_merge(['id', 'created_at'], $headers);
 
-        $handle = fopen('php://temp', 'r+');
+        $handle = fopen('php://temp', 'rb+');
         fputcsv($handle, $csvHeaders);
 
         foreach ($entries as $entry) {
