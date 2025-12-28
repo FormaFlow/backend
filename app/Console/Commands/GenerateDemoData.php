@@ -103,20 +103,6 @@ final class GenerateDemoData extends Command
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-            [
-                'id' => (string) Str::uuid(),
-                'form_id' => $form->id,
-                'name' => 'date',
-                'label' => 'Date',
-                'type' => 'date',
-                'required' => true,
-                'unit' => null,
-                'options' => null,
-                'category' => null,
-                'order' => 3,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
         ]);
 
         $this->info('Budget form created.');
@@ -141,7 +127,6 @@ final class GenerateDemoData extends Command
                         'amount' => $amount,
                         'category' => $category,
                         'description' => $isIncome ? 'Salary/Bonus' : 'Groceries/Food',
-                        'date' => $date->format('Y-m-d'),
                     ],
                     'created_at' => $date->copy()->setTime(random_int(8, 20), random_int(0, 59)),
                 ]);
