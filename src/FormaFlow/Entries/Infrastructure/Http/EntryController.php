@@ -175,7 +175,7 @@ final class EntryController extends Controller
                     break;
             }
 
-            $rules['data.' . $field->name()] = $fieldRules;
+            $rules['data.' . $field->id()] = $fieldRules;
         }
 
         $validator = Validator::make($request->all(), $rules);
@@ -271,7 +271,7 @@ final class EntryController extends Controller
                     break;
             }
 
-            $rules['data.' . $field->name()] = $fieldRules;
+            $rules['data.' . $field->id()] = $fieldRules;
         }
 
         $validator = Validator::make($request->all(), $rules);

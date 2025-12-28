@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FormaFlow\Forms\Domain;
 
-use Carbon\Carbon;
 use DateTime;
 use InvalidArgumentException;
 use Shared\Domain\AggregateRoot;
@@ -108,7 +107,6 @@ final class FormAggregate extends AggregateRoot
 
         $updatedField = new Field(
             id: $existingField->id(),
-            name: $fieldData['name'] ?? $existingField->name(),
             label: $fieldData['label'] ?? $existingField->label(),
             type: isset($fieldData['type']) ? new FieldType($fieldData['type']) : $existingField->type(),
             required: $fieldData['required'] ?? $existingField->isRequired(),

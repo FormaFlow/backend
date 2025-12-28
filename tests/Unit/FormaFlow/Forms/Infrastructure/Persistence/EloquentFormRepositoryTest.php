@@ -103,7 +103,6 @@ final class EloquentFormRepositoryTest extends TestCase
 
         $field = new Field(
             id: 'field-1',
-            name: 'email',
             label: 'Email Address',
             type: new FieldType('email'),
             required: true,
@@ -119,7 +118,6 @@ final class EloquentFormRepositoryTest extends TestCase
         $this->assertDatabaseHas('form_fields', [
             'id' => 'field-1',
             'form_id' => 'form-with-fields',
-            'name' => 'email',
             'label' => 'Email Address',
             'type' => 'email',
             'required' => true,
@@ -139,14 +137,12 @@ final class EloquentFormRepositoryTest extends TestCase
 
         $field1 = new Field(
             id: 'field-to-keep',
-            name: 'name',
             label: 'Name',
             type: new FieldType('text'),
         );
 
         $field2 = new Field(
             id: 'field-to-delete',
-            name: 'age',
             label: 'Age',
             type: new FieldType('number'),
         );
@@ -214,7 +210,6 @@ final class EloquentFormRepositoryTest extends TestCase
         DB::table('form_fields')->insert([
             'id' => 'field-1',
             'form_id' => $formModel->id,
-            'name' => 'username',
             'label' => 'Username',
             'type' => 'text',
             'required' => true,
@@ -230,7 +225,6 @@ final class EloquentFormRepositoryTest extends TestCase
 
         self::assertNotNull($result);
         self::assertCount(1, $result->fields());
-        self::assertSame('username', $result->fields()[0]->name());
         self::assertSame('Username', $result->fields()[0]->label());
         self::assertSame('text', $result->fields()[0]->type()->value());
         self::assertTrue($result->fields()[0]->isRequired());
@@ -303,7 +297,6 @@ final class EloquentFormRepositoryTest extends TestCase
 
         $field = new Field(
             id: 'field-cascade',
-            name: 'test',
             label: 'Test',
             type: new FieldType('text'),
         );
@@ -359,7 +352,6 @@ final class EloquentFormRepositoryTest extends TestCase
 
         $field = new Field(
             id: 'complex-field',
-            name: 'price',
             label: 'Price',
             type: new FieldType('currency'),
             required: true,
@@ -374,7 +366,6 @@ final class EloquentFormRepositoryTest extends TestCase
 
         $this->assertDatabaseHas('form_fields', [
             'id' => 'complex-field',
-            'name' => 'price',
             'label' => 'Price',
             'type' => 'currency',
             'required' => true,

@@ -51,7 +51,6 @@ final class FormController
             foreach ($form->fields() as $field) {
                 $fieldsData[] = [
                     'id' => $field->id(),
-                    'name' => $field->name(),
                     'label' => $field->label(),
                     'type' => $field->type()->value(),
                     'required' => $field->isRequired(),
@@ -121,7 +120,6 @@ final class FormController
         foreach ($form->fields() as $field) {
             $fieldsData[] = [
                 'id' => $field->id(),
-                'name' => $field->name(),
                 'label' => $field->label(),
                 'type' => $field->type()->value(),
                 'required' => $field->isRequired(),
@@ -182,7 +180,6 @@ final class FormController
         }
 
         $validated = $request->validate([
-            'name' => 'required|string',
             'label' => 'required|string',
             'type' => 'required|in:text,number,date,boolean,select,currency,email',
             'required' => 'boolean',
@@ -196,7 +193,6 @@ final class FormController
             $command = new AddFieldCommand(
                 formId: $id,
                 fieldId: Uuid::generate(),
-                name: $validated['name'],
                 label: $validated['label'],
                 type: $validated['type'],
                 required: $validated['required'] ?? false,
@@ -228,7 +224,6 @@ final class FormController
         }
 
         $validated = $request->validate([
-            'name' => 'sometimes|string',
             'label' => 'sometimes|string',
             'type' => 'sometimes|in:text,number,date,boolean,select,currency,email',
             'required' => 'sometimes|boolean',
@@ -311,26 +306,35 @@ final class FormController
 
         foreach ($lines as $index => $line) {
             $values = str_getcsv($line, $delimiter);
-            $data = array_combine($headers, $values);
+            // Handle potentially mismatched header/value counts
+            if (count($values) !== count($headers)) {
+                 $errors[] = "Row " . ($index + 2) . ": Column count mismatch";
+                 continue;
+            }
+            $csvRow = array_combine($headers, $values);
+            $entryData = [];
 
             $valid = true;
             foreach ($form->fields() as $field) {
-                if ($field->isRequired() && empty($data[$field->name()])) {
-                    $errors[] = "Row " . ($index + 2) . ": Missing required field '{$field->name()}'";
+                $val = $csvRow[$field->label()] ?? null;
+
+                if ($field->isRequired() && empty($val)) {
+                    $errors[] = "Row " . ($index + 2) . ": Missing required field '{$field->label()}'";
                     $valid = false;
                     break;
                 }
 
-                if (isset($data[$field->name()])) {
+                if (isset($val)) {
                     switch ($field->type()->value()) {
                         case 'number':
                         case 'currency':
-                            if (!is_numeric($data[$field->name()])) {
-                                $errors[] = "Row " . ($index + 2) . ": Invalid number for '{$field->name()}'";
+                            if (!is_numeric($val)) {
+                                $errors[] = "Row " . ($index + 2) . ": Invalid number for '{$field->label()}'";
                                 $valid = false;
                             }
                             break;
                     }
+                    $entryData[$field->id()] = $val;
                 }
             }
 
@@ -340,7 +344,7 @@ final class FormController
                     'id' => $entryId,
                     'form_id' => $id,
                     'user_id' => $request->user()->id,
-                    'data' => $data,
+                    'data' => $entryData,
                 ]);
                 $imported++;
             }
@@ -384,7 +388,7 @@ final class FormController
         try {
             $handler->handle(new RemoveFieldCommand($formId, $fieldId));
             return response()->json(['message' => 'Field removed']);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return response()->json(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }

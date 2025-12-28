@@ -23,7 +23,7 @@ final class DashboardController extends Controller
             ->get();
 
         $totalEntries = $entries->count();
-        
+
         $forms = DB::table('forms')
             ->where('user_id', $userId)
             ->get();
@@ -49,7 +49,7 @@ final class DashboardController extends Controller
             ->get();
 
         $totalEntries = $entries->count();
-        
+
         $forms = DB::table('forms')
             ->where('user_id', $userId)
             ->get();

@@ -28,7 +28,6 @@ final class AddFieldCommandHandler
 
         $field = new Field(
             id: $command->fieldId(),
-            name: $command->name(),
             label: $command->label(),
             type: new FieldType($command->type()),
             required: $command->isRequired(),

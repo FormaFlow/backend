@@ -41,7 +41,6 @@ final class EntryApiTest extends TestCase
             [
                 'id' => 'field-amount',
                 'form_id' => $this->form->id,
-                'name' => 'amount',
                 'label' => 'Amount',
                 'type' => 'currency',
                 'required' => true,
@@ -55,7 +54,6 @@ final class EntryApiTest extends TestCase
             [
                 'id' => 'field-date',
                 'form_id' => $this->form->id,
-                'name' => 'date',
                 'label' => 'Date',
                 'type' => 'date',
                 'required' => true,
@@ -69,7 +67,6 @@ final class EntryApiTest extends TestCase
             [
                 'id' => 'field-category',
                 'form_id' => $this->form->id,
-                'name' => 'category',
                 'label' => 'Category',
                 'type' => 'select',
                 'required' => false,
@@ -104,9 +101,9 @@ final class EntryApiTest extends TestCase
         $entryData = [
             'form_id' => $this->form->id,
             'data' => [
-                'amount' => 150.50,
-                'date' => '2025-01-15',
-                'category' => 'income',
+                'field-amount' => 150.50,
+                'field-date' => '2025-01-15',
+                'field-category' => 'income',
             ],
         ];
 
@@ -128,7 +125,7 @@ final class EntryApiTest extends TestCase
     {
         $entryData = [
             'form_id' => $this->form->id,
-            'data' => ['amount' => 100],
+            'data' => ['field-amount' => 100],
         ];
 
         $response = $this->postJson($this->baseUrl, $entryData);
@@ -142,7 +139,7 @@ final class EntryApiTest extends TestCase
 
         $entryData = [
             'form_id' => $unpublishedForm->id,
-            'data' => ['amount' => 100],
+            'data' => ['field-amount' => 100],
         ];
 
         $response = $this
@@ -159,14 +156,14 @@ final class EntryApiTest extends TestCase
         $entry = EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['amount' => 100, 'date' => '2025-01-15', 'category' => 'income'],
+            'data' => ['field-amount' => 100, 'field-date' => '2025-01-15', 'field-category' => 'income'],
         ]);
 
         $updateData = [
             'data' => [
-                'amount' => 200.75,
-                'date' => '2025-01-16',
-                'category' => 'expense',
+                'field-amount' => 200.75,
+                'field-date' => '2025-01-16',
+                'field-category' => 'expense',
             ],
         ];
 
@@ -177,7 +174,7 @@ final class EntryApiTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
 
         $updated = EntryModel::query()->find($entry->id);
-        $this->assertEquals(200.75, $updated->data['amount']);
+        $this->assertEquals(200.75, $updated->data['field-amount']);
     }
 
     public function test_user_cannot_update_another_users_entry(): void
@@ -186,12 +183,12 @@ final class EntryApiTest extends TestCase
         $entry = EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $otherUser->id,
-            'data' => ['amount' => 100],
+            'data' => ['field-amount' => 100],
         ]);
 
         $response = $this
             ->actingAs($this->user, 'sanctum')
-            ->patchJson("{$this->baseUrl}/{$entry->id}", ['data' => ['amount' => 200]]);
+            ->patchJson("{$this->baseUrl}/{$entry->id}", ['data' => ['field-amount' => 200]]);
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
@@ -201,7 +198,7 @@ final class EntryApiTest extends TestCase
         $entry = EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['amount' => 100],
+            'data' => ['field-amount' => 100],
         ]);
 
         $response = $this
@@ -219,7 +216,7 @@ final class EntryApiTest extends TestCase
         $entry = EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $otherUser->id,
-            'data' => ['amount' => 100],
+            'data' => ['field-amount' => 100],
         ]);
 
         $response = $this
@@ -234,7 +231,7 @@ final class EntryApiTest extends TestCase
         $entryData = [
             'form_id' => $this->form->id,
             'data' => [
-                'date' => '2025-01-15',
+                'field-date' => '2025-01-15',
             ],
         ];
 
@@ -244,7 +241,7 @@ final class EntryApiTest extends TestCase
 
         $response
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonValidationErrors('data.amount');
+            ->assertJsonValidationErrors('data.field-amount');
     }
 
     public function test_entry_validation_validates_field_types(): void
@@ -252,8 +249,8 @@ final class EntryApiTest extends TestCase
         $entryData = [
             'form_id' => $this->form->id,
             'data' => [
-                'amount' => 'not-a-number',
-                'date' => '2025-01-15',
+                'field-amount' => 'not-a-number',
+                'field-date' => '2025-01-15',
             ],
         ];
 
@@ -263,7 +260,7 @@ final class EntryApiTest extends TestCase
 
         $response
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonValidationErrors('data.amount');
+            ->assertJsonValidationErrors('data.field-amount');
     }
 
     public function test_entry_validation_validates_date_format(): void
@@ -271,8 +268,8 @@ final class EntryApiTest extends TestCase
         $entryData = [
             'form_id' => $this->form->id,
             'data' => [
-                'amount' => 100,
-                'date' => 'invalid-date',
+                'field-amount' => 100,
+                'field-date' => 'invalid-date',
             ],
         ];
 
@@ -282,7 +279,7 @@ final class EntryApiTest extends TestCase
 
         $response
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonValidationErrors('data.date');
+            ->assertJsonValidationErrors('data.field-date');
     }
 
     public function test_can_filter_entries_by_form_id(): void
@@ -292,13 +289,13 @@ final class EntryApiTest extends TestCase
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['amount' => 100],
+            'data' => ['field-amount' => 100],
         ]);
 
         EntryModel::factory()->create([
             'form_id' => $anotherForm->id,
             'user_id' => $this->user->id,
-            'data' => ['amount' => 200],
+            'data' => ['field-amount' => 200],
         ]);
 
         $response = $this
@@ -332,14 +329,14 @@ final class EntryApiTest extends TestCase
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['amount' => 100, 'date' => '2025-01-10'],
+            'data' => ['field-amount' => 100, 'field-date' => '2025-01-10'],
             'created_at' => Carbon::parse('2025-01-10'),
         ]);
 
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['amount' => 200, 'date' => '2025-02-10'],
+            'data' => ['field-amount' => 200, 'field-date' => '2025-02-10'],
             'created_at' => Carbon::parse('2025-02-10'),
         ]);
 
@@ -357,14 +354,14 @@ final class EntryApiTest extends TestCase
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['amount' => 100, 'date' => '2025-01-10'],
+            'data' => ['field-amount' => 100, 'field-date' => '2025-01-10'],
             'created_at' => Carbon::parse('2025-01-10'),
         ]);
 
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['amount' => 200, 'date' => '2025-02-10'],
+            'data' => ['field-amount' => 200, 'field-date' => '2025-02-10'],
             'created_at' => Carbon::parse('2025-02-10'),
         ]);
 
@@ -382,21 +379,21 @@ final class EntryApiTest extends TestCase
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['amount' => 100, 'date' => '2025-01-15'],
+            'data' => ['field-amount' => 100, 'field-date' => '2025-01-15'],
             'created_at' => Carbon::parse('2025-01-15'),
         ]);
 
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['amount' => 200, 'date' => '2025-02-15'],
+            'data' => ['field-amount' => 200, 'field-date' => '2025-02-15'],
             'created_at' => Carbon::parse('2025-02-15'),
         ]);
 
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['amount' => 300, 'date' => '2025-03-15'],
+            'data' => ['field-amount' => 300, 'field-date' => '2025-03-15'],
             'created_at' => Carbon::parse('2025-03-15'),
         ]);
 
@@ -414,9 +411,9 @@ final class EntryApiTest extends TestCase
         $entryData = [
             'form_id' => $this->form->id,
             'data' => [
-                'amount' => 100,
-                'date' => '2025-01-15',
-                'category' => 'income',
+                'field-amount' => 100,
+                'field-date' => '2025-01-15',
+                'field-category' => 'income',
             ],
             'tags' => ['salary', 'monthly', 'recurring'],
         ];
@@ -441,7 +438,7 @@ final class EntryApiTest extends TestCase
         $entry1 = EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['amount' => 100],
+            'data' => ['field-amount' => 100],
         ]);
 
         DB::table('entry_tags')->insert([
@@ -451,7 +448,7 @@ final class EntryApiTest extends TestCase
         $entry2 = EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['amount' => 200],
+            'data' => ['field-amount' => 200],
         ]);
 
         DB::table('entry_tags')->insert([
@@ -472,7 +469,7 @@ final class EntryApiTest extends TestCase
         $entry1 = EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['amount' => 100],
+            'data' => ['field-amount' => 100],
         ]);
 
         DB::table('entry_tags')->insert([
@@ -483,7 +480,7 @@ final class EntryApiTest extends TestCase
         $entry2 = EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['amount' => 200],
+            'data' => ['field-amount' => 200],
         ]);
 
         DB::table('entry_tags')->insert([
@@ -503,7 +500,7 @@ final class EntryApiTest extends TestCase
             EntryModel::factory()->create([
                 'form_id' => $this->form->id,
                 'user_id' => $this->user->id,
-                'data' => ['amount' => $i * 10],
+                'data' => ['field-amount' => $i * 10],
             ]);
         }
 
@@ -524,7 +521,7 @@ final class EntryApiTest extends TestCase
             EntryModel::factory()->create([
                 'form_id' => $this->form->id,
                 'user_id' => $this->user->id,
-                'data' => ['amount' => $i * 10],
+                'data' => ['field-amount' => $i * 10],
             ]);
         }
 
@@ -552,32 +549,32 @@ final class EntryApiTest extends TestCase
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['amount' => 300, 'date' => '2025-01-15'],
+            'data' => ['field-amount' => 300, 'field-date' => '2025-01-15'],
         ]);
 
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['amount' => 100, 'date' => '2025-01-16'],
+            'data' => ['field-amount' => 100, 'field-date' => '2025-01-16'],
         ]);
 
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['amount' => 200, 'date' => '2025-01-17'],
+            'data' => ['field-amount' => 200, 'field-date' => '2025-01-17'],
         ]);
 
         $response = $this
             ->actingAs($this->user, 'sanctum')
-            ->getJson("{$this->baseUrl}?sort_by=data.amount&sort_order=asc");
+            ->getJson("{$this->baseUrl}?sort_by=data.field-amount&sort_order=asc");
 
         $response
             ->assertStatus(Response::HTTP_OK);
 
         $entries = $response->json('entries');
-        $this->assertEquals(100, $entries[0]['data']['amount']);
-        $this->assertEquals(200, $entries[1]['data']['amount']);
-        $this->assertEquals(300, $entries[2]['data']['amount']);
+        $this->assertEquals(100, $entries[0]['data']['field-amount']);
+        $this->assertEquals(200, $entries[1]['data']['field-amount']);
+        $this->assertEquals(300, $entries[2]['data']['field-amount']);
     }
 
     public function test_can_sort_entries_by_amount_descending(): void
@@ -585,24 +582,24 @@ final class EntryApiTest extends TestCase
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['amount' => 100, 'date' => '2025-01-15'],
+            'data' => ['field-amount' => 100, 'field-date' => '2025-01-15'],
         ]);
 
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['amount' => 300, 'date' => '2025-01-16'],
+            'data' => ['field-amount' => 300, 'field-date' => '2025-01-16'],
         ]);
 
         $response = $this
             ->actingAs($this->user, 'sanctum')
-            ->getJson("{$this->baseUrl}?sort_by=data.amount&sort_order=desc");
+            ->getJson("{$this->baseUrl}?sort_by=data.field-amount&sort_order=desc");
 
         $response->assertStatus(Response::HTTP_OK);
 
         $entries = $response->json('entries');
-        $this->assertEquals(300, $entries[0]['data']['amount']);
-        $this->assertEquals(100, $entries[1]['data']['amount']);
+        $this->assertEquals(300, $entries[0]['data']['field-amount']);
+        $this->assertEquals(100, $entries[1]['data']['field-amount']);
     }
 
     public function test_can_combine_multiple_filters(): void
@@ -612,7 +609,7 @@ final class EntryApiTest extends TestCase
         $entry1 = EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['amount' => 100, 'date' => '2025-01-15'],
+            'data' => ['field-amount' => 100, 'field-date' => '2025-01-15'],
             'created_at' => Carbon::parse('2025-01-15'),
         ]);
         DB::table('entry_tags')->insert(['entry_id' => $entry1->id, 'tag' => 'important']);
@@ -620,14 +617,14 @@ final class EntryApiTest extends TestCase
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['amount' => 200, 'date' => '2025-02-15'],
+            'data' => ['field-amount' => 200, 'field-date' => '2025-02-15'],
             'created_at' => Carbon::parse('2025-02-15'),
         ]);
 
         EntryModel::factory()->create([
             'form_id' => $anotherForm->id,
             'user_id' => $this->user->id,
-            'data' => ['amount' => 150, 'date' => '2025-01-20'],
+            'data' => ['field-amount' => 150, 'field-date' => '2025-01-20'],
             'created_at' => Carbon::parse('2025-01-20'),
         ]);
 
@@ -650,13 +647,13 @@ final class EntryApiTest extends TestCase
         EntryModel::factory()->count(3)->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['amount' => 100],
+            'data' => ['field-amount' => 100],
         ]);
 
         EntryModel::factory()->count(2)->create([
             'form_id' => $otherForm->id,
             'user_id' => $otherUser->id,
-            'data' => ['amount' => 200],
+            'data' => ['field-amount' => 200],
         ]);
 
         $response = $this
@@ -673,7 +670,7 @@ final class EntryApiTest extends TestCase
         $entry = EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['amount' => 123.45, 'date' => '2025-01-20', 'category' => 'food'],
+            'data' => ['field-amount' => 123.45, 'field-date' => '2025-01-20', 'field-category' => 'food'],
         ]);
 
         $response = $this
@@ -686,9 +683,9 @@ final class EntryApiTest extends TestCase
                 'id' => $entry->id,
                 'form_id' => $entry->form_id,
                 'data' => [
-                    'amount' => 123.45,
-                    'date' => '2025-01-20',
-                    'category' => 'food',
+                    'field-amount' => 123.45,
+                    'field-date' => '2025-01-20',
+                    'field-category' => 'food',
                 ],
             ])
             ->assertJsonStructure(['id', 'form_id', 'data', 'tags', 'created_at']);
@@ -712,7 +709,7 @@ final class EntryApiTest extends TestCase
         $entry = EntryModel::factory()->create([
             'form_id' => $otherForm->id,
             'user_id' => $otherUser->id,
-            'data' => ['amount' => 100],
+            'data' => ['field-amount' => 100],
         ]);
 
         $response = $this
@@ -727,7 +724,7 @@ final class EntryApiTest extends TestCase
         $entry = EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['amount' => 50.00],
+            'data' => ['field-amount' => 50.00],
         ]);
 
         DB::table('entry_tags')->insert([
@@ -753,7 +750,7 @@ final class EntryApiTest extends TestCase
 
         $response = $this
             ->actingAs($this->user, 'sanctum')
-            ->patchJson("{$this->baseUrl}/{$fakeId}", ['data' => ['amount' => 100]]);
+            ->patchJson("{$this->baseUrl}/{$fakeId}", ['data' => ['field-amount' => 100]]);
 
         $response->assertStatus(Response::HTTP_NOT_FOUND);
     }
@@ -763,7 +760,7 @@ final class EntryApiTest extends TestCase
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['amount' => 100],
+            'data' => ['field-amount' => 100],
         ]);
 
         $response = $this
@@ -788,7 +785,7 @@ final class EntryApiTest extends TestCase
             EntryModel::factory()->create([
                 'form_id' => $this->form->id,
                 'user_id' => $this->user->id,
-                'data' => ['amount' => $i],
+                'data' => ['field-amount' => $i],
             ]);
         }
 

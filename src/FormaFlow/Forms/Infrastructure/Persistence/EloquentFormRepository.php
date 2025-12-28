@@ -49,7 +49,6 @@ final class EloquentFormRepository implements FormRepository
                     ['id' => $f->id()],
                     [
                         'form_id' => $form->id,
-                        'name' => $f->name(),
                         'label' => $f->label(),
                         'type' => $f->type()->value(),
                         'required' => $f->isRequired(),
@@ -97,7 +96,6 @@ final class EloquentFormRepository implements FormRepository
         foreach ($model->fields as $fm) {
             $fields[] = new Field(
                 id: (string)$fm->id,
-                name: (string)$fm->name,
                 label: (string)$fm->label,
                 type: new FieldType((string)$fm->type),
                 required: (bool)$fm->required,
@@ -135,7 +133,6 @@ final class EloquentFormRepository implements FormRepository
             foreach ($model->fields as $fm) {
                 $fields[] = new Field(
                     id: (string)$fm->id,
-                    name: (string)$fm->name,
                     label: (string)$fm->label,
                     type: new FieldType((string)$fm->type),
                     required: (bool)$fm->required,

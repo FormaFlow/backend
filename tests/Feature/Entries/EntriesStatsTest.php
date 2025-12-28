@@ -33,7 +33,6 @@ final class EntriesStatsTest extends TestCase
             [
                 'id' => 'field-amount',
                 'form_id' => $this->form->id,
-                'name' => 'amount',
                 'label' => 'Amount',
                 'type' => 'currency',
                 'required' => true,
@@ -47,7 +46,6 @@ final class EntriesStatsTest extends TestCase
             [
                 'id' => 'field-qty',
                 'form_id' => $this->form->id,
-                'name' => 'qty',
                 'label' => 'Quantity',
                 'type' => 'number',
                 'required' => true,
@@ -67,14 +65,14 @@ final class EntriesStatsTest extends TestCase
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['amount' => 100, 'qty' => 2],
+            'data' => ['field-amount' => 100, 'field-qty' => 2],
             'created_at' => Carbon::now(),
         ]);
 
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['amount' => 50, 'qty' => 1],
+            'data' => ['field-amount' => 50, 'field-qty' => 1],
             'created_at' => Carbon::now(),
         ]);
 
@@ -82,7 +80,7 @@ final class EntriesStatsTest extends TestCase
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['amount' => 200, 'qty' => 5],
+            'data' => ['field-amount' => 200, 'field-qty' => 5],
             'created_at' => Carbon::now()->subDays(3),
         ]);
 
@@ -91,7 +89,7 @@ final class EntriesStatsTest extends TestCase
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $anotherUser->id,
-            'data' => ['amount' => 1000, 'qty' => 10],
+            'data' => ['field-amount' => 1000, 'field-qty' => 10],
             'created_at' => Carbon::now(),
         ]);
 
@@ -104,12 +102,12 @@ final class EntriesStatsTest extends TestCase
             ->assertJson([
                 'stats' => [
                     [
-                        'field' => 'amount',
+                        'field' => 'field-amount',
                         'sum_today' => 150.0,
                         'sum_month' => 350.0,
                     ],
                     [
-                        'field' => 'qty',
+                        'field' => 'field-qty',
                         'sum_today' => 3.0,
                         'sum_month' => 8.0,
                     ],

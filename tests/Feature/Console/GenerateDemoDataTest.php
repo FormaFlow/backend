@@ -9,6 +9,7 @@ use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase;
+use Illuminate\Support\Facades\DB;
 
 final class GenerateDemoDataTest extends TestCase
 {
@@ -47,16 +48,16 @@ final class GenerateDemoDataTest extends TestCase
         // Check Fields
         $this->assertDatabaseHas('form_fields', [
             'form_id' => $budgetForm->id,
-            'name' => 'amount',
+            'label' => 'Amount',
         ]);
         $this->assertDatabaseHas('form_fields', [
             'form_id' => $budgetForm->id,
-            'name' => 'category',
+            'label' => 'Category',
         ]);
 
         $this->assertDatabaseHas('form_fields', [
             'form_id' => $medicineForm->id,
-            'name' => 'dosage',
+            'label' => 'Dosage',
         ]);
 
         // Check Entries
@@ -82,9 +83,11 @@ final class GenerateDemoDataTest extends TestCase
         // Check Medicine Constraints (roughly)
         // Check one entry data structure
         $medicineEntry = EntryModel::query()->where('form_id', $medicineForm->id)->first();
+        $dosageField = DB::table('form_fields')->where('form_id', $medicineForm->id)->where('label', 'Dosage')->first();
+        
         $this->assertIsArray($medicineEntry->data);
-        $this->assertArrayHasKey('dosage', $medicineEntry->data);
-        $this->assertGreaterThanOrEqual(1, $medicineEntry->data['dosage']);
-        $this->assertLessThanOrEqual(5, $medicineEntry->data['dosage']);
+        $this->assertArrayHasKey($dosageField->id, $medicineEntry->data);
+        $this->assertGreaterThanOrEqual(1, $medicineEntry->data[$dosageField->id]);
+        $this->assertLessThanOrEqual(5, $medicineEntry->data[$dosageField->id]);
     }
 }

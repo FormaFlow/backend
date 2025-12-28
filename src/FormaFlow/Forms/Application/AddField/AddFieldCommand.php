@@ -9,7 +9,6 @@ final class AddFieldCommand
     public function __construct(
         private readonly string $formId,
         private readonly string $fieldId,
-        private readonly string $name,
         private readonly string $label,
         private readonly string $type,
         private readonly bool $required = false,
@@ -28,11 +27,6 @@ final class AddFieldCommand
     public function fieldId(): string
     {
         return $this->fieldId;
-    }
-
-    public function name(): string
-    {
-        return $this->name;
     }
 
     public function label(): string

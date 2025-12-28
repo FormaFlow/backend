@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FormaFlow\Entries\Application\Stats;
 
+use DateTimeImmutable;
 use FormaFlow\Entries\Domain\EntryRepository;
 use FormaFlow\Forms\Domain\FormId;
 use FormaFlow\Forms\Domain\FormRepository;
@@ -26,7 +27,7 @@ final class GetEntriesStatsQueryHandler
         $numericFields = [];
         foreach ($form->fields() as $field) {
             if (in_array($field->type()->value(), ['number', 'currency'])) {
-                $numericFields[] = $field->name();
+                $numericFields[] = $field->id();
             }
         }
 
@@ -37,14 +38,14 @@ final class GetEntriesStatsQueryHandler
         $todayStatsRaw = $this->entryRepository->getSumOfNumericFieldsByDateRange(
             new FormId($query->formId),
             $query->userId,
-            new \DateTimeImmutable('today')
+            new DateTimeImmutable('today')
         );
 
         $monthStatsRaw = $this->entryRepository->getSumOfNumericFieldsByDateRange(
             new FormId($query->formId),
             $query->userId,
-            new \DateTimeImmutable('first day of this month'),
-            new \DateTimeImmutable('last day of this month')
+            new DateTimeImmutable('first day of this month'),
+            new DateTimeImmutable('last day of this month')
         );
 
         $stats = [];

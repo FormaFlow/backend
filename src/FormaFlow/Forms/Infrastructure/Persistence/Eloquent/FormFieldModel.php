@@ -15,7 +15,6 @@ final class FormFieldModel extends Model
     protected $fillable = [
         'id',
         'form_id',
-        'name',
         'label',
         'type',
         'required',

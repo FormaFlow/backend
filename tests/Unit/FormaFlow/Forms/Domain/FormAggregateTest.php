@@ -39,7 +39,6 @@ final class FormAggregateTest extends TestCase
 
         $field = new Field(
             id: 'field-1',
-            name: 'amount',
             label: 'Amount',
             type: new FieldType('number'),
             required: true,
@@ -48,7 +47,6 @@ final class FormAggregateTest extends TestCase
         $form->addField($field);
 
         self::assertCount(1, $form->fields());
-        self::assertSame('amount', $form->fields()[0]->name());
     }
 
     public function testCanPublishForm(): void
@@ -61,7 +59,6 @@ final class FormAggregateTest extends TestCase
 
         $field = new Field(
             id: 'field-1',
-            name: 'amount',
             label: 'Amount',
             type: new FieldType('number'),
         );
@@ -97,7 +94,6 @@ final class FormAggregateTest extends TestCase
 
         $field = new Field(
             id: 'field-1',
-            name: 'amount',
             label: 'Amount',
             type: new FieldType('number'),
         );
@@ -117,7 +113,6 @@ final class FormAggregateTest extends TestCase
 
         $field = new Field(
             id: 'field-1',
-            name: 'amount',
             label: 'Amount',
             type: new FieldType('number'),
         );

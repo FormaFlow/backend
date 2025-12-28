@@ -50,7 +50,6 @@ final class FormBuilderIntegrationTest extends TestCase
         $form = FormModel::factory()->forUser($this->user)->create();
 
         $fieldData = [
-            'name' => 'description',
             'label' => 'Description',
             'type' => 'text',
             'required' => true,
@@ -64,7 +63,6 @@ final class FormBuilderIntegrationTest extends TestCase
 
         $this->assertDatabaseHas('form_fields', [
             'form_id' => $form->id,
-            'name' => 'description',
             'type' => 'text',
         ]);
     }
@@ -74,7 +72,6 @@ final class FormBuilderIntegrationTest extends TestCase
         $form = FormModel::factory()->forUser($this->user)->create();
 
         $fieldData = [
-            'name' => 'amount',
             'label' => 'Amount',
             'type' => 'currency',
             'required' => true,
@@ -90,7 +87,6 @@ final class FormBuilderIntegrationTest extends TestCase
 
         $this->assertDatabaseHas('form_fields', [
             'form_id' => $form->id,
-            'name' => 'amount',
             'type' => 'currency',
             'unit' => 'USD',
         ]);
@@ -101,7 +97,6 @@ final class FormBuilderIntegrationTest extends TestCase
         $form = FormModel::factory()->forUser($this->user)->create();
 
         $fieldData = [
-            'name' => 'transaction_date',
             'label' => 'Transaction Date',
             'type' => 'date',
             'required' => true,
@@ -119,7 +114,6 @@ final class FormBuilderIntegrationTest extends TestCase
         $form = FormModel::factory()->forUser($this->user)->create();
 
         $fieldData = [
-            'name' => 'category',
             'label' => 'Category',
             'type' => 'select',
             'required' => true,
@@ -140,7 +134,6 @@ final class FormBuilderIntegrationTest extends TestCase
         $form = FormModel::factory()->forUser($this->user)->create();
 
         $fieldData = [
-            'name' => 'is_recurring',
             'label' => 'Is Recurring',
             'type' => 'boolean',
             'required' => false,
@@ -158,7 +151,6 @@ final class FormBuilderIntegrationTest extends TestCase
         $form = FormModel::factory()->forUser($this->user)->create();
 
         $fieldData = [
-            'name' => 'email',
             'label' => 'Email Address',
             'type' => 'email',
             'required' => true,
@@ -178,9 +170,9 @@ final class FormBuilderIntegrationTest extends TestCase
     {
         $form = FormModel::factory()->forUser($this->user)->create();
 
-        $field1 = ['name' => 'field1', 'label' => 'Field 1', 'type' => 'text', 'order' => 1];
-        $field2 = ['name' => 'field2', 'label' => 'Field 2', 'type' => 'text', 'order' => 2];
-        $field3 = ['name' => 'field3', 'label' => 'Field 3', 'type' => 'text', 'order' => 3];
+        $field1 = ['label' => 'Field 1', 'type' => 'text', 'order' => 1];
+        $field2 = ['label' => 'Field 2', 'type' => 'text', 'order' => 2];
+        $field3 = ['label' => 'Field 3', 'type' => 'text', 'order' => 3];
 
         foreach ([$field1, $field2, $field3] as $fieldData) {
             $this
@@ -204,7 +196,6 @@ final class FormBuilderIntegrationTest extends TestCase
         $form = FormModel::factory()->forUser($this->user)->create();
 
         $fieldData = [
-            'name' => 'amount',
             'label' => 'Amount',
             'type' => 'currency',
             'category' => 'financial',
@@ -232,7 +223,6 @@ final class FormBuilderIntegrationTest extends TestCase
         DB::table('form_fields')->insert([
             'id' => 'field-1',
             'form_id' => $form->id,
-            'name' => 'test',
             'label' => 'Test',
             'type' => 'text',
             'created_at' => Carbon::now(),

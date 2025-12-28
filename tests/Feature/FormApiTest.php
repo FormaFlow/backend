@@ -122,7 +122,6 @@ final class FormApiTest extends TestCase
         DB::table('form_fields')->insert([
             'id' => 'field-1',
             'form_id' => $form->id,
-            'name' => 'test',
             'label' => 'Test',
             'type' => 'text',
             'required' => false,
@@ -169,7 +168,6 @@ final class FormApiTest extends TestCase
         ]);
 
         $fieldData = [
-            'name' => 'amount',
             'label' => 'Amount',
             'type' => 'number',
             'required' => true,
@@ -188,7 +186,6 @@ final class FormApiTest extends TestCase
 
         $this->assertDatabaseHas('form_fields', [
             'form_id' => $form->id,
-            'name' => 'amount',
             'label' => 'Amount',
             'type' => 'number',
             'required' => true,
@@ -202,7 +199,6 @@ final class FormApiTest extends TestCase
         $form = FormModel::factory()->create(['user_id' => $this->user->id]);
 
         $invalidData = [
-            'name' => 'invalid',
             'label' => 'Invalid',
             'type' => 'invalid-type', // Not in enum
         ];
@@ -228,7 +224,6 @@ final class FormApiTest extends TestCase
         $field = DB::table('form_fields')->insert([
             'id' => 'field-to-update',
             'form_id' => $form->id,
-            'name' => 'old_name',
             'label' => 'Old Label',
             'type' => 'text',
             'required' => false,
@@ -241,7 +236,6 @@ final class FormApiTest extends TestCase
         ]);
 
         $updateData = [
-            'name' => 'new_name',
             'label' => 'New Label',
             'required' => true,
         ];
@@ -257,7 +251,6 @@ final class FormApiTest extends TestCase
 
         $this->assertDatabaseHas('form_fields', [
             'id' => 'field-to-update',
-            'name' => 'new_name',
             'label' => 'New Label',
             'required' => true,
         ]);

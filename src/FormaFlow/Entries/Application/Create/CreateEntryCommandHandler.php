@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FormaFlow\Entries\Application\Create;
 
-use Carbon\Carbon;
 use FormaFlow\Entries\Domain\EntryAggregate;
 use FormaFlow\Entries\Domain\EntryCreated;
 use FormaFlow\Entries\Domain\EntryId;

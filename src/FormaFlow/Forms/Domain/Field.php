@@ -8,7 +8,6 @@ final class Field
 {
     public function __construct(
         private readonly string $id,
-        private readonly string $name,
         private readonly string $label,
         private readonly FieldType $type,
         private readonly bool $required = false,
@@ -22,11 +21,6 @@ final class Field
     public function id(): string
     {
         return $this->id;
-    }
-
-    public function name(): string
-    {
-        return $this->name;
     }
 
     public function label(): string

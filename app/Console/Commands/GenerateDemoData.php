@@ -56,12 +56,15 @@ final class GenerateDemoData extends Command
             'published' => true,
         ]);
 
-        // Add fields directly via DB to ensure IDs are set if needed, or just insert
+        $amountId = (string) Str::uuid();
+        $categoryId = (string) Str::uuid();
+        $descId = (string) Str::uuid();
+
+        // Add fields directly via DB
         DB::table('form_fields')->insert([
             [
-                'id' => (string) Str::uuid(),
+                'id' => $amountId,
                 'form_id' => $form->id,
-                'name' => 'amount',
                 'label' => 'Amount',
                 'type' => 'currency',
                 'unit' => 'USD',
@@ -73,9 +76,8 @@ final class GenerateDemoData extends Command
                 'updated_at' => now(),
             ],
             [
-                'id' => (string) Str::uuid(),
+                'id' => $categoryId,
                 'form_id' => $form->id,
-                'name' => 'category',
                 'label' => 'Category',
                 'type' => 'select',
                 'required' => true,
@@ -90,9 +92,8 @@ final class GenerateDemoData extends Command
                 'updated_at' => now(),
             ],
             [
-                'id' => (string) Str::uuid(),
+                'id' => $descId,
                 'form_id' => $form->id,
-                'name' => 'description',
                 'label' => 'Description',
                 'type' => 'text',
                 'required' => false,
@@ -124,9 +125,9 @@ final class GenerateDemoData extends Command
                     'form_id' => $form->id,
                     'user_id' => $user->id,
                     'data' => [
-                        'amount' => $amount,
-                        'category' => $category,
-                        'description' => $isIncome ? 'Salary/Bonus' : 'Groceries/Food',
+                        $amountId => $amount,
+                        $categoryId => $category,
+                        $descId => $isIncome ? 'Salary/Bonus' : 'Groceries/Food',
                     ],
                     'created_at' => $date->copy()->setTime(random_int(8, 20), random_int(0, 59)),
                 ]);
@@ -144,11 +145,12 @@ final class GenerateDemoData extends Command
             'published' => true,
         ]);
 
+        $dosageId = (string) Str::uuid();
+
         DB::table('form_fields')->insert([
             [
-                'id' => (string) Str::uuid(),
+                'id' => $dosageId,
                 'form_id' => $form->id,
-                'name' => 'dosage',
                 'label' => 'Dosage',
                 'type' => 'number',
                 'unit' => 'ml',
@@ -191,7 +193,7 @@ final class GenerateDemoData extends Command
                     'form_id' => $form->id,
                     'user_id' => $user->id,
                     'data' => [
-                        'dosage' => $dose,
+                        $dosageId => $dose,
                     ],
                     'created_at' => $date->copy()->setTime($hour, random_int(0, 59)),
                 ]);

@@ -18,6 +18,8 @@ final class NewReportFeaturesTest extends TestCase
 
     protected UserModel $user;
     protected FormModel $budgetForm;
+    protected string $amountId = 'field-amount';
+    protected string $otherId = 'field-other';
 
     protected function setUp(): void
     {
@@ -31,9 +33,8 @@ final class NewReportFeaturesTest extends TestCase
         // Add fields
         DB::table('form_fields')->insert([
             [
-                'id' => 'field-amount',
+                'id' => $this->amountId,
                 'form_id' => $this->budgetForm->id,
-                'name' => 'amount',
                 'label' => 'Amount',
                 'type' => 'currency',
                 'unit' => 'USD',
@@ -45,11 +46,10 @@ final class NewReportFeaturesTest extends TestCase
                 'updated_at' => Carbon::now(),
             ],
             [
-                'id' => 'field-other',
+                'id' => $this->otherId,
                 'form_id' => $this->budgetForm->id,
-                'name' => 'other_val',
                 'label' => 'Other Value',
-                'type' => 'number', // Another numeric field
+                'type' => 'number',
                 'unit' => null,
                 'required' => false,
                 'options' => null,
@@ -66,17 +66,20 @@ final class NewReportFeaturesTest extends TestCase
     private function createSampleEntries(): void
     {
         $entries = [
-            ['amount' => 100, 'other_val' => 10, 'date' => '2025-01-01'],
-            ['amount' => 200, 'other_val' => 20, 'date' => '2025-01-02'],
-            ['amount' => 300, 'other_val' => 30, 'date' => '2025-01-02'],
+            [$this->amountId => 100, $this->otherId => 10, 'date' => '2025-01-01'],
+            [$this->amountId => 200, $this->otherId => 20, 'date' => '2025-01-02'],
+            [$this->amountId => 300, $this->otherId => 30, 'date' => '2025-01-02'],
         ];
 
         foreach ($entries as $i => $entry) {
+            $data = $entry;
+            unset($data['date']);
+
             DB::table('entries')->insert([
                 'id' => "entry-{$i}",
                 'form_id' => $this->budgetForm->id,
                 'user_id' => $this->user->id,
-                'data' => json_encode($entry),
+                'data' => json_encode($data),
                 'created_at' => Carbon::parse($entry['date']),
                 'updated_at' => Carbon::now(),
             ]);
@@ -85,8 +88,7 @@ final class NewReportFeaturesTest extends TestCase
 
     public function test_summary_endpoint_returns_correct_stats(): void
     {
-        $response = $this
-            ->actingAs($this->user, 'sanctum')
+        $response = $this->actingAs($this->user, 'sanctum')
             ->postJson('/api/v1/reports/summary', [
                 'form_id' => $this->budgetForm->id,
                 'date_from' => '2025-01-01',
@@ -102,10 +104,10 @@ final class NewReportFeaturesTest extends TestCase
             ]);
 
         $this->assertEquals(3, $response->json('total_entries'));
-
+        
         $stats = collect($response->json('stats'));
-        $amountStats = $stats->firstWhere('field', 'amount');
-
+        $amountStats = $stats->firstWhere('field', $this->amountId);
+        
         $this->assertEquals(600, $amountStats['sum']); // 100+200+300
         $this->assertEquals(200, $amountStats['avg']);
         $this->assertEquals(100, $amountStats['min']);
@@ -114,8 +116,7 @@ final class NewReportFeaturesTest extends TestCase
 
     public function test_multi_time_series_endpoint_returns_grouped_data(): void
     {
-        $response = $this
-            ->actingAs($this->user, 'sanctum')
+        $response = $this->actingAs($this->user, 'sanctum')
             ->postJson('/api/v1/reports/multi-time-series', [
                 'form_id' => $this->budgetForm->id,
                 'period' => 'daily',
@@ -126,7 +127,7 @@ final class NewReportFeaturesTest extends TestCase
         $response->assertStatus(Response::HTTP_OK)
             ->assertJsonStructure([
                 'data' => [
-                    '*' => ['date', 'amount', 'other_val']
+                    '*' => ['date', $this->amountId, $this->otherId]
                 ],
                 'fields'
             ]);
@@ -136,11 +137,11 @@ final class NewReportFeaturesTest extends TestCase
         $this->assertCount(2, $data);
 
         $day1 = collect($data)->firstWhere('date', '2025-01-01');
-        $this->assertEquals(100, $day1['amount']);
-        $this->assertEquals(10, $day1['other_val']);
+        $this->assertEquals(100, $day1[$this->amountId]);
+        $this->assertEquals(10, $day1[$this->otherId]);
 
         $day2 = collect($data)->firstWhere('date', '2025-01-02');
-        $this->assertEquals(500, $day2['amount']); // 200 + 300
-        $this->assertEquals(50, $day2['other_val']); // 20 + 30
+        $this->assertEquals(500, $day2[$this->amountId]); // 200 + 300
+        $this->assertEquals(50, $day2[$this->otherId]); // 20 + 30
     }
 }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace FormaFlow\Entries\Domain;
 
+use DateTimeImmutable;
+use FormaFlow\Forms\Domain\FormId;
 use Shared\Domain\Repository;
 
 interface EntryRepository extends Repository
@@ -21,9 +23,9 @@ interface EntryRepository extends Repository
      * @return array<array{field: string, total_sum: float}>
      */
     public function getSumOfNumericFieldsByDateRange(
-        \FormaFlow\Forms\Domain\FormId $formId,
+        FormId $formId,
         string $userId,
-        \DateTimeImmutable $startDate,
-        ?\DateTimeImmutable $endDate = null
+        DateTimeImmutable $startDate,
+        ?DateTimeImmutable $endDate = null
     ): array;
 }

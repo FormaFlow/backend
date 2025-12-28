@@ -148,7 +148,7 @@ final class EloquentEntryRepository implements EntryRepository
         $numericFields = [];
         foreach ($form->fields() as $field) {
             if (in_array($field->type()->value(), ['number', 'currency'])) {
-                $numericFields[] = $field->name();
+                $numericFields[] = $field->id();
             }
         }
 

@@ -53,13 +53,13 @@ final class ReportController extends Controller
             // But we need multiple aggregates for multiple fields.
             // Doing one query per field might be slow but safe for JSON extraction logic.
             // Optimization: Build one giant SELECT statement.
-            
+
             // For now, let's keep it simple: One query to get all aggregations is complex with JSON extract in SQL.
             // Let's do a loop.
-            
+
             $q = clone $query;
-            $jsonField = "json_extract(data, '$.\"{$field->name}\"')";
-            
+            $jsonField = "json_extract(data, '$.\"{$field->id}\"')";
+
             // We can get sum, avg, min, max in one go
             $fieldStats = $q->select(
                 DB::raw("SUM($jsonField) as total"),
@@ -69,7 +69,7 @@ final class ReportController extends Controller
             )->first();
 
             $stats[] = [
-                'field' => $field->name,
+                'field' => $field->id,
                 'label' => $field->label,
                 'type' => $field->type,
                 'sum' => $fieldStats->total ?? 0,
@@ -100,7 +100,7 @@ final class ReportController extends Controller
         }
 
         $numericFields = $form->fields->filter(fn($f) => in_array($f->type, ['number', 'currency']));
-        
+
         $query = DB::table('entries')
             ->where('form_id', $form->id);
 
@@ -118,29 +118,29 @@ final class ReportController extends Controller
         };
 
         $selects = [DB::raw("strftime('{$dateFormat}', created_at) as date")];
-        
+
         foreach ($numericFields as $field) {
-            $jsonField = "json_extract(data, '$.\"{$field->name}\"')";
+            $jsonField = "json_extract(data, '$.\"{$field->id}\"')";
             // Default to SUM for now. Maybe user wants AVG? 
             // The prompt says "output all fields", implied Sum usually.
-            $selects[] = DB::raw("SUM($jsonField) as \"{$field->name}\"");
+            $selects[] = DB::raw("SUM($jsonField) as \"{$field->id}\"");
         }
 
         if ($numericFields->isEmpty()) {
-             // Return just counts if no numeric fields?
-             $selects[] = DB::raw("COUNT(*) as count");
+            // Return just counts if no numeric fields?
+            $selects[] = DB::raw("COUNT(*) as count");
         }
 
         $data = $query->select($selects)
             ->groupBy('date')
             ->orderBy('date')
             ->get();
-            
+
         // Transform data to ensure numbers are numbers (SQLite might return strings)
-        $transformed = $data->map(function($item) use ($numericFields) {
+        $transformed = $data->map(function ($item) use ($numericFields) {
             $res = ['date' => $item->date];
             foreach ($numericFields as $field) {
-                $res[$field->name] = (float)($item->{$field->name} ?? 0);
+                $res[$field->id] = (float)($item->{$field->id} ?? 0);
             }
             if ($numericFields->isEmpty()) {
                 $res['count'] = (int)($item->count ?? 0);
@@ -150,7 +150,7 @@ final class ReportController extends Controller
 
         return response()->json([
             'data' => $transformed,
-            'fields' => $numericFields->values()->map(fn($f) => ['name' => $f->name, 'label' => $f->label])
+            'fields' => $numericFields->values()->map(fn($f) => ['name' => $f->id, 'label' => $f->label])
         ]);
     }
 
@@ -178,7 +178,7 @@ final class ReportController extends Controller
 
         if (!empty($validated['tags'])) {
             $query->join('entry_tags', 'entries.id', '=', 'entry_tags.entry_id')
-                  ->whereIn('entry_tags.tag', $validated['tags']);
+                ->whereIn('entry_tags.tag', $validated['tags']);
         }
 
         if ($validated['aggregation'] === 'count') {
@@ -229,7 +229,7 @@ final class ReportController extends Controller
 
         $field = $validated['field'];
         $jsonField = "json_extract(data, '$.\"{$field}\"')";
-        
+
         $dateFormat = match ($validated['period']) {
             'daily' => '%Y-%m-%d',
             'weekly' => '%Y-%W', // SQLite doesn't strictly have %W in strftime in all versions, but let's try. Or just group by date.
@@ -281,7 +281,7 @@ final class ReportController extends Controller
 
         $groupByField = $validated['group_by'];
         $groupByJson = "json_extract(data, '$.\"{$groupByField}\"')";
-        
+
         $targetField = $validated['field'];
         $targetJson = "json_extract(data, '$.\"{$targetField}\"')";
 
@@ -341,7 +341,7 @@ final class ReportController extends Controller
             $data = json_decode($entry->data, true);
             $headers = array_unique(array_merge($headers, array_keys($data)));
         }
-        
+
         // Add standard headers
         $csvHeaders = array_merge(['id', 'created_at'], $headers);
 
@@ -376,7 +376,7 @@ final class ReportController extends Controller
         // This implies it looks for 'category' = 'income'/'expense' and sums 'amount'.
 
         $formId = $request->input('form_id');
-        
+
         // Determine current week
         $startOfWeek = now()->startOfWeek()->format('Y-m-d');
         $endOfWeek = now()->endOfWeek()->format('Y-m-d');
@@ -457,7 +457,7 @@ final class ReportController extends Controller
         // It likely aggregates across all forms or a specific budget form if known.
         // But simpler: The test sets up a 'Budget Tracker' form. 
         // We need to find that form for the user.
-        
+
         $form = DB::table('forms')
             ->where('user_id', $request->user()->id)
             ->where('name', 'Budget Tracker')
@@ -516,7 +516,7 @@ final class ReportController extends Controller
         }
 
         $query = DB::table('entries')->where('form_id', $form->id);
-         if ($request->has('date_from')) {
+        if ($request->has('date_from')) {
             $query->whereDate('created_at', '>=', $request->input('date_from'));
         }
         if ($request->has('date_to')) {
@@ -531,7 +531,7 @@ final class ReportController extends Controller
             $data = json_decode($entry->data, true);
             $name = $data['medicine_name'] ?? 'Unknown';
             $qty = $data['quantity'] ?? 0;
-            
+
             if (!isset($medicines[$name])) {
                 $medicines[$name] = 0;
             }
@@ -569,7 +569,7 @@ final class ReportController extends Controller
         }
 
         $entries = $query->get();
-        
+
         if ($entries->isEmpty()) {
             return response()->json([
                 'current_weight' => 0,
@@ -581,11 +581,11 @@ final class ReportController extends Controller
 
         $firstEntry = json_decode($entries->first()->data, true);
         $lastEntry = json_decode($entries->last()->data, true);
-        
+
         $startWeight = $firstEntry['weight'] ?? 0;
         $currentWeight = $lastEntry['weight'] ?? 0;
 
-        $trend = $entries->map(function($e) {
+        $trend = $entries->map(function ($e) {
             $d = json_decode($e->data, true);
             return [
                 'date' => $e->created_at,
