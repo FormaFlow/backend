@@ -14,6 +14,8 @@ final class FormAggregate extends AggregateRoot
     private array $fields = [];
     private bool $published = false;
     private int $version = 1;
+    private bool $isQuiz = false;
+    private bool $singleSubmission = false;
 
     public function __construct(
         private readonly FormId $id,
@@ -57,6 +59,23 @@ final class FormAggregate extends AggregateRoot
     public function getVersion(): int
     {
         return $this->version;
+    }
+
+    public function isQuiz(): bool
+    {
+        return $this->isQuiz;
+    }
+
+    public function isSingleSubmission(): bool
+    {
+        return $this->singleSubmission;
+    }
+
+    public function updateSettings(bool $isQuiz, bool $singleSubmission): void
+    {
+        $this->isQuiz = $isQuiz;
+        $this->singleSubmission = $singleSubmission;
+        // Consider recording an event here if needed
     }
 
     /** @return Field[] */
@@ -114,6 +133,8 @@ final class FormAggregate extends AggregateRoot
             unit: $fieldData['unit'] ?? $existingField->unit(),
             category: $fieldData['category'] ?? $existingField->category(),
             order: $fieldData['order'] ?? $existingField->order(),
+            correctAnswer: $fieldData['correctAnswer'] ?? $existingField->correctAnswer(),
+            points: $fieldData['points'] ?? $existingField->points(),
         );
 
         $this->fields[$fieldIndex] = $updatedField;
@@ -147,7 +168,9 @@ final class FormAggregate extends AggregateRoot
         bool $published,
         int $version,
         DateTime $createdAt,
-        array $fields
+        array $fields,
+        bool $isQuiz = false,
+        bool $singleSubmission = false
     ): self {
         $self = new self(
             id: $id,
@@ -160,6 +183,8 @@ final class FormAggregate extends AggregateRoot
         $self->published = $published;
         $self->version = $version;
         $self->fields = $fields;
+        $self->isQuiz = $isQuiz;
+        $self->singleSubmission = $singleSubmission;
 
         return $self;
     }

@@ -28,6 +28,8 @@ final class EntryModel extends Model
         'user_id',
         'data',
         'created_at',
+        'score',
+        'duration',
     ];
 
     protected $casts = [

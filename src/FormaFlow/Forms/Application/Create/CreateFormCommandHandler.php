@@ -25,6 +25,8 @@ final readonly class CreateFormCommandHandler
             description: $command->description(),
         );
 
+        $form->updateSettings($command->isQuiz(), $command->isSingleSubmission());
+
         $this->repository->save($form);
     }
 }

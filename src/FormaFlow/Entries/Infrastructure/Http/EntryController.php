@@ -82,6 +82,7 @@ final class EntryController extends Controller
                 'id' => $entry->id()->value(),
                 'form_id' => $entry->formId()->value(),
                 'data' => $entry->data(),
+                'score' => $entry->score(),
                 'created_at' => $entry->createdAt()->format('Y-m-d H:i:s'),
             ], $entries),
             'total' => $total,
@@ -139,6 +140,7 @@ final class EntryController extends Controller
             'form_id' => $entry->formId()->value(),
             'data' => $entry->data(),
             'tags' => $tags,
+            'score' => $entry->score(),
             'created_at' => $entry->createdAt()->format('Y-m-d H:i:s'),
         ]);
     }
@@ -196,6 +198,7 @@ final class EntryController extends Controller
                     formId: $request->input('form_id'),
                     userId: $request->user()->id,
                     data: $request->input('data'),
+                    duration: $request->has('duration') ? (int)$request->input('duration') : null,
                 )
             );
         } catch (Throwable $exception) {
@@ -222,12 +225,43 @@ final class EntryController extends Controller
             return response()->json(['error' => 'Entry not found'], Response::HTTP_NOT_FOUND);
         }
 
-        return response()->json([
+        $response = [
             'id' => $entry->id()->value(),
             'form_id' => $entry->formId()->value(),
             'data' => $entry->data(),
+            'score' => $entry->score(),
             'created_at' => $entry->createdAt()->format('Y-m-d H:i:s'),
-        ], Response::HTTP_CREATED);
+        ];
+
+        if ($form->isQuiz()) {
+            $results = [];
+            foreach ($form->fields() as $field) {
+                $userAnswer = $entry->data()[$field->id()] ?? null;
+                $correctAnswer = $field->correctAnswer();
+
+                $isCorrect = false;
+                if ($userAnswer !== null && $correctAnswer !== null) {
+                    $u = is_string($userAnswer) ? trim($userAnswer) : $userAnswer;
+                    $c = is_string($correctAnswer) ? trim($correctAnswer) : $correctAnswer;
+                    if (is_string($u) && is_string($c)) {
+                        $isCorrect = mb_strtolower($u) === mb_strtolower($c);
+                    } else {
+                        $isCorrect = $u == $c;
+                    }
+                }
+
+                $results[] = [
+                    'label' => $field->label(),
+                    'user_answer' => $userAnswer,
+                    'correct_answer' => $correctAnswer,
+                    'is_correct' => $isCorrect,
+                    'points' => $field->points(),
+                ];
+            }
+            $response['quiz_results'] = $results;
+        }
+
+        return response()->json($response, Response::HTTP_CREATED);
     }
 
     public function update(Request $request, string $id): JsonResponse
@@ -307,6 +341,7 @@ final class EntryController extends Controller
             'id' => $updated->id()->value(),
             'form_id' => $updated->formId()->value(),
             'data' => $updated->data(),
+            'score' => $updated->score(),
             'created_at' => $updated->createdAt()->format('Y-m-d H:i:s'),
         ]);
     }

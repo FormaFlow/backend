@@ -35,6 +35,8 @@ final class AddFieldCommandHandler
             unit: $command->unit(),
             category: $command->category(),
             order: $command->order(),
+            correctAnswer: $command->correctAnswer(),
+            points: $command->points(),
         );
 
         $form->addField($field);

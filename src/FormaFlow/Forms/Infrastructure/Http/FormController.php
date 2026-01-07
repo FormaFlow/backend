@@ -58,6 +58,8 @@ final class FormController
                     'unit' => $field->unit(),
                     'category' => $field->category(),
                     'order' => $field->order(),
+                    'correctAnswer' => $field->correctAnswer(),
+                    'points' => $field->points(),
                 ];
             }
 
@@ -66,6 +68,8 @@ final class FormController
                 'name' => $form->name()->value(),
                 'description' => $form->description(),
                 'published' => $form->isPublished(),
+                'is_quiz' => $form->isQuiz(),
+                'single_submission' => $form->isSingleSubmission(),
                 'fields_count' => count($form->fields()),
                 'fields' => $fieldsData,
             ];
@@ -86,6 +90,8 @@ final class FormController
         $validated = $request->validate([
             'name' => 'required|string|min:3|max:255',
             'description' => 'nullable|string',
+            'is_quiz' => 'boolean',
+            'single_submission' => 'boolean',
         ]);
 
         $command = new CreateFormCommand(
@@ -93,6 +99,8 @@ final class FormController
             userId: $request->user()->id,
             name: $validated['name'],
             description: $validated['description'] ?? null,
+            isQuiz: $validated['is_quiz'] ?? false,
+            singleSubmission: $validated['single_submission'] ?? false,
         );
 
         $handler->handle($command);
@@ -127,6 +135,8 @@ final class FormController
                 'unit' => $field->unit(),
                 'category' => $field->category(),
                 'order' => $field->order(),
+                'correctAnswer' => $field->correctAnswer(),
+                'points' => $field->points(),
             ];
         }
 
@@ -135,6 +145,8 @@ final class FormController
             'name' => $form->name()->value(),
             'description' => $form->description(),
             'published' => $form->isPublished(),
+            'is_quiz' => $form->isQuiz(),
+            'single_submission' => $form->isSingleSubmission(),
             'fields_count' => count($form->fields()),
             'fields' => $fieldsData,
         ]);
@@ -187,6 +199,8 @@ final class FormController
             'unit' => 'nullable|string',
             'category' => 'nullable|string',
             'order' => 'integer',
+            'correctAnswer' => 'nullable|string',
+            'points' => 'integer',
         ]);
 
         try {
@@ -200,6 +214,8 @@ final class FormController
                 unit: $validated['unit'] ?? null,
                 category: $validated['category'] ?? null,
                 order: $validated['order'] ?? 0,
+                correctAnswer: $validated['correctAnswer'] ?? null,
+                points: $validated['points'] ?? 0,
             );
 
             $handler->handle($command);
@@ -231,6 +247,8 @@ final class FormController
             'unit' => 'sometimes|nullable|string',
             'category' => 'sometimes|nullable|string',
             'order' => 'sometimes|integer',
+            'correctAnswer' => 'sometimes|nullable|string',
+            'points' => 'sometimes|integer',
         ]);
 
         try {
@@ -250,6 +268,8 @@ final class FormController
         $validated = $request->validate([
             'name' => 'sometimes|string|min:3|max:255',
             'description' => 'nullable|string',
+            'is_quiz' => 'sometimes|boolean',
+            'single_submission' => 'sometimes|boolean',
         ]);
 
         $formId = new FormId($id);
@@ -272,6 +292,8 @@ final class FormController
             version: $form->isPublished() ? $form->getVersion() + 1 : $form->getVersion(),
             createdAt: $form->createdAt(),
             fields: $form->fields(),
+            isQuiz: $validated['is_quiz'] ?? $form->isQuiz(),
+            singleSubmission: $validated['single_submission'] ?? $form->isSingleSubmission(),
         );
 
         $this->formRepository->save($updatedForm);

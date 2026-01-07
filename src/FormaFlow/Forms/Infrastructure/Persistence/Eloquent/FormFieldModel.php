@@ -22,6 +22,8 @@ final class FormFieldModel extends Model
         'unit',
         'category',
         'order',
+        'correct_answer',
+        'points',
     ];
     protected $casts = [
         'required' => 'boolean',

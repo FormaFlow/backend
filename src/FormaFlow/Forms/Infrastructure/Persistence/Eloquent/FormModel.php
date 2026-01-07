@@ -27,11 +27,15 @@ final class FormModel extends Model
         'description',
         'published',
         'version',
+        'is_quiz',
+        'single_submission',
     ];
 
     protected $casts = [
         'published' => 'boolean',
         'version' => 'integer',
+        'is_quiz' => 'boolean',
+        'single_submission' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',

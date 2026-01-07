@@ -33,6 +33,8 @@ final class EloquentEntryRepository implements EntryRepository
                 'form_id' => $aggregate->formId()->value(),
                 'user_id' => $aggregate->userId(),
                 'data' => $aggregate->data(),
+                'score' => $aggregate->score(),
+                'duration' => $aggregate->duration(),
             ],
         );
     }
@@ -60,6 +62,8 @@ final class EloquentEntryRepository implements EntryRepository
             userId: $model->user_id,
             data: $model->data,
             createdAt: $model->created_at,
+            score: (int)$model->score,
+            duration: (int)$model->duration,
         );
     }
 
@@ -111,6 +115,8 @@ final class EloquentEntryRepository implements EntryRepository
             userId: $model->user_id,
             data: $model->data,
             createdAt: $model->created_at,
+            score: (int)$model->score,
+            duration: (int)$model->duration,
         ))->toArray();
 
         return [$entries, $total];
@@ -130,6 +136,8 @@ final class EloquentEntryRepository implements EntryRepository
             userId: $model->user_id,
             data: $model->data,
             createdAt: $model->created_at,
+            score: (int)$model->score,
+            duration: (int)$model->duration,
         ))->toArray();
     }
 

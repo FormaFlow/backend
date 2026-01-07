@@ -36,6 +36,8 @@ final class EloquentFormRepository implements FormRepository
                     'description' => $aggregate->description(),
                     'published' => $aggregate->isPublished(),
                     'version' => $aggregate->getVersion(),
+                    'is_quiz' => $aggregate->isQuiz(),
+                    'single_submission' => $aggregate->isSingleSubmission(),
                 ]
             );
 
@@ -56,6 +58,8 @@ final class EloquentFormRepository implements FormRepository
                         'unit' => $f->unit(),
                         'category' => $f->category(),
                         'order' => $f->order(),
+                        'correct_answer' => $f->correctAnswer(),
+                        'points' => $f->points(),
                     ]
                 );
             }
@@ -94,17 +98,18 @@ final class EloquentFormRepository implements FormRepository
 
         $fields = [];
         foreach ($model->fields as $fm) {
-            $fields[] = new Field(
-                id: (string)$fm->id,
-                label: (string)$fm->label,
-                type: new FieldType((string)$fm->type),
-                required: (bool)$fm->required,
-                options: $fm->options ? (array)$fm->options : null,
-                unit: $fm->unit,
-                category: $fm->category,
-                order: (int)$fm->order,
-            );
-        }
+                        $fields[] = new Field(
+                            id: (string)$fm->id,
+                            label: (string)$fm->label,
+                            type: new FieldType((string)$fm->type),
+                            required: (bool)$fm->required,
+                            options: $fm->options ? (array)$fm->options : null,
+                            unit: $fm->unit,
+                            category: $fm->category,
+                            order: (int)$fm->order,
+                            correctAnswer: $fm->correct_answer,
+                            points: (int)$fm->points,
+                        );        }
 
         return FormAggregate::fromPrimitives(
             id: new FormId((string)$model->id),
@@ -115,6 +120,8 @@ final class EloquentFormRepository implements FormRepository
             version: (int)$model->version,
             createdAt: $model->created_at,
             fields: $fields,
+            isQuiz: (bool)$model->is_quiz,
+            singleSubmission: (bool)$model->single_submission,
         );
     }
 
@@ -131,17 +138,18 @@ final class EloquentFormRepository implements FormRepository
         foreach ($models as $model) {
             $fields = [];
             foreach ($model->fields as $fm) {
-                $fields[] = new Field(
-                    id: (string)$fm->id,
-                    label: (string)$fm->label,
-                    type: new FieldType((string)$fm->type),
-                    required: (bool)$fm->required,
-                    options: $fm->options ? (array)$fm->options : null,
-                    unit: $fm->unit,
-                    category: $fm->category,
-                    order: (int)$fm->order,
-                );
-            }
+                            $fields[] = new Field(
+                                id: (string)$fm->id,
+                                label: (string)$fm->label,
+                                type: new FieldType((string)$fm->type),
+                                required: (bool)$fm->required,
+                                options: $fm->options ? (array)$fm->options : null,
+                                unit: $fm->unit,
+                                category: $fm->category,
+                                order: (int)$fm->order,
+                                correctAnswer: $fm->correct_answer,
+                                points: (int)$fm->points,
+                            );            }
 
             $result[] = FormAggregate::fromPrimitives(
                 id: new FormId((string)$model->id),
@@ -152,6 +160,8 @@ final class EloquentFormRepository implements FormRepository
                 version: (int)$model->version,
                 createdAt: $model->created_at,
                 fields: $fields,
+                isQuiz: (bool)$model->is_quiz,
+                singleSubmission: (bool)$model->single_submission,
             );
         }
 

@@ -11,6 +11,7 @@ final class CreateEntryCommand
         public readonly string $formId,
         public readonly string $userId,
         public readonly array $data,
+        public readonly ?int $duration = null,
     ) {
     }
 }

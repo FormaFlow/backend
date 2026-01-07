@@ -11,6 +11,8 @@ final class CreateFormCommand
         private readonly string $userId,
         private readonly string $name,
         private readonly ?string $description = null,
+        private readonly bool $isQuiz = false,
+        private readonly bool $singleSubmission = false,
     ) {
     }
 
@@ -32,5 +34,15 @@ final class CreateFormCommand
     public function description(): ?string
     {
         return $this->description;
+    }
+
+    public function isQuiz(): bool
+    {
+        return $this->isQuiz;
+    }
+
+    public function isSingleSubmission(): bool
+    {
+        return $this->singleSubmission;
     }
 }

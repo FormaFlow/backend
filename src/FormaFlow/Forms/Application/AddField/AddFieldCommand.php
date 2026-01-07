@@ -16,6 +16,8 @@ final class AddFieldCommand
         private readonly ?string $unit = null,
         private readonly ?string $category = null,
         private readonly int $order = 0,
+        private readonly ?string $correctAnswer = null,
+        private readonly int $points = 0,
     ) {
     }
 
@@ -62,5 +64,15 @@ final class AddFieldCommand
     public function order(): int
     {
         return $this->order;
+    }
+
+    public function correctAnswer(): ?string
+    {
+        return $this->correctAnswer;
+    }
+
+    public function points(): int
+    {
+        return $this->points;
     }
 }

@@ -16,6 +16,8 @@ final class EntryAggregate extends AggregateRoot
         private readonly string $userId,
         private array $data,
         private readonly DateTime $createdAt = new DateTime(),
+        private ?int $score = null,
+        private ?int $duration = null,
     ) {
     }
 
@@ -50,13 +52,35 @@ final class EntryAggregate extends AggregateRoot
         return $this->createdAt;
     }
 
+    public function score(): ?int
+    {
+        return $this->score;
+    }
+
+    public function duration(): ?int
+    {
+        return $this->duration;
+    }
+
+    public function setScore(int $score): void
+    {
+        $this->score = $score;
+    }
+
+    public function setDuration(int $duration): void
+    {
+        $this->duration = $duration;
+    }
+
     public static function fromPrimitives(
         EntryId $id,
         FormId $formId,
         string $userId,
         array $data,
-        DateTime $createdAt
+        DateTime $createdAt,
+        ?int $score = null,
+        ?int $duration = null
     ): self {
-        return new self($id, $formId, $userId, $data, $createdAt);
+        return new self($id, $formId, $userId, $data, $createdAt, $score, $duration);
     }
 }
