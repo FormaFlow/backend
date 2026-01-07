@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace FormaFlow\Forms\Domain;
 
-final class Field
+final readonly class Field
 {
     public function __construct(
-        private readonly string $id,
-        private readonly string $label,
-        private readonly FieldType $type,
-        private readonly bool $required = false,
-        private readonly ?array $options = null,
-        private readonly ?string $unit = null,
-        private readonly ?string $category = null,
-        private readonly int $order = 0,
-        private readonly ?string $correctAnswer = null,
-        private readonly int $points = 0,
+        private string $id,
+        private string $label,
+        private FieldType $type,
+        private bool $required = false,
+        private ?array $options = null,
+        private ?string $unit = null,
+        private ?string $category = null,
+        private int $order = 0,
+        private ?string $correctAnswer = null,
+        private int $points = 0,
     ) {
     }
 

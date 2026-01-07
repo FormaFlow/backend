@@ -43,11 +43,11 @@ final class AuthenticationIntegrationTest extends TestCase
 
     public function test_user_can_login_with_valid_credentials(): void
     {
-        RateLimiter::for('login', function () {
+        RateLimiter::for('login', static function () {
             return Limit::none();
         });
 
-        $user = UserModel::factory()->create([
+        UserModel::factory()->create([
             'email' => 'test@example.com',
             'password' => bcrypt('password123'),
         ]);
@@ -63,7 +63,7 @@ final class AuthenticationIntegrationTest extends TestCase
 
     public function test_user_cannot_login_with_invalid_credentials(): void
     {
-        RateLimiter::for('login', function () {
+        RateLimiter::for('login', static function () {
             return Limit::none();
         });
 
@@ -83,6 +83,7 @@ final class AuthenticationIntegrationTest extends TestCase
 
     public function test_authenticated_user_can_refresh_token(): void
     {
+        /** @var UserModel $user */
         $user = UserModel::factory()->create();
         $token = $user->createToken('test-token')->plainTextToken;
 

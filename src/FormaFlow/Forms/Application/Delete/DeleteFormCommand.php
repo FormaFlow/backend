@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace FormaFlow\Forms\Application\Delete;
 
-final class DeleteFormCommand
+final readonly class DeleteFormCommand
 {
     public function __construct(
-        private readonly string $id,
+        private string $id,
     ) {
     }
 

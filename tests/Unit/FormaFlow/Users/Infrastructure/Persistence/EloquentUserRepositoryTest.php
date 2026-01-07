@@ -15,6 +15,7 @@ use InvalidArgumentException;
 use Shared\Domain\AggregateRoot;
 use Shared\Domain\UserId;
 use Shared\Domain\UserName;
+use Throwable;
 
 final class EloquentUserRepositoryTest extends TestCase
 {
@@ -28,6 +29,9 @@ final class EloquentUserRepositoryTest extends TestCase
         $this->repository = new EloquentUserRepository();
     }
 
+    /**
+     * @throws Throwable
+     */
     public function testSavesNewUserAggregate(): void
     {
         $user = new UserAggregate(
@@ -47,6 +51,9 @@ final class EloquentUserRepositoryTest extends TestCase
         ]);
     }
 
+    /**
+     * @throws Throwable
+     */
     public function testUpdatesExistingUserAggregate(): void
     {
         $user = new UserAggregate(
@@ -125,6 +132,9 @@ final class EloquentUserRepositoryTest extends TestCase
         self::assertNull($result);
     }
 
+    /**
+     * @throws Throwable
+     */
     public function testDeletesUserAggregate(): void
     {
         $user = new UserAggregate(
@@ -144,6 +154,9 @@ final class EloquentUserRepositoryTest extends TestCase
         $this->assertDatabaseMissing('users', ['id' => 'user-to-delete']);
     }
 
+    /**
+     * @throws Throwable
+     */
     public function testThrowsExceptionWhenSavingUnsupportedAggregate(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -155,6 +168,9 @@ final class EloquentUserRepositoryTest extends TestCase
         $this->repository->save($unsupportedAggregate);
     }
 
+    /**
+     * @throws Throwable
+     */
     public function testThrowsExceptionWhenDeletingUnsupportedAggregate(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -166,6 +182,9 @@ final class EloquentUserRepositoryTest extends TestCase
         $this->repository->delete($unsupportedAggregate);
     }
 
+    /**
+     * @throws Throwable
+     */
     public function testSavesUserWithEmailVerification(): void
     {
         $verifiedAt = new DateTime('2025-01-01 12:00:00');
@@ -192,6 +211,9 @@ final class EloquentUserRepositoryTest extends TestCase
         );
     }
 
+    /**
+     * @throws Throwable
+     */
     public function testSavesUserWithRememberToken(): void
     {
         $user = new UserAggregate(
@@ -211,6 +233,9 @@ final class EloquentUserRepositoryTest extends TestCase
         self::assertSame('remember_me_token_123', $saved->rememberToken());
     }
 
+    /**
+     * @throws Throwable
+     */
     public function testPreservesHashedPassword(): void
     {
         $password = 'secret123';
@@ -234,6 +259,9 @@ final class EloquentUserRepositoryTest extends TestCase
         self::assertSame($hashed, $saved->password());
     }
 
+    /**
+     * @throws Throwable
+     */
     public function testDoesNotDeleteNonExistentUser(): void
     {
         $user = new UserAggregate(

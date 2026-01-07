@@ -559,7 +559,7 @@ final class ReportController extends Controller
 
         $query = DB::table('entries')
             ->where('form_id', $form->id)
-            ->orderBy('created_at', 'asc'); // Ensure order for trend
+            ->orderBy('created_at'); // Ensure order for trend
 
         if ($request->has('date_from')) {
             $query->whereDate('created_at', '>=', $request->input('date_from'));

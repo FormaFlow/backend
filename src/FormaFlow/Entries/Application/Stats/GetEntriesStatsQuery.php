@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace FormaFlow\Entries\Application\Stats;
 
-final class GetEntriesStatsQuery
+final readonly class GetEntriesStatsQuery
 {
     public function __construct(
-        public readonly string $formId,
-        public readonly string $userId,
+        public string $formId,
+        public string $userId,
     ) {
     }
 }

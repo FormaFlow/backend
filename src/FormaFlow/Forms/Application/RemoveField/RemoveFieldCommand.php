@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace FormaFlow\Forms\Application\RemoveField;
 
-final class RemoveFieldCommand
+final readonly class RemoveFieldCommand
 {
     public function __construct(
-        private readonly string $formId,
-        private readonly string $fieldId,
+        private string $formId,
+        private string $fieldId,
     ) {
     }
 

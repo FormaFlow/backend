@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace FormaFlow\Forms\Application\Create;
 
-final class CreateFormCommand
+final readonly class CreateFormCommand
 {
     public function __construct(
-        private readonly string $id,
-        private readonly string $userId,
-        private readonly string $name,
-        private readonly ?string $description = null,
-        private readonly bool $isQuiz = false,
-        private readonly bool $singleSubmission = false,
+        private string $id,
+        private string $userId,
+        private string $name,
+        private ?string $description = null,
+        private bool $isQuiz = false,
+        private bool $singleSubmission = false,
     ) {
     }
 

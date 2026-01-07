@@ -31,10 +31,10 @@ use Shared\Infrastructure\Uuid;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
-final class FormController
+final readonly class FormController
 {
     public function __construct(
-        private readonly FormRepository $formRepository,
+        private FormRepository $formRepository,
     ) {
     }
 
@@ -120,7 +120,7 @@ final class FormController
             return response()->json(['error' => 'Not found'], Response::HTTP_NOT_FOUND);
         }
 
-        if ($form->userId() !== $request->user()->id) {
+        if ($form->userId() !== $request->user()->id && !$form->isPublished()) {
             return response()->json(['error' => 'Forbidden'], Response::HTTP_FORBIDDEN);
         }
 
@@ -330,8 +330,8 @@ final class FormController
             $values = str_getcsv($line, $delimiter);
             // Handle potentially mismatched header/value counts
             if (count($values) !== count($headers)) {
-                 $errors[] = "Row " . ($index + 2) . ": Column count mismatch";
-                 continue;
+                $errors[] = "Row " . ($index + 2) . ": Column count mismatch";
+                continue;
             }
             $csvRow = array_combine($headers, $values);
             $entryData = [];

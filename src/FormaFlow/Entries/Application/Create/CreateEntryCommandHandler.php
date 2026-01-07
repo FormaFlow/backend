@@ -12,11 +12,11 @@ use FormaFlow\Forms\Domain\FormId;
 use FormaFlow\Forms\Domain\FormRepository;
 use InvalidArgumentException;
 
-final class CreateEntryCommandHandler
+final readonly class CreateEntryCommandHandler
 {
     public function __construct(
-        private readonly EntryRepository $entryRepository,
-        private readonly FormRepository $formRepository,
+        private EntryRepository $entryRepository,
+        private FormRepository $formRepository,
     ) {
     }
 
@@ -33,7 +33,10 @@ final class CreateEntryCommandHandler
         }
 
         if ($form->isSingleSubmission()) {
-            [$existingEntries, $total] = $this->entryRepository->findByUserId($command->userId, ['form_id' => $command->formId]);
+            [, $total] = $this->entryRepository->findByUserId(
+                $command->userId,
+                ['form_id' => $command->formId],
+            );
             if ($total > 0) {
                 throw new InvalidArgumentException('You have already submitted this form.');
             }
@@ -55,7 +58,7 @@ final class CreateEntryCommandHandler
                         if (mb_strtolower($v1) === mb_strtolower($v2)) {
                             $score += $field->points();
                         }
-                    } elseif ($v1 == $v2) {
+                    } elseif ($v1 === $v2) {
                         $score += $field->points();
                     }
                 }

@@ -9,11 +9,11 @@ use FormaFlow\Entries\Domain\EntryRepository;
 use FormaFlow\Forms\Domain\FormId;
 use FormaFlow\Forms\Domain\FormRepository;
 
-final class GetEntriesStatsQueryHandler
+final readonly class GetEntriesStatsQueryHandler
 {
     public function __construct(
-        private readonly EntryRepository $entryRepository,
-        private readonly FormRepository $formRepository
+        private EntryRepository $entryRepository,
+        private FormRepository $formRepository
     ) {
     }
 

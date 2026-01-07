@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace FormaFlow\Entries\Application\Create;
 
-final class CreateEntryCommand
+final readonly class CreateEntryCommand
 {
     public function __construct(
-        public readonly string $id,
-        public readonly string $formId,
-        public readonly string $userId,
-        public readonly array $data,
-        public readonly ?int $duration = null,
+        public string $id,
+        public string $formId,
+        public string $userId,
+        public array $data,
+        public ?int $duration = null,
     ) {
     }
 }

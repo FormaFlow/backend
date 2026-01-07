@@ -98,18 +98,19 @@ final class EloquentFormRepository implements FormRepository
 
         $fields = [];
         foreach ($model->fields as $fm) {
-                        $fields[] = new Field(
-                            id: (string)$fm->id,
-                            label: (string)$fm->label,
-                            type: new FieldType((string)$fm->type),
-                            required: (bool)$fm->required,
-                            options: $fm->options ? (array)$fm->options : null,
-                            unit: $fm->unit,
-                            category: $fm->category,
-                            order: (int)$fm->order,
-                            correctAnswer: $fm->correct_answer,
-                            points: (int)$fm->points,
-                        );        }
+            $fields[] = new Field(
+                id: (string)$fm->id,
+                label: (string)$fm->label,
+                type: new FieldType((string)$fm->type),
+                required: (bool)$fm->required,
+                options: $fm->options ? (array)$fm->options : null,
+                unit: $fm->unit,
+                category: $fm->category,
+                order: (int)$fm->order,
+                correctAnswer: $fm->correct_answer,
+                points: (int)$fm->points,
+            );
+        }
 
         return FormAggregate::fromPrimitives(
             id: new FormId((string)$model->id),
@@ -138,18 +139,19 @@ final class EloquentFormRepository implements FormRepository
         foreach ($models as $model) {
             $fields = [];
             foreach ($model->fields as $fm) {
-                            $fields[] = new Field(
-                                id: (string)$fm->id,
-                                label: (string)$fm->label,
-                                type: new FieldType((string)$fm->type),
-                                required: (bool)$fm->required,
-                                options: $fm->options ? (array)$fm->options : null,
-                                unit: $fm->unit,
-                                category: $fm->category,
-                                order: (int)$fm->order,
-                                correctAnswer: $fm->correct_answer,
-                                points: (int)$fm->points,
-                            );            }
+                $fields[] = new Field(
+                    id: (string)$fm->id,
+                    label: (string)$fm->label,
+                    type: new FieldType((string)$fm->type),
+                    required: (bool)$fm->required,
+                    options: $fm->options ? (array)$fm->options : null,
+                    unit: $fm->unit,
+                    category: $fm->category,
+                    order: (int)$fm->order,
+                    correctAnswer: $fm->correct_answer,
+                    points: (int)$fm->points,
+                );
+            }
 
             $result[] = FormAggregate::fromPrimitives(
                 id: new FormId((string)$model->id),

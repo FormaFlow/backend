@@ -10,10 +10,10 @@ use FormaFlow\Forms\Domain\FormId;
 use FormaFlow\Forms\Domain\FormRepository;
 use InvalidArgumentException;
 
-final class AddFieldCommandHandler
+final readonly class AddFieldCommandHandler
 {
     public function __construct(
-        private readonly FormRepository $repository,
+        private FormRepository $repository,
     ) {
     }
 

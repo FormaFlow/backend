@@ -366,7 +366,7 @@ final class EntryManagementIntegrationTest extends TestCase
         // My fields have labels: Amount, Date, Category.
         // FormController implementation: $data = array_combine($headers, $values); ... $data[$field->name()]...
         // Wait, I updated FormController to iterate fields and check $data[$field->label()].
-        
+
         $csvContent = "Amount,Date,Category\n100,2025-01-15,income\n200,2025-01-16,expense";
 
         $response = $this

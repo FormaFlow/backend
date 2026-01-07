@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace FormaFlow\Forms\Application\AddField;
 
-final class AddFieldCommand
+final readonly class AddFieldCommand
 {
     public function __construct(
-        private readonly string $formId,
-        private readonly string $fieldId,
-        private readonly string $label,
-        private readonly string $type,
-        private readonly bool $required = false,
-        private readonly ?array $options = null,
-        private readonly ?string $unit = null,
-        private readonly ?string $category = null,
-        private readonly int $order = 0,
-        private readonly ?string $correctAnswer = null,
-        private readonly int $points = 0,
+        private string $formId,
+        private string $fieldId,
+        private string $label,
+        private string $type,
+        private bool $required = false,
+        private ?array $options = null,
+        private ?string $unit = null,
+        private ?string $category = null,
+        private int $order = 0,
+        private ?string $correctAnswer = null,
+        private int $points = 0,
     ) {
     }
 

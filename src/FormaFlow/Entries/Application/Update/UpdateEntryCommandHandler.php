@@ -8,10 +8,10 @@ use FormaFlow\Entries\Domain\EntryId;
 use FormaFlow\Entries\Domain\EntryRepository;
 use InvalidArgumentException;
 
-final class UpdateEntryCommandHandler
+final readonly class UpdateEntryCommandHandler
 {
     public function __construct(
-        private readonly EntryRepository $entryRepository,
+        private EntryRepository $entryRepository,
     ) {
     }
 

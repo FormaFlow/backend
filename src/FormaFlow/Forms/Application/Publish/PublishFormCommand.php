@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace FormaFlow\Forms\Application\Publish;
 
-final class PublishFormCommand
+final readonly class PublishFormCommand
 {
     public function __construct(
-        private readonly string $formId,
+        private string $formId,
     ) {
     }
 

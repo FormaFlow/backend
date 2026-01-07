@@ -84,7 +84,7 @@ final class GenerateDemoDataTest extends TestCase
         // Check one entry data structure
         $medicineEntry = EntryModel::query()->where('form_id', $medicineForm->id)->first();
         $dosageField = DB::table('form_fields')->where('form_id', $medicineForm->id)->where('label', 'Dosage')->first();
-        
+
         $this->assertIsArray($medicineEntry->data);
         $this->assertArrayHasKey($dosageField->id, $medicineEntry->data);
         $this->assertGreaterThanOrEqual(1, $medicineEntry->data[$dosageField->id]);

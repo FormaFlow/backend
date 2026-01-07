@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace FormaFlow\Entries\Application\Update;
 
-final class UpdateEntryCommand
+final readonly class UpdateEntryCommand
 {
     public function __construct(
-        public readonly string $id,
-        public readonly array $data,
+        public string $id,
+        public array $data,
     ) {
     }
 }

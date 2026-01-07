@@ -15,9 +15,9 @@ use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Shared\Domain\AggregateRoot;
 
-final class EloquentEntryRepository implements EntryRepository
+final readonly class EloquentEntryRepository implements EntryRepository
 {
-    public function __construct(private readonly FormRepository $formRepository)
+    public function __construct(private FormRepository $formRepository)
     {
     }
 

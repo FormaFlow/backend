@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace FormaFlow\Forms\Application\UpdateField;
 
-final class UpdateFieldCommand
+final readonly class UpdateFieldCommand
 {
     public function __construct(
-        public readonly string $formId,
-        public readonly string $fieldId,
-        public readonly array $fieldData
+        public string $formId,
+        public string $fieldId,
+        public array $fieldData
     ) {
     }
 }

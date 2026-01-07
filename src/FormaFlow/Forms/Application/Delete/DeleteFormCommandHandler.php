@@ -8,10 +8,10 @@ use FormaFlow\Forms\Domain\FormId;
 use FormaFlow\Forms\Domain\FormRepository;
 use InvalidArgumentException;
 
-final class DeleteFormCommandHandler
+final readonly class DeleteFormCommandHandler
 {
     public function __construct(
-        private readonly FormRepository $formRepository,
+        private FormRepository $formRepository,
     ) {
     }
 

@@ -104,10 +104,10 @@ final class NewReportFeaturesTest extends TestCase
             ]);
 
         $this->assertEquals(3, $response->json('total_entries'));
-        
+
         $stats = collect($response->json('stats'));
         $amountStats = $stats->firstWhere('field', $this->amountId);
-        
+
         $this->assertEquals(600, $amountStats['sum']); // 100+200+300
         $this->assertEquals(200, $amountStats['avg']);
         $this->assertEquals(100, $amountStats['min']);

@@ -8,10 +8,10 @@ use FormaFlow\Forms\Domain\FormId;
 use FormaFlow\Forms\Domain\FormRepository;
 use InvalidArgumentException;
 
-final class PublishFormCommandHandler
+final readonly class PublishFormCommandHandler
 {
     public function __construct(
-        private readonly FormRepository $repository,
+        private FormRepository $repository,
     ) {
     }
 

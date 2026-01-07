@@ -2,13 +2,13 @@
 
 namespace Tests\Feature;
 
+use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Str;
 use Illuminate\Foundation\Testing\TestCase;
+use Illuminate\Support\Facades\File;
 
-class CreateQuizFromJsonTest extends TestCase
+final class CreateQuizFromJsonTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -18,7 +18,7 @@ class CreateQuizFromJsonTest extends TestCase
     {
         parent::setUp();
         $this->jsonPath = base_path('tests/fixtures/quiz_test.json');
-        
+
         // Ensure fixtures directory exists
         if (!File::exists(dirname($this->jsonPath))) {
             File::makeDirectory(dirname($this->jsonPath), 0755, true);
@@ -78,8 +78,8 @@ class CreateQuizFromJsonTest extends TestCase
             'path' => $this->jsonPath,
             '--email' => 'quizmaster@example.com'
         ])
-        ->assertSuccessful()
-        ->expectsOutputToContain('Quiz "General Knowledge Quiz" created successfully');
+            ->assertSuccessful()
+            ->expectsOutputToContain('Quiz "General Knowledge Quiz" created successfully');
 
         // 4. Assert Database
         $this->assertDatabaseHas('forms', [
@@ -89,7 +89,10 @@ class CreateQuizFromJsonTest extends TestCase
             'single_submission' => true
         ]);
 
-        $form = \FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel::where('name', 'General Knowledge Quiz')->first();
+        $form = FormModel::where(
+            'name',
+            'General Knowledge Quiz'
+        )->first();
 
         $this->assertDatabaseHas('form_fields', [
             'form_id' => $form->id,
@@ -112,8 +115,8 @@ class CreateQuizFromJsonTest extends TestCase
             'path' => 'non_existent.json',
             '--email' => 'test@example.com'
         ])
-        ->assertFailed()
-        ->expectsOutputToContain('File not found');
+            ->assertFailed()
+            ->expectsOutputToContain('File not found');
     }
 
     public function test_it_fails_if_user_not_found(): void
@@ -124,7 +127,7 @@ class CreateQuizFromJsonTest extends TestCase
             'path' => $this->jsonPath,
             '--email' => 'unknown@example.com'
         ])
-        ->assertFailed()
-        ->expectsOutputToContain('User with email "unknown@example.com" not found');
+            ->assertFailed()
+            ->expectsOutputToContain('User with email "unknown@example.com" not found');
     }
 }
