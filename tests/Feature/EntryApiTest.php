@@ -342,8 +342,8 @@ final class EntryApiTest extends TestCase
         $response
             ->assertStatus(Response::HTTP_OK)
             ->assertJsonCount(1, 'entries')
-            ->assertJson(fn(AssertableJson $json) => $json->where('entries.0.form_id', $this->form->id)
-                ->etc()
+            ->assertJson(
+                fn(AssertableJson $json) => $json->where('entries.0.form_id', $this->form->id)->etc()
             );
     }
 

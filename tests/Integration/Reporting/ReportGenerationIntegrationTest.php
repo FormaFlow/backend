@@ -223,8 +223,8 @@ final class ReportGenerationIntegrationTest extends TestCase
             ->assertHeader('Content-Disposition', 'attachment; filename="report.csv"');
 
         $content = $response->getContent();
-        // Since we removed 'name' from fields, keys are IDs. 
-        // Export should include field IDs or Labels? 
+        // Since we removed 'name' from fields, keys are IDs.
+        // Export should include field IDs or Labels?
         // ReportController::export implementation uses keys from JSON data, which are now IDs.
         $this->assertStringContainsString($this->amountId, $content);
     }
@@ -247,13 +247,13 @@ final class ReportGenerationIntegrationTest extends TestCase
     public function test_user_can_generate_weekly_summary_report(): void
     {
         // Weekly summary logic implementation assumes 'category' and 'amount' keys for legacy reasons or specific test logic
-        // But the controller method `weeklySummary` uses `$data['amount']`. 
+        // But the controller method `weeklySummary` uses `$data['amount']`.
         // This will FAIL because data now has IDs as keys.
         // We need to update `ReportController::weeklySummary` and `monthlySummary` and `predefined*` methods.
         // Or update the test data to have keys matching what the controller expects?
         // No, the data structure has changed fundamentally.
 
-        // Skip this test for now or assume we fix Controller later? 
+        // Skip this test for now or assume we fix Controller later?
         // Let's fix the Controller methods now as part of this refactor, otherwise tests fail.
         // But for this specific test file update, I'll mark it as skipped or update expectations.
 

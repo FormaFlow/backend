@@ -100,9 +100,8 @@ final class ShowQuizResults extends Command
 
                 if ($form->is_quiz && $correctAnswer !== null && $answer !== '-') {
                     // Check correctness
-                    $isCorrect = false;
-                    $trimmedAnswer = is_string($answer) ? trim((string)$answer) : $answer;
-                    $trimmedCorrect = is_string($correctAnswer) ? trim((string)$correctAnswer) : $correctAnswer;
+                    $trimmedAnswer = is_string($answer) ? trim($answer) : $answer;
+                    $trimmedCorrect = is_string($correctAnswer) ? trim($correctAnswer) : $correctAnswer;
 
                     if (is_string($trimmedAnswer) && is_string($trimmedCorrect)) {
                         $isCorrect = mb_strtolower($trimmedAnswer) === mb_strtolower($trimmedCorrect);

@@ -7,7 +7,6 @@ namespace FormaFlow\Forms\Infrastructure\Http;
 use Exception;
 use FormaFlow\Entries\Application\Import\ImportEntriesCommand;
 use FormaFlow\Entries\Application\Import\ImportEntriesCommandHandler;
-use FormaFlow\Entries\Infrastructure\Persistence\Eloquent\EntryModel;
 use FormaFlow\Forms\Application\AddField\AddFieldCommand;
 use FormaFlow\Forms\Application\AddField\AddFieldCommandHandler;
 use FormaFlow\Forms\Application\Create\CreateFormCommand;
@@ -26,12 +25,12 @@ use FormaFlow\Forms\Application\Update\UpdateFormCommand;
 use FormaFlow\Forms\Application\Update\UpdateFormCommandHandler;
 use FormaFlow\Forms\Application\UpdateField\UpdateFieldCommand;
 use FormaFlow\Forms\Application\UpdateField\UpdateFieldCommandHandler;
-use FormaFlow\Forms\Domain\FormAggregate;
 use FormaFlow\Forms\Domain\FormId;
-use FormaFlow\Forms\Domain\FormName;
 use FormaFlow\Forms\Domain\FormRepository;
 use FormaFlow\Forms\Infrastructure\Http\Resources\FormResource;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use RuntimeException;
 use Shared\Infrastructure\Uuid;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
@@ -46,7 +45,7 @@ final readonly class FormController
     public function index(
         Request $request,
         FindFormsByUserIdQueryHandler $handler,
-    ): Response {
+    ): JsonResponse {
         $query = new FindFormsByUserIdQuery($request->user()->id);
         $result = $handler->handle($query);
 
@@ -66,7 +65,7 @@ final readonly class FormController
     public function store(
         Request $request,
         CreateFormCommandHandler $handler,
-    ): Response {
+    ): JsonResponse {
         $validated = $request->validate([
             'name' => 'required|string|min:3|max:255',
             'description' => 'nullable|string',
@@ -92,7 +91,7 @@ final readonly class FormController
         Request $request,
         string $id,
         FindFormByIdQueryHandler $handler,
-    ): Response {
+    ): JsonResponse {
         $query = new FindFormByIdQuery($id);
         $form = $handler->handle($query);
 
@@ -111,7 +110,7 @@ final readonly class FormController
         Request $request,
         string $id,
         PublishFormCommandHandler $handler,
-    ): Response {
+    ): JsonResponse {
         $form = $this->formRepository->findById(new FormId($id));
 
         if ($form === null) {
@@ -135,7 +134,7 @@ final readonly class FormController
         Request $request,
         string $id,
         AddFieldCommandHandler $handler,
-    ): Response {
+    ): JsonResponse {
         $form = $this->formRepository->findById(new FormId($id));
 
         if ($form === null) {
@@ -185,7 +184,7 @@ final readonly class FormController
         string $formId,
         string $fieldId,
         UpdateFieldCommandHandler $handler,
-    ): Response {
+    ): JsonResponse {
         $form = $this->formRepository->findById(new FormId($formId));
         if (!$form) {
             return response()->json(['error' => 'Not found'], Response::HTTP_NOT_FOUND);
@@ -220,7 +219,7 @@ final readonly class FormController
         Request $request,
         string $id,
         UpdateFormCommandHandler $handler
-    ): Response {
+    ): JsonResponse {
         $validated = $request->validate([
             'name' => 'sometimes|string|min:3|max:255',
             'description' => 'nullable|string',
@@ -241,7 +240,7 @@ final readonly class FormController
             $handler->handle($command);
 
             return response()->json(['message' => 'Form updated'], Response::HTTP_OK);
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $status = match ($e->getMessage()) {
                 'Not found' => Response::HTTP_NOT_FOUND,
                 'Forbidden' => Response::HTTP_FORBIDDEN,
@@ -257,7 +256,7 @@ final readonly class FormController
         Request $request,
         string $id,
         ImportEntriesCommandHandler $handler
-    ): Response {
+    ): JsonResponse {
         try {
             $command = new ImportEntriesCommand(
                 userId: $request->user()->id,
@@ -269,7 +268,7 @@ final readonly class FormController
             $result = $handler->handle($command);
 
             return response()->json($result);
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $status = match ($e->getMessage()) {
                 'Form not found' => Response::HTTP_NOT_FOUND,
                 'Forbidden' => Response::HTTP_FORBIDDEN,
@@ -286,7 +285,7 @@ final readonly class FormController
         Request $request,
         string $id,
         DeleteFormCommandHandler $handler
-    ): Response {
+    ): JsonResponse {
         $form = $this->formRepository->findById(new FormId($id));
         if (!$form) {
             return response()->json(['error' => 'Not found'], Response::HTTP_NOT_FOUND);
@@ -303,7 +302,7 @@ final readonly class FormController
         string $formId,
         string $fieldId,
         RemoveFieldCommandHandler $handler
-    ): Response {
+    ): JsonResponse {
         $form = $this->formRepository->findById(new FormId($formId));
         if (!$form) {
             return response()->json(['error' => 'Not found'], Response::HTTP_NOT_FOUND);

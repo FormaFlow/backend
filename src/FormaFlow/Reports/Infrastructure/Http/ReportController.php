@@ -7,9 +7,9 @@ namespace FormaFlow\Reports\Infrastructure\Http;
 use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
-use Symfony\Component\HttpFoundation\Response;
 
 final class ReportController extends Controller
 {
@@ -40,7 +40,7 @@ final class ReportController extends Controller
             $query->whereDate('created_at', '<=', $validated['date_to']);
         }
 
-        // Clone query for aggregation to avoid modifying the base query if we were to reuse it, 
+        // Clone query for aggregation to avoid modifying the base query if we were to reuse it,
         // though here we build it once.
         $totalEntries = $query->count();
 
@@ -121,7 +121,7 @@ final class ReportController extends Controller
 
         foreach ($numericFields as $field) {
             $jsonField = "json_extract(data, '$.\"{$field->id}\"')";
-            // Default to SUM for now. Maybe user wants AVG? 
+            // Default to SUM for now. Maybe user wants AVG?
             // The prompt says "output all fields", implied Sum usually.
             $selects[] = DB::raw("SUM($jsonField) as \"{$field->id}\"");
         }
@@ -300,7 +300,7 @@ final class ReportController extends Controller
         return response()->json(['groups' => $groups]);
     }
 
-    public function export(Request $request): Response
+    public function export(Request $request): Response|JsonResponse
     {
         $validated = $request->validate([
             'form_id' => 'required|string',
@@ -333,7 +333,6 @@ final class ReportController extends Controller
         }
 
         // CSV Export
-        $csvData = [];
         $headers = [];
 
         // Collect all possible keys from data
@@ -455,7 +454,7 @@ final class ReportController extends Controller
         // Find form with name 'Budget Tracker' or similar, or just aggregate all forms?
         // Test says "access predefined budget report", implies logic specific to budget nature.
         // It likely aggregates across all forms or a specific budget form if known.
-        // But simpler: The test sets up a 'Budget Tracker' form. 
+        // But simpler: The test sets up a 'Budget Tracker' form.
         // We need to find that form for the user.
 
         $form = DB::table('forms')
