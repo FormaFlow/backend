@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace FormaFlow\Entries\Infrastructure\Persistence\Eloquent;
 
 use Database\factories\EntryModelFactory;
+use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -16,7 +16,8 @@ use Illuminate\Support\Str;
 
 final class EntryModel extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+    use SoftDeletes;
 
     protected $table = 'entries';
 

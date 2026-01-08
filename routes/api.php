@@ -21,45 +21,7 @@ Route::options('{any}', static function () {
 
 Route::prefix('v1')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
-
-    Route::post('/login', static function (Request $request): Response {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|string|min:8',
-        ]);
-
-        $key = 'login:' . $request->ip();
-
-        if (RateLimiter::tooManyAttempts($key, 5)) {
-            return response()->json([
-                'message' => 'Too many login attempts. Please try again later.',
-            ], Response::HTTP_TOO_MANY_REQUESTS);
-        }
-
-        $user = UserModel::query()->where(['email' => $request->email])->first();
-
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            RateLimiter::hit($key, 60);
-
-            throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
-            ]);
-        }
-
-        RateLimiter::clear($key);
-
-        $token = $user->createToken('api-user-token')->plainTextToken;
-
-        return response()->json([
-            'token' => $token,
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-            ],
-            'message' => 'Login successful',
-        ]);
-    });
+    Route::post('/login', [AuthController::class, 'login']);
 
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);

@@ -8,6 +8,6 @@
 /scripts
 /database/database.sqlite
 /composer.lock
-
+/node_modules
 
 !**/.gitkeep

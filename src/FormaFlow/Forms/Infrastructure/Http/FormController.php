@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace FormaFlow\Forms\Infrastructure\Http;
 
 use Exception;
+use FormaFlow\Entries\Application\Import\ImportEntriesCommand;
+use FormaFlow\Entries\Application\Import\ImportEntriesCommandHandler;
 use FormaFlow\Entries\Infrastructure\Persistence\Eloquent\EntryModel;
 use FormaFlow\Forms\Application\AddField\AddFieldCommand;
 use FormaFlow\Forms\Application\AddField\AddFieldCommandHandler;
@@ -20,12 +22,15 @@ use FormaFlow\Forms\Application\Publish\PublishFormCommand;
 use FormaFlow\Forms\Application\Publish\PublishFormCommandHandler;
 use FormaFlow\Forms\Application\RemoveField\RemoveFieldCommand;
 use FormaFlow\Forms\Application\RemoveField\RemoveFieldCommandHandler;
+use FormaFlow\Forms\Application\Update\UpdateFormCommand;
+use FormaFlow\Forms\Application\Update\UpdateFormCommandHandler;
 use FormaFlow\Forms\Application\UpdateField\UpdateFieldCommand;
 use FormaFlow\Forms\Application\UpdateField\UpdateFieldCommandHandler;
 use FormaFlow\Forms\Domain\FormAggregate;
 use FormaFlow\Forms\Domain\FormId;
 use FormaFlow\Forms\Domain\FormName;
 use FormaFlow\Forms\Domain\FormRepository;
+use FormaFlow\Forms\Infrastructure\Http\Resources\FormResource;
 use Illuminate\Http\Request;
 use Shared\Infrastructure\Uuid;
 use Symfony\Component\HttpFoundation\Response;
@@ -45,35 +50,10 @@ final readonly class FormController
         $query = new FindFormsByUserIdQuery($request->user()->id);
         $result = $handler->handle($query);
 
-        $transformedForms = [];
-        foreach ($result['forms'] as $form) {
-            $fieldsData = [];
-            foreach ($form->fields() as $field) {
-                $fieldsData[] = [
-                    'id' => $field->id(),
-                    'label' => $field->label(),
-                    'type' => $field->type()->value(),
-                    'required' => $field->isRequired(),
-                    'options' => $field->options(),
-                    'unit' => $field->unit(),
-                    'category' => $field->category(),
-                    'order' => $field->order(),
-                    'correctAnswer' => $field->correctAnswer(),
-                    'points' => $field->points(),
-                ];
-            }
-
-            $transformedForms[] = [
-                'id' => $form->id()->value(),
-                'name' => $form->name()->value(),
-                'description' => $form->description(),
-                'published' => $form->isPublished(),
-                'is_quiz' => $form->isQuiz(),
-                'single_submission' => $form->isSingleSubmission(),
-                'fields_count' => count($form->fields()),
-                'fields' => $fieldsData,
-            ];
-        }
+        $transformedForms = array_map(
+            fn($form) => new FormResource($form),
+            $result['forms']
+        );
 
         return response()->json([
             'forms' => $transformedForms,
@@ -124,32 +104,7 @@ final readonly class FormController
             return response()->json(['error' => 'Forbidden'], Response::HTTP_FORBIDDEN);
         }
 
-        $fieldsData = [];
-        foreach ($form->fields() as $field) {
-            $fieldsData[] = [
-                'id' => $field->id(),
-                'label' => $field->label(),
-                'type' => $field->type()->value(),
-                'required' => $field->isRequired(),
-                'options' => $field->options(),
-                'unit' => $field->unit(),
-                'category' => $field->category(),
-                'order' => $field->order(),
-                'correctAnswer' => $field->correctAnswer(),
-                'points' => $field->points(),
-            ];
-        }
-
-        return response()->json([
-            'id' => $form->id()->value(),
-            'name' => $form->name()->value(),
-            'description' => $form->description(),
-            'published' => $form->isPublished(),
-            'is_quiz' => $form->isQuiz(),
-            'single_submission' => $form->isSingleSubmission(),
-            'fields_count' => count($form->fields()),
-            'fields' => $fieldsData,
-        ]);
+        return response()->json(new FormResource($form));
     }
 
     public function publish(
@@ -263,7 +218,8 @@ final readonly class FormController
 
     public function update(
         Request $request,
-        string $id
+        string $id,
+        UpdateFormCommandHandler $handler
     ): Response {
         $validated = $request->validate([
             'name' => 'sometimes|string|min:3|max:255',
@@ -272,110 +228,58 @@ final readonly class FormController
             'single_submission' => 'sometimes|boolean',
         ]);
 
-        $formId = new FormId($id);
-        $form = $this->formRepository->findById($formId);
+        try {
+            $command = new UpdateFormCommand(
+                id: $id,
+                userId: $request->user()->id,
+                name: $validated['name'] ?? null,
+                description: array_key_exists('description', $validated) ? $validated['description'] : null,
+                isQuiz: $validated['is_quiz'] ?? null,
+                singleSubmission: $validated['single_submission'] ?? null,
+            );
 
-        if ($form === null) {
-            return response()->json(['error' => 'Not found'], Response::HTTP_NOT_FOUND);
+            $handler->handle($command);
+
+            return response()->json(['message' => 'Form updated'], Response::HTTP_OK);
+        } catch (\RuntimeException $e) {
+            $status = match ($e->getMessage()) {
+                'Not found' => Response::HTTP_NOT_FOUND,
+                'Forbidden' => Response::HTTP_FORBIDDEN,
+                default => Response::HTTP_INTERNAL_SERVER_ERROR,
+            };
+            return response()->json(['error' => $e->getMessage()], $status);
+        } catch (Throwable $e) {
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        if ($form->userId() !== $request->user()->id) {
-            return response()->json(['error' => 'Forbidden'], Response::HTTP_FORBIDDEN);
-        }
-
-        $updatedForm = FormAggregate::fromPrimitives(
-            id: $formId,
-            userId: $form->userId(),
-            name: isset($validated['name']) ? new FormName($validated['name']) : $form->name(),
-            description: $validated['description'] ?? $form->description(),
-            published: $form->isPublished(),
-            version: $form->isPublished() ? $form->getVersion() + 1 : $form->getVersion(),
-            createdAt: $form->createdAt(),
-            fields: $form->fields(),
-            isQuiz: $validated['is_quiz'] ?? $form->isQuiz(),
-            singleSubmission: $validated['single_submission'] ?? $form->isSingleSubmission(),
-        );
-
-        $this->formRepository->save($updatedForm);
-
-        return response()->json(['message' => 'Form updated'], Response::HTTP_OK);
     }
 
-    public function importEntries(Request $request, string $id): Response
-    {
-        $form = $this->formRepository->findById(new FormId($id));
+    public function importEntries(
+        Request $request,
+        string $id,
+        ImportEntriesCommandHandler $handler
+    ): Response {
+        try {
+            $command = new ImportEntriesCommand(
+                userId: $request->user()->id,
+                formId: $id,
+                csvData: (string)$request->input('csv_data'),
+                delimiter: (string)$request->input('delimiter', ',')
+            );
 
-        if ($form === null) {
-            return response()->json(['error' => 'Form not found'], Response::HTTP_NOT_FOUND);
+            $result = $handler->handle($command);
+
+            return response()->json($result);
+        } catch (\RuntimeException $e) {
+            $status = match ($e->getMessage()) {
+                'Form not found' => Response::HTTP_NOT_FOUND,
+                'Forbidden' => Response::HTTP_FORBIDDEN,
+                'Form must be published' => Response::HTTP_BAD_REQUEST,
+                default => Response::HTTP_INTERNAL_SERVER_ERROR,
+            };
+            return response()->json(['error' => $e->getMessage()], $status);
+        } catch (Throwable $e) {
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        if ($form->userId() !== $request->user()->id) {
-            return response()->json(['error' => 'Forbidden'], Response::HTTP_FORBIDDEN);
-        }
-
-        if (!$form->isPublished()) {
-            return response()->json(['error' => 'Form must be published'], Response::HTTP_BAD_REQUEST);
-        }
-
-        $csvData = $request->input('csv_data');
-        $delimiter = $request->input('delimiter', ',');
-
-        $lines = explode("\n", trim($csvData));
-        $headers = str_getcsv(array_shift($lines), $delimiter);
-
-        $imported = 0;
-        $errors = [];
-
-        foreach ($lines as $index => $line) {
-            $values = str_getcsv($line, $delimiter);
-            // Handle potentially mismatched header/value counts
-            if (count($values) !== count($headers)) {
-                $errors[] = "Row " . ($index + 2) . ": Column count mismatch";
-                continue;
-            }
-            $csvRow = array_combine($headers, $values);
-            $entryData = [];
-
-            $valid = true;
-            foreach ($form->fields() as $field) {
-                $val = $csvRow[$field->label()] ?? null;
-
-                if ($field->isRequired() && empty($val)) {
-                    $errors[] = "Row " . ($index + 2) . ": Missing required field '{$field->label()}'";
-                    $valid = false;
-                    break;
-                }
-
-                if (isset($val)) {
-                    switch ($field->type()->value()) {
-                        case 'number':
-                        case 'currency':
-                            if (!is_numeric($val)) {
-                                $errors[] = "Row " . ($index + 2) . ": Invalid number for '{$field->label()}'";
-                                $valid = false;
-                            }
-                            break;
-                    }
-                    $entryData[$field->id()] = $val;
-                }
-            }
-
-            if ($valid) {
-                $entryId = Uuid::generate();
-                EntryModel::query()->create([
-                    'id' => $entryId,
-                    'form_id' => $id,
-                    'user_id' => $request->user()->id,
-                    'data' => $entryData,
-                ]);
-                $imported++;
-            }
-        }
-
-        return response()->json([
-            'imported' => $imported,
-            'errors' => $errors,
-        ]);
     }
 
     public function destroy(

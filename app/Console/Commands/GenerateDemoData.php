@@ -29,7 +29,7 @@ final class GenerateDemoData extends Command
         $password = 'cPAiAibpNzn7g88';
 
         $user = UserModel::query()->create([
-            'id' => (string) Str::uuid(),
+            'id' => (string)Str::uuid(),
             'name' => 'Demo User ' . $randomInt,
             'email' => $email,
             'password' => Hash::make($password),
@@ -49,16 +49,16 @@ final class GenerateDemoData extends Command
     private function createBudgetForm(UserModel $user): void
     {
         $form = FormModel::query()->create([
-            'id' => (string) Str::uuid(),
+            'id' => (string)Str::uuid(),
             'user_id' => $user->id,
             'name' => 'Budget Tracker',
             'description' => 'Track income and expenses',
             'published' => true,
         ]);
 
-        $amountId = (string) Str::uuid();
-        $categoryId = (string) Str::uuid();
-        $descId = (string) Str::uuid();
+        $amountId = (string)Str::uuid();
+        $categoryId = (string)Str::uuid();
+        $descId = (string)Str::uuid();
 
         // Add fields directly via DB
         DB::table('form_fields')->insert([
@@ -119,9 +119,9 @@ final class GenerateDemoData extends Command
                 $isIncome = (random_int(1, 100) > 70); // 30% income, 70% expense
                 $category = $isIncome ? 'income' : 'expense';
                 $amount = $isIncome ? random_int(1000, 5000) : random_int(10, 200);
-                
+
                 EntryModel::query()->create([
-                    'id' => (string) Str::uuid(),
+                    'id' => (string)Str::uuid(),
                     'form_id' => $form->id,
                     'user_id' => $user->id,
                     'data' => [
@@ -138,14 +138,14 @@ final class GenerateDemoData extends Command
     private function createMedicineForm(UserModel $user): void
     {
         $form = FormModel::query()->create([
-            'id' => (string) Str::uuid(),
+            'id' => (string)Str::uuid(),
             'user_id' => $user->id,
             'name' => 'Medicine Tracker',
             'description' => 'Track daily medicine intake (ml)',
             'published' => true,
         ]);
 
-        $dosageId = (string) Str::uuid();
+        $dosageId = (string)Str::uuid();
 
         DB::table('form_fields')->insert([
             [
@@ -173,13 +173,13 @@ final class GenerateDemoData extends Command
         for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
             $dailyTotal = 0;
             $target = random_int(35, 50);
-            
+
             // Distribute doses across the day
             $hour = 8; // Start at 8 AM
 
             while ($dailyTotal < $target) {
                 $dose = random_int(1, 5);
-                
+
                 // Don't exceed target too much (optional, but requested "35 to 50")
                 // If we are already >= 35, stop.
                 if (($dailyTotal + $dose > 50) && $dailyTotal >= 35) {
@@ -187,9 +187,9 @@ final class GenerateDemoData extends Command
                 }
 
                 $dailyTotal += $dose;
-                
+
                 EntryModel::query()->create([
-                    'id' => (string) Str::uuid(),
+                    'id' => (string)Str::uuid(),
                     'form_id' => $form->id,
                     'user_id' => $user->id,
                     'data' => [

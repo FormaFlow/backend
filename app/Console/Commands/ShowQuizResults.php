@@ -67,7 +67,7 @@ final class ShowQuizResults extends Command
         // Headers
         $headers = ['User', 'Score', 'Time', 'Date'];
         $sortedFields = $form->fields->sortBy('order');
-        
+
         foreach ($sortedFields as $field) {
             $headers[] = Str::limit($field->label, 20);
         }
@@ -76,14 +76,14 @@ final class ShowQuizResults extends Command
         $rows = [];
         foreach ($entries as $entry) {
             $row = [];
-            
+
             // User
             $userName = $users[$entry->user_id] ?? 'Unknown User';
             $row[] = $userName;
-            
+
             // Score
             $row[] = $entry->score ?? 0;
-            
+
             // Time
             $duration = $entry->duration ? gmdate("H:i:s", (int)$entry->duration) : '-';
             $row[] = $duration;
@@ -95,31 +95,31 @@ final class ShowQuizResults extends Command
             foreach ($sortedFields as $field) {
                 $answer = $entry->data[$field->id] ?? '-';
                 $correctAnswer = $field->correct_answer;
-                
+
                 $display = (string)$answer;
-                
+
                 if ($form->is_quiz && $correctAnswer !== null && $answer !== '-') {
-                     // Check correctness
-                     $isCorrect = false;
-                     $trimmedAnswer = is_string($answer) ? trim((string)$answer) : $answer;
-                     $trimmedCorrect = is_string($correctAnswer) ? trim((string)$correctAnswer) : $correctAnswer;
+                    // Check correctness
+                    $isCorrect = false;
+                    $trimmedAnswer = is_string($answer) ? trim((string)$answer) : $answer;
+                    $trimmedCorrect = is_string($correctAnswer) ? trim((string)$correctAnswer) : $correctAnswer;
 
-                     if (is_string($trimmedAnswer) && is_string($trimmedCorrect)) {
-                         $isCorrect = mb_strtolower($trimmedAnswer) === mb_strtolower($trimmedCorrect);
-                     } else {
-                         $isCorrect = $trimmedAnswer == $trimmedCorrect;
-                     }
+                    if (is_string($trimmedAnswer) && is_string($trimmedCorrect)) {
+                        $isCorrect = mb_strtolower($trimmedAnswer) === mb_strtolower($trimmedCorrect);
+                    } else {
+                        $isCorrect = $trimmedAnswer == $trimmedCorrect;
+                    }
 
-                     if ($isCorrect) {
-                         $display .= " (✔)";
-                     } else {
-                         $display .= " (✘)";
-                     }
+                    if ($isCorrect) {
+                        $display .= " (✔)";
+                    } else {
+                        $display .= " (✘)";
+                    }
                 }
-                
+
                 $row[] = $display;
             }
-            
+
             $rows[] = $row;
         }
 

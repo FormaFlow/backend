@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FormaFlow\Entries\Infrastructure\Http;
 
+use DateTimeInterface;
 use FormaFlow\Entries\Application\Create\CreateEntryCommand;
 use FormaFlow\Entries\Application\Create\CreateEntryCommandHandler;
 use FormaFlow\Entries\Application\Stats\GetEntriesStatsQuery;
@@ -22,7 +23,6 @@ use Illuminate\Support\Facades\Validator;
 use Shared\Infrastructure\Uuid;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
-
 
 final class EntryController extends Controller
 {
@@ -79,7 +79,7 @@ final class EntryController extends Controller
 
         return response()->json([
             'entries' => array_map(fn($entry) => array_merge($entry, [
-                'created_at' => $entry['created_at'] instanceof \DateTimeInterface
+                'created_at' => $entry['created_at'] instanceof DateTimeInterface
                     ? $entry['created_at']->format('c')
                     : $entry['created_at'],
             ]), $entries),

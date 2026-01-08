@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<ruleset name="FormaFlow Standard">
+    <description>PSR-12 coding standard for FormaFlow Backend.</description>
+
+    <file>app</file>
+    <file>src</file>
+    <file>tests</file>
+    <file>database</file>
+    <file>routes</file>
+
+    <arg name="colors"/>
+    <arg name="extensions" value="php"/>
+    <arg value="p"/>
+
+    <rule ref="PSR12"/>
+
+    <rule ref="PSR1.Methods.CamelCapsMethodName">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+
+    <exclude-pattern>vendor/*</exclude-pattern>
+    <exclude-pattern>storage/*</exclude-pattern>
+    <exclude-pattern>bootstrap/cache/*</exclude-pattern>
+</ruleset>

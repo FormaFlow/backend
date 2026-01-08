@@ -90,4 +90,44 @@ final class AuthController extends Controller
             'token' => $token,
         ]);
     }
+
+    public function login(Request $request): JsonResponse
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string|min:8',
+        ]);
+
+        $key = 'login:' . $request->ip();
+
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($key, 5)) {
+            return response()->json([
+                'message' => 'Too many login attempts. Please try again later.',
+            ], Response::HTTP_TOO_MANY_REQUESTS);
+        }
+
+        $user = UserModel::query()->where(['email' => $request->email])->first();
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            \Illuminate\Support\Facades\RateLimiter::hit($key, 60);
+
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'email' => ['The provided credentials are incorrect.'],
+            ]);
+        }
+
+        \Illuminate\Support\Facades\RateLimiter::clear($key);
+
+        $token = $user->createToken('api-user-token')->plainTextToken;
+
+        return response()->json([
+            'token' => $token,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+            ],
+            'message' => 'Login successful',
+        ]);
+    }
 }
