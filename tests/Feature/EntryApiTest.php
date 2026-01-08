@@ -96,6 +96,43 @@ final class EntryApiTest extends TestCase
             ]);
     }
 
+    public function test_returns_entries_with_form_and_fields(): void
+    {
+        $entry = EntryModel::factory()->create([
+            'form_id' => $this->form->id,
+            'user_id' => $this->user->id,
+            'data' => ['field-amount' => 100],
+        ]);
+
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
+            ->getJson($this->baseUrl);
+
+        $response
+            ->assertStatus(Response::HTTP_OK)
+            ->assertJsonStructure([
+                'entries' => [
+                    '*' => [
+                        'id',
+                        'form_id',
+                        'data',
+                        'created_at',
+                        'form' => [
+                            'id',
+                            'name',
+                            'fields' => [
+                                '*' => [
+                                    'id',
+                                    'label',
+                                    'type',
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]);
+    }
+
     public function test_creates_new_entry_for_authenticated_user(): void
     {
         $entryData = [

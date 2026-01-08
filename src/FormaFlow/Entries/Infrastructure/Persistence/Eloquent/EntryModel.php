@@ -8,6 +8,8 @@ use Database\factories\EntryModelFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
@@ -35,6 +37,11 @@ final class EntryModel extends Model
     protected $casts = [
         'data' => 'array',
     ];
+
+    public function form(): BelongsTo
+    {
+        return $this->belongsTo(FormModel::class, 'form_id', 'id');
+    }
 
     public function tags(): HasMany
     {

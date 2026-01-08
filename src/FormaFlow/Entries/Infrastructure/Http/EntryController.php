@@ -70,7 +70,7 @@ final class EntryController extends Controller
             $filters['sort_order'] = $request->input('sort_order', 'asc');
         }
 
-        [$entries, $total] = $this->entryRepository->findByUserId(
+        [$entries, $total] = $this->entryRepository->findWithFormByUserId(
             $request->user()->id,
             $filters,
             (int)$limit,
@@ -78,13 +78,11 @@ final class EntryController extends Controller
         );
 
         return response()->json([
-            'entries' => array_map(fn($entry) => [
-                'id' => $entry->id()->value(),
-                'form_id' => $entry->formId()->value(),
-                'data' => $entry->data(),
-                'score' => $entry->score(),
-                'created_at' => $entry->createdAt()->format('Y-m-d H:i:s'),
-            ], $entries),
+            'entries' => array_map(fn($entry) => array_merge($entry, [
+                'created_at' => $entry['created_at'] instanceof \DateTimeInterface
+                    ? $entry['created_at']->format('c')
+                    : $entry['created_at'],
+            ]), $entries),
             'total' => $total,
             'limit' => $limit,
             'offset' => $offset,
@@ -141,7 +139,7 @@ final class EntryController extends Controller
             'data' => $entry->data(),
             'tags' => $tags,
             'score' => $entry->score(),
-            'created_at' => $entry->createdAt()->format('Y-m-d H:i:s'),
+            'created_at' => $entry->createdAt()->format('c'),
         ]);
     }
 
@@ -230,7 +228,7 @@ final class EntryController extends Controller
             'form_id' => $entry->formId()->value(),
             'data' => $entry->data(),
             'score' => $entry->score(),
-            'created_at' => $entry->createdAt()->format('Y-m-d H:i:s'),
+            'created_at' => $entry->createdAt()->format('c'),
         ];
 
         if ($form->isQuiz()) {
@@ -342,7 +340,7 @@ final class EntryController extends Controller
             'form_id' => $updated->formId()->value(),
             'data' => $updated->data(),
             'score' => $updated->score(),
-            'created_at' => $updated->createdAt()->format('Y-m-d H:i:s'),
+            'created_at' => $updated->createdAt()->format('c'),
         ]);
     }
 

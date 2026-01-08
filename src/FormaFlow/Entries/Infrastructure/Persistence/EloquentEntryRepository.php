@@ -122,6 +122,76 @@ final readonly class EloquentEntryRepository implements EntryRepository
         return [$entries, $total];
     }
 
+    public function findWithFormByUserId(string $userId, array $filters = [], int $limit = 15, int $offset = 0): array
+    {
+        $query = EntryModel::query()->where('user_id', $userId);
+
+        if (isset($filters['form_id'])) {
+            $query->where('form_id', $filters['form_id']);
+        }
+
+        if (isset($filters['date_from'])) {
+            $query->where('created_at', '>=', $filters['date_from']);
+        }
+        if (isset($filters['date_to'])) {
+            $query->where('created_at', '<=', $filters['date_to'] . ' 23:59:59');
+        }
+
+        if (isset($filters['tags'])) {
+            $tags = is_array($filters['tags']) ? $filters['tags'] : [$filters['tags']];
+            $query->whereHas('tags', function ($q) use ($tags) {
+                $q->whereIn('tag', $tags);
+            });
+        }
+
+        if (isset($filters['sort_by'])) {
+            $sortOrder = $filters['sort_order'] ?? 'asc';
+
+            if (str_starts_with($filters['sort_by'], 'data.')) {
+                $field = str_replace('data.', '', $filters['sort_by']);
+                $query->orderByRaw("json_extract(data, '$.{$field}') {$sortOrder}");
+            } else {
+                $query->orderBy($filters['sort_by'], $sortOrder);
+            }
+        } else {
+            $query->orderBy('created_at', 'desc');
+        }
+
+        $total = $query->count();
+
+        $models = $query
+            ->with(['form.fields'])
+            ->limit($limit)
+            ->offset($offset)
+            ->get();
+
+        $entries = $models->map(fn($model) => [
+            'id' => $model->id,
+            'form_id' => $model->form_id,
+            'user_id' => $model->user_id,
+            'data' => $model->data,
+            'created_at' => $model->created_at,
+            'score' => (int)$model->score,
+            'duration' => (int)$model->duration,
+            'form' => $model->form ? [
+                'id' => $model->form->id,
+                'name' => $model->form->name,
+                'fields' => $model->form->fields->map(fn($f) => [
+                    'id' => $f->id,
+                    'label' => $f->label,
+                    'type' => $f->type,
+                    'required' => $f->required,
+                    'options' => $f->options,
+                    'unit' => $f->unit,
+                    'category' => $f->category,
+                    'order' => $f->order,
+                ])->sortBy('order')->values()->toArray(),
+            ] : null,
+        ])->toArray();
+
+        return [$entries, $total];
+    }
+
     public function findByFormId(string $formId, int $limit = 15, int $offset = 0): array
     {
         $models = EntryModel::query()->where('form_id', $formId)
