@@ -6,6 +6,7 @@ namespace App\Providers;
 
 use App\Policies\FormPolicy;
 use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
+use Illuminate\Console\Command;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -19,6 +20,10 @@ final class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        $this->app->resolving(Command::class, function ($command, $app) {
+            $command->setLaravel($app);
+        });
+
         Gate::policy(
             FormModel::class,
             FormPolicy::class
