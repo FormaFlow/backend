@@ -34,6 +34,7 @@ final class EloquentUserRepository implements UserRepository
                     'password' => $aggregate->password(),
                     'email_verified_at' => $aggregate->emailVerifiedAt(),
                     'remember_token' => $aggregate->rememberToken(),
+                    'timezone' => $aggregate->timezone(),
                 ]
             );
         });
@@ -71,6 +72,7 @@ final class EloquentUserRepository implements UserRepository
             emailVerifiedAt: $model->email_verified_at,
             rememberToken: $model->remember_token,
             createdAt: $model->created_at,
+            timezone: $model->timezone ?? 'Europe/Moscow',
         );
     }
 
@@ -89,6 +91,7 @@ final class EloquentUserRepository implements UserRepository
             emailVerifiedAt: $model->email_verified_at,
             rememberToken: $model->remember_token,
             createdAt: $model->created_at,
+            timezone: $model->timezone ?? 'Europe/Moscow',
         );
     }
 }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace FormaFlow\Entries\Infrastructure\Http;
 
+use DateInvalidTimeZoneException;
+use DateMalformedStringException;
 use DateTimeInterface;
 use FormaFlow\Entries\Application\Create\CreateEntryCommand;
 use FormaFlow\Entries\Application\Create\CreateEntryCommandHandler;
@@ -90,6 +92,10 @@ final class EntryController extends Controller
     }
 
 
+    /**
+     * @throws DateInvalidTimeZoneException
+     * @throws DateMalformedStringException
+     */
     public function stats(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [

@@ -22,6 +22,7 @@ final class AuthController extends Controller
             'name' => 'required|string|min:2|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
+            'timezone' => 'sometimes|string|timezone',
         ]);
 
         if ($validator->fails()) {
@@ -36,6 +37,7 @@ final class AuthController extends Controller
             'name' => $request->input('name'),
             'email' => $request->input('email'),
             'password' => Hash::make($request->input('password')),
+            'timezone' => $request->input('timezone', 'Europe/Moscow'),
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -48,6 +50,7 @@ final class AuthController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'email_verified_at' => $user->email_verified_at,
+                'timezone' => $user->timezone,
             ],
         ], Response::HTTP_CREATED);
     }
@@ -68,6 +71,33 @@ final class AuthController extends Controller
         if (!$user) {
             return response()->json(['error' => 'User not found'], Response::HTTP_NOT_FOUND);
         }
+
+        return response()->json(new UserResource($user));
+    }
+
+    public function updateProfile(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'sometimes|string|min:2|max:255',
+            'email' => 'sometimes|email|unique:users,email,' . $user->id,
+            'timezone' => 'sometimes|string|timezone',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $user->fill($request->only(['name', 'email', 'timezone']));
+        $user->save();
 
         return response()->json(new UserResource($user));
     }

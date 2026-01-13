@@ -16,6 +16,7 @@ final class UserAggregate extends AggregateRoot
     private ?DateTime $emailVerifiedAt = null;
     private ?string $rememberToken = null;
     private DateTime $createdAt;
+    private string $timezone = 'Europe/Moscow';
 
     public function __construct(
         private readonly UserId $id,
@@ -80,6 +81,16 @@ final class UserAggregate extends AggregateRoot
         return $this->createdAt;
     }
 
+    public function timezone(): string
+    {
+        return $this->timezone;
+    }
+
+    public function setTimezone(string $timezone): void
+    {
+        $this->timezone = $timezone;
+    }
+
     public static function fromPrimitives(
         UserId $id,
         UserName $name,
@@ -87,13 +98,15 @@ final class UserAggregate extends AggregateRoot
         ?string $password,
         ?DateTime $emailVerifiedAt,
         ?string $rememberToken,
-        DateTime $createdAt
+        DateTime $createdAt,
+        string $timezone = 'Europe/Moscow'
     ): self {
         $self = new self($id, $name, $createdAt);
         $self->email = $email;
         $self->password = $password;
         $self->emailVerifiedAt = $emailVerifiedAt;
         $self->rememberToken = $rememberToken;
+        $self->timezone = $timezone;
         return $self;
     }
 }

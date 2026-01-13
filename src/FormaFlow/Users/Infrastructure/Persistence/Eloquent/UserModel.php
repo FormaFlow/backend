@@ -31,6 +31,7 @@ final class UserModel extends Model implements AuthenticatableContract, Authoriz
         'name',
         'email',
         'password',
+        'timezone',
         'email_verified_at',
         'remember_token',
     ];

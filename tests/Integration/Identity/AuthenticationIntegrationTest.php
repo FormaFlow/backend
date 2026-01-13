@@ -35,6 +35,27 @@ final class AuthenticationIntegrationTest extends TestCase
         ]);
     }
 
+    public function test_user_can_register_with_timezone(): void
+    {
+        $userData = [
+            'name' => 'Jane Doe',
+            'email' => 'jane@example.com',
+            'password' => 'SecurePassword123!',
+            'password_confirmation' => 'SecurePassword123!',
+            'timezone' => 'Asia/Tokyo',
+        ];
+
+        $response = $this->postJson('/api/v1/register', $userData);
+
+        $response->assertStatus(Response::HTTP_CREATED)
+            ->assertJsonPath('user.timezone', 'Asia/Tokyo');
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'jane@example.com',
+            'timezone' => 'Asia/Tokyo',
+        ]);
+    }
+
     public function test_user_receives_verification_email_after_registration(): void
     {
         // TODO: Implement email verification logic
@@ -43,9 +64,7 @@ final class AuthenticationIntegrationTest extends TestCase
 
     public function test_user_can_login_with_valid_credentials(): void
     {
-        RateLimiter::for('login', static function () {
-            return Limit::none();
-        });
+        RateLimiter::clear('login:127.0.0.1');
 
         UserModel::factory()->create([
             'email' => 'test@example.com',
@@ -63,9 +82,7 @@ final class AuthenticationIntegrationTest extends TestCase
 
     public function test_user_cannot_login_with_invalid_credentials(): void
     {
-        RateLimiter::for('login', static function () {
-            return Limit::none();
-        });
+        RateLimiter::clear('login:127.0.0.1');
 
         UserModel::factory()->create([
             'email' => 'test@example.com',
