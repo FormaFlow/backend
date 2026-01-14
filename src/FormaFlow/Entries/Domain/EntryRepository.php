@@ -33,4 +33,11 @@ interface EntryRepository extends Repository
         DateTimeImmutable $startDate,
         ?DateTimeImmutable $endDate = null
     ): array;
+
+    public function countEntriesByDateRange(
+        FormId $formId,
+        string $userId,
+        DateTimeImmutable $startDate,
+        ?DateTimeImmutable $endDate = null
+    ): int;
 }

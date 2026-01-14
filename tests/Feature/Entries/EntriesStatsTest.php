@@ -102,6 +102,11 @@ final class EntriesStatsTest extends TestCase
             ->assertJson([
                 'stats' => [
                     [
+                        'field' => '_count',
+                        'sum_today' => 2.0,
+                        'sum_month' => 3.0,
+                    ],
+                    [
                         'field' => 'field-amount',
                         'sum_today' => 150.0,
                         'sum_month' => 350.0,
@@ -133,7 +138,13 @@ final class EntriesStatsTest extends TestCase
         $response
             ->assertStatus(Response::HTTP_OK)
             ->assertJson([
-                'stats' => [],
+                'stats' => [
+                    [
+                        'field' => '_count',
+                        'sum_today' => 1.0,
+                        'sum_month' => 1.0,
+                    ],
+                ],
             ]);
     }
 
@@ -146,7 +157,13 @@ final class EntriesStatsTest extends TestCase
         $response
             ->assertStatus(Response::HTTP_OK)
             ->assertJson([
-                'stats' => [],
+                'stats' => [
+                    [
+                        'field' => '_count',
+                        'sum_today' => 0.0,
+                        'sum_month' => 0.0,
+                    ],
+                ],
             ]);
     }
 }

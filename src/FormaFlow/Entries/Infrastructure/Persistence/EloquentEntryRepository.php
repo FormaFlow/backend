@@ -255,4 +255,23 @@ final readonly class EloquentEntryRepository implements EntryRepository
 
         return $results;
     }
+
+    public function countEntriesByDateRange(
+        FormId $formId,
+        string $userId,
+        DateTimeImmutable $startDate,
+        ?DateTimeImmutable $endDate = null
+    ): int {
+        $query = EntryModel::query()
+            ->where('form_id', $formId->value())
+            ->where('user_id', $userId);
+
+        if ($endDate) {
+            $query->whereBetween('created_at', [$startDate, $endDate]);
+        } else {
+            $query->whereDate('created_at', $startDate);
+        }
+
+        return $query->count();
+    }
 }

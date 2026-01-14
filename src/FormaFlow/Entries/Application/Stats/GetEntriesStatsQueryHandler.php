@@ -37,6 +37,7 @@ final readonly class GetEntriesStatsQueryHandler
         $user = $this->userRepository->findById(new UserId($query->userId));
         $timezoneStr = $user?->timezone() ?? 'Europe/Moscow';
         $timezone = new DateTimeZone($timezoneStr);
+        $utc = new DateTimeZone('UTC');
 
         $numericFields = [];
         foreach ($form->fields() as $field) {
@@ -45,55 +46,72 @@ final readonly class GetEntriesStatsQueryHandler
             }
         }
 
-        if (empty($numericFields)) {
-            return new GetEntriesStatsQueryResult([]);
-        }
-
-        $utc = new DateTimeZone('UTC');
-
         $todayStart = new DateTimeImmutable('today', $timezone);
         $todayEnd = (new DateTimeImmutable('tomorrow', $timezone))->modify('-1 second');
 
-        $todayStatsRaw = $this->entryRepository->getSumOfNumericFieldsByDateRange(
+        $monthStart = new DateTimeImmutable('first day of this month 00:00:00', $timezone);
+        $monthEnd = new DateTimeImmutable('last day of this month 23:59:59', $timezone);
+
+        $stats = [];
+
+        $todayCount = $this->entryRepository->countEntriesByDateRange(
             new FormId($query->formId),
             $query->userId,
             $todayStart->setTimezone($utc),
             $todayEnd->setTimezone($utc)
         );
 
-        $monthStart = new DateTimeImmutable('first day of this month 00:00:00', $timezone);
-        $monthEnd = new DateTimeImmutable('last day of this month 23:59:59', $timezone);
-
-        $monthStatsRaw = $this->entryRepository->getSumOfNumericFieldsByDateRange(
+        $monthCount = $this->entryRepository->countEntriesByDateRange(
             new FormId($query->formId),
             $query->userId,
             $monthStart->setTimezone($utc),
             $monthEnd->setTimezone($utc)
         );
 
-        $stats = [];
-        foreach ($numericFields as $field) {
-            $todaySum = 0.0;
-            foreach ($todayStatsRaw as $stat) {
-                if ($stat['field'] === $field) {
-                    $todaySum = $stat['total_sum'];
-                    break;
-                }
-            }
+        $stats[] = [
+            'field' => '_count',
+            'sum_today' => (float)$todayCount,
+            'sum_month' => (float)$monthCount,
+        ];
 
-            $monthSum = 0.0;
-            foreach ($monthStatsRaw as $stat) {
-                if ($stat['field'] === $field) {
-                    $monthSum = $stat['total_sum'];
-                    break;
-                }
-            }
+        if (!empty($numericFields)) {
+            $todayStatsRaw = $this->entryRepository->getSumOfNumericFieldsByDateRange(
+                new FormId($query->formId),
+                $query->userId,
+                $todayStart->setTimezone($utc),
+                $todayEnd->setTimezone($utc)
+            );
 
-            $stats[] = [
-                'field' => $field,
-                'sum_today' => $todaySum,
-                'sum_month' => $monthSum,
-            ];
+            $monthStatsRaw = $this->entryRepository->getSumOfNumericFieldsByDateRange(
+                new FormId($query->formId),
+                $query->userId,
+                $monthStart->setTimezone($utc),
+                $monthEnd->setTimezone($utc)
+            );
+
+            foreach ($numericFields as $field) {
+                $todaySum = 0.0;
+                foreach ($todayStatsRaw as $stat) {
+                    if ($stat['field'] === $field) {
+                        $todaySum = $stat['total_sum'];
+                        break;
+                    }
+                }
+
+                $monthSum = 0.0;
+                foreach ($monthStatsRaw as $stat) {
+                    if ($stat['field'] === $field) {
+                        $monthSum = $stat['total_sum'];
+                        break;
+                    }
+                }
+
+                $stats[] = [
+                    'field' => $field,
+                    'sum_today' => $todaySum,
+                    'sum_month' => $monthSum,
+                ];
+            }
         }
 
         return new GetEntriesStatsQueryResult($stats);
