@@ -158,6 +158,7 @@ final class EntryController extends Controller
         }
 
         $rules = [];
+        $attributes = [];
         foreach ($form->fields() as $field) {
             $fieldRules = [];
 
@@ -182,9 +183,10 @@ final class EntryController extends Controller
             }
 
             $rules['data.' . $field->id()] = $fieldRules;
+            $attributes['data.' . $field->id()] = $field->label();
         }
 
-        $validator = Validator::make($request->all(), $rules);
+        $validator = Validator::make($request->all(), $rules, [], $attributes);
 
         if ($validator->fails()) {
             return response()->json([
