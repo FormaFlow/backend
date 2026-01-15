@@ -19,9 +19,16 @@ Route::options('{any}', static function () {
     return response('', Response::HTTP_OK);
 })->where('any', '.*');
 
+use FormaFlow\Entries\Infrastructure\Http\PublicApiEntryController;
+use FormaFlow\Forms\Infrastructure\Http\PublicApiFormController;
+
 Route::prefix('v1')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
+    
+    // Public access for shared results
+    Route::get('/public/entries/{id}', [PublicApiEntryController::class, 'show']);
+    Route::get('/public/forms/{id}', [PublicApiFormController::class, 'show']);
 
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);

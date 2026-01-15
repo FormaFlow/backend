@@ -1,0 +1,123 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Feature;
+
+use Carbon\Carbon;
+use FormaFlow\Entries\Domain\EntryId;
+use FormaFlow\Forms\Domain\FormId;
+use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
+use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\TestCase;
+use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\Response;
+
+final class PublicApiTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_public_entry_api_returns_entry_data(): void
+    {
+        $user = UserModel::factory()->create();
+        $form = FormModel::factory()->create([
+            'user_id' => $user->id,
+            'published' => true,
+        ]);
+
+        $entryId = 'test-entry-id';
+        
+        DB::table('entries')->insert([
+            'id' => $entryId,
+            'form_id' => $form->id,
+            'user_id' => $user->id,
+            'data' => json_encode(['field' => 'value']),
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+            'score' => 10,
+            'duration' => 120,
+        ]);
+
+        $response = $this->getJson("/api/v1/public/entries/{$entryId}");
+
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJson([
+                'id' => $entryId,
+                'form_id' => $form->id,
+                'score' => 10,
+                'duration' => 120,
+            ]);
+    }
+
+    public function test_public_form_api_returns_published_form_data(): void
+    {
+        $user = UserModel::factory()->create();
+        $form = FormModel::factory()->create([
+            'user_id' => $user->id,
+            'name' => 'Public Form',
+            'published' => true,
+        ]);
+
+        $response = $this->getJson("/api/v1/public/forms/{$form->id}");
+
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJson([
+                'id' => $form->id,
+                'name' => 'Public Form',
+            ]);
+    }
+
+    public function test_public_form_api_returns_404_for_unpublished_form(): void
+    {
+        $user = UserModel::factory()->create();
+        $form = FormModel::factory()->create([
+            'user_id' => $user->id,
+            'published' => false,
+        ]);
+
+        $response = $this->getJson("/api/v1/public/forms/{$form->id}");
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
+    }
+    
+    public function test_shared_result_route_returns_html_with_og_tags(): void
+    {
+        $user = UserModel::factory()->create();
+        $form = FormModel::factory()->create([
+            'user_id' => $user->id,
+            'name' => 'Quiz Form',
+            'is_quiz' => true,
+            'published' => true,
+        ]);
+        
+        // Add a field with points to calculate total score
+        DB::table('form_fields')->insert([
+            'id' => 'field-1',
+            'form_id' => $form->id,
+            'label' => 'Q1',
+            'type' => 'text',
+            'required' => true,
+            'order' => 0,
+            'points' => 10,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+
+        $entryId = 'quiz-entry-id';
+        DB::table('entries')->insert([
+            'id' => $entryId,
+            'form_id' => $form->id,
+            'user_id' => $user->id,
+            'data' => json_encode(['field-1' => 'answer']),
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+            'score' => 5,
+        ]);
+
+        $response = $this->get("/shared/result/{$entryId}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertSee('<meta property="og:title" content="I scored 5 / 10 in Quiz Form!"', false);
+    }
+}

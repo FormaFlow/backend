@@ -30,7 +30,7 @@ final class InMemoryFormRepository implements FormRepository
     }
 
     /** @return FormAggregate[] */
-    public function findByUserId(string $userId): array
+    public function findByUserId(string $userId, ?bool $isQuiz = null): array
     {
         return array_filter(
             $this->forms,
