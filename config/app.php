@@ -7,6 +7,7 @@ return [
     'env' => env('APP_ENV', 'production'),
     'debug' => (bool)env('APP_DEBUG', false),
     'url' => env('APP_URL', 'http://localhost'),
+    'frontend_url' => env('FRONTEND_URL', 'https://app.formaflow.indeveler.ru'),
     'timezone' => 'UTC',
     'locale' => 'en',
 ];

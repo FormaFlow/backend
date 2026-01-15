@@ -3,7 +3,10 @@
 declare(strict_types=1);
 
 use Carbon\Carbon;
+use FormaFlow\Forms\Infrastructure\Http\PublicFormController;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/shared/{id}', [PublicFormController::class, 'show'])->name('forms.shared');
 
 Route::get('/', static function () {
     return response()->json([
