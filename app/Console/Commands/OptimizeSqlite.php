@@ -5,12 +5,12 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-class OptimizeSqlite extends Command
+final class OptimizeSqlite extends Command
 {
     protected $signature = 'app:optimize-sqlite';
     protected $description = 'Optimize SQLite database for production';
 
-    public function handle()
+    public function handle(): void
     {
         $this->info('Optimizing SQLite...');
 
@@ -20,9 +20,9 @@ class OptimizeSqlite extends Command
         DB::statement('PRAGMA foreign_keys=ON;');
 
         $mode = DB::select('PRAGMA journal_mode;')[0]->journal_mode;
-        
+
         $this->info("Current Journal Mode: {$mode}");
-        
+
         if ($mode === 'wal') {
             $this->info('SQLite optimized successfully!');
         } else {

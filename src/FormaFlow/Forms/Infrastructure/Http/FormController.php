@@ -46,7 +46,12 @@ final readonly class FormController
         Request $request,
         FindFormsByUserIdQueryHandler $handler,
     ): JsonResponse {
-        $query = new FindFormsByUserIdQuery($request->user()->id);
+        $isQuiz = $request->has('is_quiz') ? $request->boolean('is_quiz') : null;
+
+        $query = new FindFormsByUserIdQuery(
+            userId: $request->user()->id,
+            isQuiz: $isQuiz
+        );
         $result = $handler->handle($query);
 
         $transformedForms = array_map(

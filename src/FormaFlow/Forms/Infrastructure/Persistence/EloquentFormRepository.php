@@ -127,13 +127,18 @@ final class EloquentFormRepository implements FormRepository
     }
 
     /** @return FormAggregate[] */
-    public function findByUserId(string $userId): array
+    public function findByUserId(string $userId, ?bool $isQuiz = null): array
     {
-        $models = FormModel::query()
+        $query = FormModel::query()
             ->with('fields')
             ->where('user_id', $userId)
-            ->orderByDesc('created_at')
-            ->get();
+            ->orderByDesc('created_at');
+
+        if ($isQuiz !== null) {
+            $query->where('is_quiz', $isQuiz);
+        }
+
+        $models = $query->get();
 
         $result = [];
         foreach ($models as $model) {

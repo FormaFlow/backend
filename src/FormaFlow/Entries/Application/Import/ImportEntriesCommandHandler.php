@@ -10,6 +10,7 @@ use FormaFlow\Entries\Domain\EntryId;
 use FormaFlow\Entries\Domain\EntryRepository;
 use FormaFlow\Forms\Domain\FormId;
 use FormaFlow\Forms\Domain\FormRepository;
+use RuntimeException;
 use Shared\Infrastructure\Uuid;
 
 final readonly class ImportEntriesCommandHandler
@@ -29,20 +30,20 @@ final readonly class ImportEntriesCommandHandler
         $form = $this->formRepository->findById($formId);
 
         if ($form === null) {
-            throw new \RuntimeException('Form not found');
+            throw new RuntimeException('Form not found');
         }
 
         if ($form->userId() !== $command->userId) {
-            throw new \RuntimeException('Forbidden');
+            throw new RuntimeException('Forbidden');
         }
 
         if (!$form->isPublished()) {
-            throw new \RuntimeException('Form must be published');
+            throw new RuntimeException('Form must be published');
         }
 
         $lines = explode("\n", trim($command->csvData));
         if (empty($lines)) {
-             return ['imported' => 0, 'errors' => ['CSV is empty']];
+            return ['imported' => 0, 'errors' => ['CSV is empty']];
         }
 
         $headers = str_getcsv(array_shift($lines), $command->delimiter);
@@ -87,7 +88,7 @@ final readonly class ImportEntriesCommandHandler
                             break;
                     }
                     if ($valid) {
-                         $entryData[$field->id()] = $val;
+                        $entryData[$field->id()] = $val;
                     }
                 }
             }

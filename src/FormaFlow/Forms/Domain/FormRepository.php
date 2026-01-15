@@ -11,5 +11,5 @@ interface FormRepository extends Repository
     public function findById(FormId $id): ?FormAggregate;
 
     /** @return FormAggregate[] */
-    public function findByUserId(string $userId): array;
+    public function findByUserId(string $userId, ?bool $isQuiz = null): array;
 }

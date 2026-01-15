@@ -10,7 +10,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 use Shared\Infrastructure\Uuid;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -130,7 +132,7 @@ final class AuthController extends Controller
 
         $key = 'login:' . $request->ip();
 
-        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($key, 5)) {
+        if (RateLimiter::tooManyAttempts($key, 5)) {
             return response()->json([
                 'message' => 'Too many login attempts. Please try again later.',
             ], Response::HTTP_TOO_MANY_REQUESTS);
@@ -139,14 +141,14 @@ final class AuthController extends Controller
         $user = UserModel::query()->where(['email' => $request->email])->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
-            \Illuminate\Support\Facades\RateLimiter::hit($key, 60);
+            RateLimiter::hit($key, 60);
 
-            throw \Illuminate\Validation\ValidationException::withMessages([
+            throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
         }
 
-        \Illuminate\Support\Facades\RateLimiter::clear($key);
+        RateLimiter::clear($key);
 
         $token = $user->createToken('api-user-token')->plainTextToken;
 

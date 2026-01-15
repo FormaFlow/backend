@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Integration\Identity;
 
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
-use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase;
 use Illuminate\Support\Facades\RateLimiter;

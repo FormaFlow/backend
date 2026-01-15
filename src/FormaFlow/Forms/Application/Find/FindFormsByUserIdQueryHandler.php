@@ -16,7 +16,7 @@ final readonly class FindFormsByUserIdQueryHandler
     /** @return array<string, mixed> */
     public function handle(FindFormsByUserIdQuery $query): array
     {
-        $forms = $this->repository->findByUserId($query->userId());
+        $forms = $this->repository->findByUserId($query->userId(), $query->isQuiz());
 
         return [
             'forms' => $forms,

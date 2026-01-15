@@ -7,7 +7,6 @@ namespace FormaFlow\Forms\Infrastructure\Http;
 use FormaFlow\Forms\Application\Find\FindFormByIdQuery;
 use FormaFlow\Forms\Application\Find\FindFormByIdQueryHandler;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
 final readonly class PublicFormController

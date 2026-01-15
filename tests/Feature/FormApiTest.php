@@ -255,4 +255,35 @@ final class FormApiTest extends TestCase
             'required' => true,
         ]);
     }
+
+    public function test_filters_forms_by_is_quiz_parameter(): void
+    {
+        // Create 1 quiz and 1 regular form
+        FormModel::factory()->create([
+            'user_id' => $this->user->id,
+            'name' => 'Quiz Form',
+            'is_quiz' => true,
+        ]);
+        FormModel::factory()->create([
+            'user_id' => $this->user->id,
+            'name' => 'Regular Form',
+            'is_quiz' => false,
+        ]);
+
+        // Filter for quizzes only
+        $response = $this->actingAs($this->user, 'sanctum')
+            ->getJson("{$this->baseUrl}?is_quiz=1");
+
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJsonCount(1, 'forms')
+            ->assertJsonPath('forms.0.name', 'Quiz Form');
+
+        // Filter for regular forms only
+        $response = $this->actingAs($this->user, 'sanctum')
+            ->getJson("{$this->baseUrl}?is_quiz=0");
+
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJsonCount(1, 'forms')
+            ->assertJsonPath('forms.0.name', 'Regular Form');
+    }
 }

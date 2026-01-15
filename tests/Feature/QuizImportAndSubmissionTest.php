@@ -74,7 +74,7 @@ final class QuizImportAndSubmissionTest extends TestCase
 
         /** @var FormModel $mathForm */
         $mathForm = FormModel::query()->where('name', 'Math Challenge')->first();
-        $mathForm->update(['published' => true]); 
+        $mathForm->update(['published' => true]);
 
         $q1 = $mathForm->fields()->where('label', '2 + 2 * 2')->first()->id;
         $q2 = $mathForm->fields()->where('label', 'Square root of 144')->first()->id;
@@ -97,8 +97,8 @@ final class QuizImportAndSubmissionTest extends TestCase
             ->postJson('/api/v1/entries', [
                 'form_id' => $mathForm->id,
                 'data' => [
-                    $q1 => '8', 
-                    $q2 => '12' 
+                    $q1 => '8',
+                    $q2 => '12'
                 ]
             ]);
 
