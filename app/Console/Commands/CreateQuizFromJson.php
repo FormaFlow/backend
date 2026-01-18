@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormFieldModel;
-use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
+use FormaFlow\Forms\Application\Import\ImportFormFromJsonCommand;
+use FormaFlow\Forms\Application\Import\ImportFormFromJsonCommandHandler;
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Throwable;
 
 final class CreateQuizFromJson extends Command
@@ -18,7 +16,7 @@ final class CreateQuizFromJson extends Command
 
     protected $description = 'Create a new quiz form from a JSON file';
 
-    public function handle(): int
+    public function handle(ImportFormFromJsonCommandHandler $handler): int
     {
         $path = $this->argument('path');
         $email = $this->option('email');
@@ -54,44 +52,18 @@ final class CreateQuizFromJson extends Command
             $this->info("No email provided. Using user: {$user->email}");
         }
 
-        // 3. Create Form and Fields Transactionally
+        // 3. Import via Domain Handler
         try {
-            DB::transaction(function () use ($user, $data) {
-                $formId = (string)Str::uuid();
+            // Ensure data has required structure or defaults compatible with command expectations
+            if (!isset($data['is_quiz'])) $data['is_quiz'] = true;
+            if (!isset($data['published'])) $data['published'] = true;
 
-                $form = FormModel::query()->create([
-                    'id' => $formId,
-                    'user_id' => $user->id,
-                    'name' => $data['name'],
-                    'description' => $data['description'] ?? '',
-                    'published' => $data['published'] ?? true, // Default to published for convenience
-                    'is_quiz' => $data['is_quiz'] ?? true,
-                    'single_submission' => $data['single_submission'] ?? false,
-                ]);
-
-                $this->info("Form created with ID: {$form->id}");
-
-                if (isset($data['fields']) && is_array($data['fields'])) {
-                    foreach ($data['fields'] as $index => $fieldData) {
-                        FormFieldModel::query()->create([
-                            'id' => (string)Str::uuid(),
-                            'form_id' => $formId,
-                            'label' => $fieldData['label'],
-                            'type' => $fieldData['type'] ?? 'text',
-                            'required' => $fieldData['required'] ?? false,
-                            'options' => $fieldData['options'] ?? null, // Eloquent casts array to json
-                            'unit' => $fieldData['unit'] ?? null,
-                            'category' => $fieldData['category'] ?? null,
-                            'order' => $fieldData['order'] ?? $index,
-                            'correct_answer' => $fieldData['correct_answer'] ?? null,
-                            'points' => $fieldData['points'] ?? 0,
-                        ]);
-                    }
-                    $this->info("Added " . count($data['fields']) . " fields.");
-                }
-            });
+            $command = new ImportFormFromJsonCommand($data, $user->id);
+            $formId = $handler->handle($command);
 
             $this->info("Quiz \"{$data['name']}\" created successfully for user {$user->name}!");
+            $this->info("Form ID: {$formId}");
+            
             return self::SUCCESS;
         } catch (Throwable $e) {
             $this->error("Failed to create quiz: " . $e->getMessage());

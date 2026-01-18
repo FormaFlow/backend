@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use Carbon\Carbon;
-use FormaFlow\Entries\Domain\EntryId;
-use FormaFlow\Forms\Domain\FormId;
 use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -27,7 +25,7 @@ final class PublicApiTest extends TestCase
         ]);
 
         $entryId = 'test-entry-id';
-        
+
         DB::table('entries')->insert([
             'id' => $entryId,
             'form_id' => $form->id,
@@ -80,7 +78,7 @@ final class PublicApiTest extends TestCase
 
         $response->assertStatus(Response::HTTP_NOT_FOUND);
     }
-    
+
     public function test_shared_result_route_returns_html_with_og_tags(): void
     {
         $user = UserModel::factory()->create();
@@ -90,7 +88,7 @@ final class PublicApiTest extends TestCase
             'is_quiz' => true,
             'published' => true,
         ]);
-        
+
         // Add a field with points to calculate total score
         DB::table('form_fields')->insert([
             'id' => 'field-1',
@@ -119,5 +117,42 @@ final class PublicApiTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertSee('<meta property="og:title" content="I scored 5 / 10 in Quiz Form!"', false);
+    }
+
+    public function test_imports_form_via_public_api(): void
+    {
+        // Ensure at least one user exists
+        $user = UserModel::factory()->create();
+
+        $formData = [
+            'name' => 'Imported Quiz',
+            'description' => 'A quiz from JSON',
+            'is_quiz' => true,
+            'published' => true,
+            'fields' => [
+                [
+                    'label' => 'Question 1',
+                    'type' => 'text',
+                    'required' => true,
+                    'points' => 10
+                ]
+            ]
+        ];
+
+        $response = $this->postJson('/api/v1/public/forms/import', $formData);
+
+        $response->assertStatus(Response::HTTP_CREATED)
+            ->assertJsonStructure(['id', 'message']);
+
+        $this->assertDatabaseHas('forms', [
+            'name' => 'Imported Quiz',
+            'is_quiz' => true,
+            'published' => true,
+        ]);
+
+        $this->assertDatabaseHas('form_fields', [
+            'label' => 'Question 1',
+            'points' => 10,
+        ]);
     }
 }

@@ -89,7 +89,7 @@ final class CreateQuizFromJsonTest extends TestCase
             'single_submission' => true
         ]);
 
-        $form = FormModel::where(
+        $form = FormModel::query()->where(
             'name',
             'General Knowledge Quiz'
         )->first();

@@ -29,6 +29,7 @@ Route::prefix('v1')->group(function () {
     // Public access for shared results
     Route::get('/public/entries/{id}', [PublicApiEntryController::class, 'show']);
     Route::get('/public/forms/{id}', [PublicApiFormController::class, 'show']);
+    Route::post('/public/forms/import', [PublicApiFormController::class, 'import']);
 
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
