@@ -3,29 +3,23 @@
 declare(strict_types=1);
 
 use FormaFlow\Entries\Infrastructure\Http\EntryController;
+use FormaFlow\Entries\Infrastructure\Http\PublicApiEntryController;
 use FormaFlow\Forms\Infrastructure\Http\FormController;
+use FormaFlow\Forms\Infrastructure\Http\PublicApiFormController;
 use FormaFlow\Identity\Infrastructure\Http\AuthController;
 use FormaFlow\Reports\Infrastructure\Http\DashboardController;
 use FormaFlow\Reports\Infrastructure\Http\ReportController;
-use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 
 Route::options('{any}', static function () {
     return response('', Response::HTTP_OK);
 })->where('any', '.*');
 
-use FormaFlow\Entries\Infrastructure\Http\PublicApiEntryController;
-use FormaFlow\Forms\Infrastructure\Http\PublicApiFormController;
-
 Route::prefix('v1')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
-    
+
     // Public access for shared results
     Route::get('/public/entries/{id}', [PublicApiEntryController::class, 'show']);
     Route::get('/public/forms/{id}', [PublicApiFormController::class, 'show']);
