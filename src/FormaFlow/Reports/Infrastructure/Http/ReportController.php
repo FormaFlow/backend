@@ -58,7 +58,7 @@ final class ReportController extends Controller
             // Let's do a loop.
 
             $q = clone $query;
-            $jsonField = "json_extract(data, '$.\"{$field->id}\"')";
+            $jsonField = "CAST(data->>'{$field->id}' AS DECIMAL(10, 2))";
 
             // We can get sum, avg, min, max in one go
             $fieldStats = $q->select(
@@ -111,16 +111,21 @@ final class ReportController extends Controller
             $query->whereDate('created_at', '<=', $validated['date_to']);
         }
 
+        $isPgsql = DB::connection()->getDriverName() === 'pgsql';
         $dateFormat = match ($validated['period']) {
-            'daily' => '%Y-%m-%d',
-            'weekly' => '%Y-%W',
-            'monthly' => '%Y-%m',
+            'daily' => $isPgsql ? 'YYYY-MM-DD' : '%Y-%m-%d',
+            'weekly' => $isPgsql ? 'IYYY-IW' : '%Y-%W',
+            'monthly' => $isPgsql ? 'YYYY-MM' : '%Y-%m',
         };
 
-        $selects = [DB::raw("strftime('{$dateFormat}', created_at) as date")];
+        $dateSql = $isPgsql
+            ? "to_char(created_at, '{$dateFormat}') as date"
+            : "strftime('{$dateFormat}', created_at) as date";
+
+        $selects = [DB::raw($dateSql)];
 
         foreach ($numericFields as $field) {
-            $jsonField = "json_extract(data, '$.\"{$field->id}\"')";
+            $jsonField = "CAST(data->>'{$field->id}' AS DECIMAL(10, 2))";
             // Default to SUM for now. Maybe user wants AVG?
             // The prompt says "output all fields", implied Sum usually.
             $selects[] = DB::raw("SUM($jsonField) as \"{$field->id}\"");
@@ -186,9 +191,8 @@ final class ReportController extends Controller
         }
 
         $field = $validated['field'];
-        // SQLite JSON extraction: json_extract(data, '$.field')
-        // We need to handle casting if necessary.
-        $jsonField = "json_extract(data, '$.\"{$field}\"')";
+        // PostgreSQL JSON extraction: data->>'field'
+        $jsonField = "CAST(data->>'{$field}' AS DECIMAL(10, 2))";
 
         $result = match ($validated['aggregation']) {
             'sum' => $query->sum(DB::raw($jsonField)),
@@ -228,18 +232,16 @@ final class ReportController extends Controller
         }
 
         $field = $validated['field'];
-        $jsonField = "json_extract(data, '$.\"{$field}\"')";
+        $jsonField = "CAST(data->>'{$field}' AS DECIMAL(10, 2))";
 
+        $isPgsql = DB::connection()->getDriverName() === 'pgsql';
         $dateFormat = match ($validated['period']) {
-            'daily' => '%Y-%m-%d',
-            'weekly' => '%Y-%W', // SQLite doesn't strictly have %W in strftime in all versions, but let's try. Or just group by date.
-            // Actually for SQLite: %Y-%m-%d is good for daily.
-            // For weekly: strftime('%Y-%W', created_at)
-            // For monthly: strftime('%Y-%m', created_at)
-            'monthly' => '%Y-%m',
+            'daily' => 'YYYY-MM-DD',
+            'weekly' => 'IYYY-IW',
+            'monthly' => 'YYYY-MM',
         };
 
-        $selectDate = "strftime('{$dateFormat}', created_at) as date";
+        $selectDate = "to_char(created_at, '{$dateFormat}') as date";
 
         $agg = match ($validated['aggregation']) {
             'sum' => "SUM($jsonField) as value",
@@ -280,10 +282,10 @@ final class ReportController extends Controller
         }
 
         $groupByField = $validated['group_by'];
-        $groupByJson = "json_extract(data, '$.\"{$groupByField}\"')";
+        $groupByJson = "data->>'{$groupByField}'";
 
         $targetField = $validated['field'];
-        $targetJson = "json_extract(data, '$.\"{$targetField}\"')";
+        $targetJson = "CAST(data->>'{$targetField}' AS DECIMAL(10, 2))";
 
         $agg = match ($validated['aggregation']) {
             'sum' => "SUM($targetJson) as value",
@@ -418,10 +420,12 @@ final class ReportController extends Controller
         $formId = $request->input('form_id');
         $month = $request->input('month', now()->format('Y-m'));
 
+        $monthSql = "to_char(created_at, 'YYYY-MM')";
+
         $entries = DB::table('entries')
             ->where('form_id', $formId)
             ->where('user_id', $request->user()->id)
-            ->where(DB::raw("strftime('%Y-%m', created_at)"), $month)
+            ->where(DB::raw($monthSql), $month)
             ->get();
 
         $totalIncome = 0;
@@ -593,8 +597,8 @@ final class ReportController extends Controller
         });
 
         return response()->json([
-            'current_weight' => $currentWeight,
-            'starting_weight' => $startWeight,
+            'current_weight' => currentWeight,
+            'starting_weight' => startWeight,
             'change' => $currentWeight - $startWeight,
             'trend' => $trend,
         ]);

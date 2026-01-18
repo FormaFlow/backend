@@ -94,7 +94,8 @@ final readonly class EloquentEntryRepository implements EntryRepository
 
             if (str_starts_with($filters['sort_by'], 'data.')) {
                 $field = str_replace('data.', '', $filters['sort_by']);
-                $query->orderByRaw("json_extract(data, '$.{$field}') {$sortOrder}");
+                // Laravel handles JSON path sorting for supported drivers
+                $query->orderBy("data->{$field}", $sortOrder);
             } else {
                 $query->orderBy($filters['sort_by'], $sortOrder);
             }
@@ -149,7 +150,8 @@ final readonly class EloquentEntryRepository implements EntryRepository
 
             if (str_starts_with($filters['sort_by'], 'data.')) {
                 $field = str_replace('data.', '', $filters['sort_by']);
-                $query->orderByRaw("json_extract(data, '$.{$field}') {$sortOrder}");
+                // Laravel handles JSON path sorting for supported drivers
+                $query->orderBy("data->{$field}", $sortOrder);
             } else {
                 $query->orderBy($filters['sort_by'], $sortOrder);
             }
@@ -246,7 +248,9 @@ final readonly class EloquentEntryRepository implements EntryRepository
 
         $results = [];
         foreach ($numericFields as $field) {
-            $sum = (clone $query)->sum(DB::raw("CAST(json_extract(data, '$.{$field}') AS DECIMAL(10, 2))"));
+            $sql = "CAST(data->>'{$field}' AS DECIMAL(10, 2))";
+
+            $sum = (clone $query)->sum(DB::raw($sql));
             $results[] = [
                 'field' => $field,
                 'total_sum' => (float)$sum,

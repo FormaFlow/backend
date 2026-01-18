@@ -8,14 +8,12 @@ use Carbon\Carbon;
 use FormaFlow\Entries\Infrastructure\Persistence\Eloquent\EntryModel;
 use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\TestCase;
+use Tests\TestCase;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 final class EntriesStatsTest extends TestCase
 {
-    use RefreshDatabase;
 
     protected ?UserModel $user = null;
     protected ?FormModel $form = null;
@@ -31,7 +29,7 @@ final class EntriesStatsTest extends TestCase
 
         DB::table('form_fields')->insert([
             [
-                'id' => 'field-amount',
+                'id' => '00000000-0000-0000-0000-000000000110',
                 'form_id' => $this->form->id,
                 'label' => 'Amount',
                 'type' => 'currency',
@@ -44,7 +42,7 @@ final class EntriesStatsTest extends TestCase
                 'updated_at' => Carbon::now(),
             ],
             [
-                'id' => 'field-qty',
+                'id' => '00000000-0000-0000-0000-000000000111',
                 'form_id' => $this->form->id,
                 'label' => 'Quantity',
                 'type' => 'number',
@@ -65,14 +63,14 @@ final class EntriesStatsTest extends TestCase
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['field-amount' => 100, 'field-qty' => 2],
+            'data' => ['00000000-0000-0000-0000-000000000110' => 100, '00000000-0000-0000-0000-000000000111' => 2],
             'created_at' => Carbon::now(),
         ]);
 
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['field-amount' => 50, 'field-qty' => 1],
+            'data' => ['00000000-0000-0000-0000-000000000110' => 50, '00000000-0000-0000-0000-000000000111' => 1],
             'created_at' => Carbon::now(),
         ]);
 
@@ -80,7 +78,7 @@ final class EntriesStatsTest extends TestCase
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['field-amount' => 200, 'field-qty' => 5],
+            'data' => ['00000000-0000-0000-0000-000000000110' => 200, '00000000-0000-0000-0000-000000000111' => 5],
             'created_at' => Carbon::now()->subDays(3),
         ]);
 
@@ -89,7 +87,7 @@ final class EntriesStatsTest extends TestCase
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $anotherUser->id,
-            'data' => ['field-amount' => 1000, 'field-qty' => 10],
+            'data' => ['00000000-0000-0000-0000-000000000110' => 1000, '00000000-0000-0000-0000-000000000111' => 10],
             'created_at' => Carbon::now(),
         ]);
 
@@ -107,12 +105,12 @@ final class EntriesStatsTest extends TestCase
                         'sum_month' => 3.0,
                     ],
                     [
-                        'field' => 'field-amount',
+                        'field' => '00000000-0000-0000-0000-000000000110',
                         'sum_today' => 150.0,
                         'sum_month' => 350.0,
                     ],
                     [
-                        'field' => 'field-qty',
+                        'field' => '00000000-0000-0000-0000-000000000111',
                         'sum_today' => 3.0,
                         'sum_month' => 8.0,
                     ],

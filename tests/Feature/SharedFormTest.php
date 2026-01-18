@@ -6,13 +6,11 @@ namespace Tests\Feature;
 
 use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\TestCase;
+use Tests\TestCase;
 use Symfony\Component\HttpFoundation\Response;
 
 final class SharedFormTest extends TestCase
 {
-    use RefreshDatabase;
 
     public function test_shared_route_returns_html_with_og_tags_for_published_form(): void
     {
@@ -53,7 +51,7 @@ final class SharedFormTest extends TestCase
 
     public function test_shared_route_returns_404_for_non_existent_form(): void
     {
-        $response = $this->get("/shared/non-existent-uuid");
+        $response = $this->get("/shared/00000000-0000-0000-0000-000000000999");
 
         $response->assertStatus(Response::HTTP_NOT_FOUND);
     }

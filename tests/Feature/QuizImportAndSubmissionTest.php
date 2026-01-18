@@ -6,14 +6,12 @@ namespace Tests\Feature;
 
 use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\TestCase;
+use Tests\TestCase;
 use Illuminate\Support\Facades\File;
 use Symfony\Component\HttpFoundation\Response;
 
 final class QuizImportAndSubmissionTest extends TestCase
 {
-    use RefreshDatabase;
 
     private string $jsonPath;
 
@@ -76,16 +74,16 @@ final class QuizImportAndSubmissionTest extends TestCase
         $mathForm = FormModel::query()->where('name', 'Math Challenge')->first();
         $mathForm->update(['published' => true]);
 
-        $q1 = $mathForm->fields()->where('label', '2 + 2 * 2')->first()->id;
-        $q2 = $mathForm->fields()->where('label', 'Square root of 144')->first()->id;
+        $q1Id = $mathForm->fields()->where('label', '2 + 2 * 2')->first()->id;
+        $q2Id = $mathForm->fields()->where('label', 'Square root of 144')->first()->id;
 
         // 4. Submit Math Quiz - Correct Answers
         $response = $this->actingAs($user, 'sanctum')
             ->postJson('/api/v1/entries', [
                 'form_id' => $mathForm->id,
                 'data' => [
-                    $q1 => '6',
-                    $q2 => '12'
+                    $q1Id => '6',
+                    $q2Id => '12'
                 ]
             ]);
 
@@ -97,8 +95,8 @@ final class QuizImportAndSubmissionTest extends TestCase
             ->postJson('/api/v1/entries', [
                 'form_id' => $mathForm->id,
                 'data' => [
-                    $q1 => '8',
-                    $q2 => '12'
+                    $q1Id => '8',
+                    $q2Id => '12'
                 ]
             ]);
 

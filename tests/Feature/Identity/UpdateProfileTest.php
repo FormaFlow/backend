@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace Tests\Feature\Identity;
 
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\TestCase;
+use Tests\TestCase;
 
 final class UpdateProfileTest extends TestCase
 {
-    use RefreshDatabase;
 
     public function test_can_update_profile_timezone(): void
     {

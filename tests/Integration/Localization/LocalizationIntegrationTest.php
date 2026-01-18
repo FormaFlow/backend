@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace Tests\Integration\Localization;
 
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\TestCase;
+use Tests\TestCase;
 use Symfony\Component\HttpFoundation\Response;
 
 final class LocalizationIntegrationTest extends TestCase
 {
-    use RefreshDatabase;
 
     public function test_api_responses_support_russian_locale(): void
     {

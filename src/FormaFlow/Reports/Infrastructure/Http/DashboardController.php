@@ -66,12 +66,16 @@ final class DashboardController extends Controller
     public function trends(Request $request): JsonResponse
     {
         $userId = $request->user()->id;
+        $isPgsql = DB::connection()->getDriverName() === 'pgsql';
+
+        $weeklySql = $isPgsql ? "to_char(created_at, 'YYYY-IW')" : "strftime('%Y-%W', created_at)";
+        $monthlySql = $isPgsql ? "to_char(created_at, 'YYYY-MM')" : "strftime('%Y-%m', created_at)";
 
         // Weekly trends (last 4 weeks)
         $weeklyTrends = DB::table('entries')
             ->where('user_id', $userId)
             ->where('created_at', '>=', now()->subWeeks(4))
-            ->select(DB::raw("strftime('%Y-%W', created_at) as week"), DB::raw('count(*) as count'))
+            ->select(DB::raw("$weeklySql as week"), DB::raw('count(*) as count'))
             ->groupBy('week')
             ->orderBy('week')
             ->get();
@@ -80,7 +84,7 @@ final class DashboardController extends Controller
         $monthlyTrends = DB::table('entries')
             ->where('user_id', $userId)
             ->where('created_at', '>=', now()->subMonths(6))
-            ->select(DB::raw("strftime('%Y-%m', created_at) as month"), DB::raw('count(*) as count'))
+            ->select(DB::raw("$monthlySql as month"), DB::raw('count(*) as count'))
             ->groupBy('month')
             ->orderBy('month')
             ->get();

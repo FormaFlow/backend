@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace Tests\Integration\Identity;
 
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\TestCase;
+use Tests\TestCase;
 use Illuminate\Support\Facades\RateLimiter;
 use Symfony\Component\HttpFoundation\Response;
 
 final class AuthenticationIntegrationTest extends TestCase
 {
-    use RefreshDatabase;
 
     public function test_user_can_register_with_email_and_password(): void
     {

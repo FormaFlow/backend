@@ -7,14 +7,12 @@ namespace Tests\Feature;
 use Carbon\Carbon;
 use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\TestCase;
+use Tests\TestCase;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 final class PublicApiTest extends TestCase
 {
-    use RefreshDatabase;
 
     public function test_public_entry_api_returns_entry_data(): void
     {
@@ -24,7 +22,7 @@ final class PublicApiTest extends TestCase
             'published' => true,
         ]);
 
-        $entryId = 'test-entry-id';
+        $entryId = '00000000-0000-0000-0000-000000000120';
 
         DB::table('entries')->insert([
             'id' => $entryId,
@@ -91,7 +89,7 @@ final class PublicApiTest extends TestCase
 
         // Add a field with points to calculate total score
         DB::table('form_fields')->insert([
-            'id' => 'field-1',
+            'id' => '00000000-0000-0000-0000-000000000130',
             'form_id' => $form->id,
             'label' => 'Q1',
             'type' => 'text',
@@ -102,12 +100,12 @@ final class PublicApiTest extends TestCase
             'updated_at' => Carbon::now(),
         ]);
 
-        $entryId = 'quiz-entry-id';
+        $entryId = '00000000-0000-0000-0000-000000000121';
         DB::table('entries')->insert([
             'id' => $entryId,
             'form_id' => $form->id,
             'user_id' => $user->id,
-            'data' => json_encode(['field-1' => 'answer']),
+            'data' => json_encode(['00000000-0000-0000-0000-000000000130' => 'answer']),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
             'score' => 5,

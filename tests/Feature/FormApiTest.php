@@ -8,14 +8,12 @@ use Carbon\Carbon;
 use FormaFlow\Forms\Domain\FormId;
 use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\TestCase;
+use Tests\TestCase;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 final class FormApiTest extends TestCase
 {
-    use RefreshDatabase;
 
     protected ?UserModel $user = null;
     protected string $baseUrl = '/api/v1/forms';
@@ -102,7 +100,7 @@ final class FormApiTest extends TestCase
 
     public function test_fails_to_show_non_existent_form(): void
     {
-        $fakeId = (new FormId('fake-uuid-123'))->value();
+        $fakeId = (new FormId('00000000-0000-0000-0000-000000000999'))->value();
 
         $response = $this
             ->actingAs($this->user, 'sanctum')->getJson("{$this->baseUrl}/{$fakeId}");
@@ -120,7 +118,7 @@ final class FormApiTest extends TestCase
         ]);
 
         DB::table('form_fields')->insert([
-            'id' => 'field-1',
+            'id' => '00000000-0000-0000-0000-000000000130',
             'form_id' => $form->id,
             'label' => 'Test',
             'type' => 'text',
@@ -222,7 +220,7 @@ final class FormApiTest extends TestCase
         ]);
 
         $field = DB::table('form_fields')->insert([
-            'id' => 'field-to-update',
+            'id' => '00000000-0000-0000-0000-000000000180',
             'form_id' => $form->id,
             'label' => 'Old Label',
             'type' => 'text',
@@ -242,7 +240,7 @@ final class FormApiTest extends TestCase
 
         $response = $this
             ->actingAs($this->user, 'sanctum')->patchJson(
-                "{$this->baseUrl}/{$form->id}/fields/field-to-update",
+                "{$this->baseUrl}/{$form->id}/fields/00000000-0000-0000-0000-000000000180",
                 $updateData
             );
 
@@ -250,7 +248,7 @@ final class FormApiTest extends TestCase
             ->assertJson(['message' => 'Field updated']);
 
         $this->assertDatabaseHas('form_fields', [
-            'id' => 'field-to-update',
+            'id' => '00000000-0000-0000-0000-000000000180',
             'label' => 'New Label',
             'required' => true,
         ]);

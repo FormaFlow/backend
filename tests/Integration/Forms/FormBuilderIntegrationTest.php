@@ -7,14 +7,12 @@ namespace Tests\Integration\Forms;
 use Carbon\Carbon;
 use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\TestCase;
+use Tests\TestCase;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 final class FormBuilderIntegrationTest extends TestCase
 {
-    use RefreshDatabase;
 
     protected UserModel $user;
 
@@ -221,7 +219,7 @@ final class FormBuilderIntegrationTest extends TestCase
         $form = FormModel::factory()->forUser($this->user)->create();
 
         DB::table('form_fields')->insert([
-            'id' => 'field-1',
+            'id' => '00000000-0000-0000-0000-000000000130',
             'form_id' => $form->id,
             'label' => 'Test',
             'type' => 'text',

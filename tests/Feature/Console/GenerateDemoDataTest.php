@@ -7,13 +7,11 @@ namespace Tests\Feature\Console;
 use FormaFlow\Entries\Infrastructure\Persistence\Eloquent\EntryModel;
 use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\TestCase;
+use Tests\TestCase;
 use Illuminate\Support\Facades\DB;
 
 final class GenerateDemoDataTest extends TestCase
 {
-    use RefreshDatabase;
 
     public function test_command_generates_demo_data_successfully(): void
     {

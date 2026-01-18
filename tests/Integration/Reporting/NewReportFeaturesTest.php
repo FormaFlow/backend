@@ -7,19 +7,17 @@ namespace Tests\Integration\Reporting;
 use Carbon\Carbon;
 use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\TestCase;
+use Tests\TestCase;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 final class NewReportFeaturesTest extends TestCase
 {
-    use RefreshDatabase;
 
     protected UserModel $user;
     protected FormModel $budgetForm;
-    protected string $amountId = 'field-amount';
-    protected string $otherId = 'field-other';
+    protected string $amountId = '00000000-0000-0000-0000-000000000110';
+    protected string $otherId = '00000000-0000-0000-0000-000000000113';
 
     protected function setUp(): void
     {
@@ -76,7 +74,7 @@ final class NewReportFeaturesTest extends TestCase
             unset($data['date']);
 
             DB::table('entries')->insert([
-                'id' => "entry-{$i}",
+                'id' => "00000000-0000-0000-0000-00000000080{$i}",
                 'form_id' => $this->budgetForm->id,
                 'user_id' => $this->user->id,
                 'data' => json_encode($data),

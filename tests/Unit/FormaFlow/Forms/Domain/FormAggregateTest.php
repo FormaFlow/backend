@@ -18,12 +18,12 @@ final class FormAggregateTest extends TestCase
     {
         $form = new FormAggregate(
             id: new FormId('123'),
-            userId: 'user-1',
+            userId: '00000000-0000-0000-0000-000000000001',
             name: new FormName('Test Form'),
         );
 
         self::assertSame('123', $form->id()->value());
-        self::assertSame('user-1', $form->userId());
+        self::assertSame('00000000-0000-0000-0000-000000000001', $form->userId());
         self::assertSame('Test Form', $form->name()->value());
         self::assertFalse($form->isPublished());
         self::assertCount(0, $form->fields());
@@ -33,12 +33,12 @@ final class FormAggregateTest extends TestCase
     {
         $form = new FormAggregate(
             id: new FormId('123'),
-            userId: 'user-1',
+            userId: '00000000-0000-0000-0000-000000000001',
             name: new FormName('Test Form'),
         );
 
         $field = new Field(
-            id: 'field-1',
+            id: '00000000-0000-0000-0000-000000000130',
             label: 'Amount',
             type: new FieldType('number'),
             required: true,
@@ -53,12 +53,12 @@ final class FormAggregateTest extends TestCase
     {
         $form = new FormAggregate(
             id: new FormId('123'),
-            userId: 'user-1',
+            userId: '00000000-0000-0000-0000-000000000001',
             name: new FormName('Test Form'),
         );
 
         $field = new Field(
-            id: 'field-1',
+            id: '00000000-0000-0000-0000-000000000130',
             label: 'Amount',
             type: new FieldType('number'),
         );
@@ -75,7 +75,7 @@ final class FormAggregateTest extends TestCase
 
         $form = new FormAggregate(
             id: new FormId('123'),
-            userId: 'user-1',
+            userId: '00000000-0000-0000-0000-000000000001',
             name: new FormName('Test Form'),
         );
 
@@ -88,12 +88,12 @@ final class FormAggregateTest extends TestCase
 
         $form = new FormAggregate(
             id: new FormId('123'),
-            userId: 'user-1',
+            userId: '00000000-0000-0000-0000-000000000001',
             name: new FormName('Test Form'),
         );
 
         $field = new Field(
-            id: 'field-1',
+            id: '00000000-0000-0000-0000-000000000130',
             label: 'Amount',
             type: new FieldType('number'),
         );
@@ -107,12 +107,12 @@ final class FormAggregateTest extends TestCase
     {
         $form = new FormAggregate(
             id: new FormId('123'),
-            userId: 'user-1',
+            userId: '00000000-0000-0000-0000-000000000001',
             name: new FormName('Test Form'),
         );
 
         $field = new Field(
-            id: 'field-1',
+            id: '00000000-0000-0000-0000-000000000130',
             label: 'Amount',
             type: new FieldType('number'),
         );

@@ -54,11 +54,11 @@ final class EntryController extends Controller
             $filters['form_id'] = $request->input('form_id');
         }
 
-        if ($request->has('date_from')) {
+        if ($request->has('date_from') && strtotime((string)$request->input('date_from'))) {
             $filters['date_from'] = $request->input('date_from');
         }
 
-        if ($request->has('date_to')) {
+        if ($request->has('date_to') && strtotime((string)$request->input('date_to'))) {
             $filters['date_to'] = $request->input('date_to');
         }
 

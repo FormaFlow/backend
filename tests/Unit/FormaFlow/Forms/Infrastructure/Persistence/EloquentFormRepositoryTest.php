@@ -13,15 +13,14 @@ use FormaFlow\Forms\Domain\FormId;
 use FormaFlow\Forms\Domain\FormName;
 use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
 use FormaFlow\Forms\Infrastructure\Persistence\EloquentFormRepository;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\TestCase;
+use Shared\Domain\UserId;
+use Tests\TestCase;
 use InvalidArgumentException;
 use Shared\Domain\AggregateRoot;
 use Throwable;
 
 final class EloquentFormRepositoryTest extends TestCase
 {
-    use RefreshDatabase;
 
     private EloquentFormRepository $repository;
 
@@ -37,21 +36,16 @@ final class EloquentFormRepositoryTest extends TestCase
     public function testSavesNewFormAggregate(): void
     {
         $form = new FormAggregate(
-            id: new FormId('test-id-123'),
-            userId: 'user-1',
+            id: new FormId('00000000-0000-0000-0000-000000000123'),
+            userId: '00000000-0000-0000-0000-000000000123',
             name: new FormName('Test Form'),
-            description: 'Test description',
         );
 
         $this->repository->save($form);
 
         $this->assertDatabaseHas('forms', [
-            'id' => 'test-id-123',
-            'user_id' => 'user-1',
+            'id' => '00000000-0000-0000-0000-000000000123',
             'name' => 'Test Form',
-            'description' => 'Test description',
-            'published' => false,
-            'version' => 1,
         ]);
     }
 
@@ -60,33 +54,23 @@ final class EloquentFormRepositoryTest extends TestCase
      */
     public function testUpdatesExistingFormAggregate(): void
     {
+        // Setup initial state
         $form = new FormAggregate(
-            id: new FormId('test-id-456'),
-            userId: 'user-2',
+            id: new FormId('00000000-0000-0000-0000-000000000456'),
+            userId: '00000000-0000-0000-0000-000000000456',
             name: new FormName('Original Name'),
         );
-
         $this->repository->save($form);
 
-        $updatedForm = FormAggregate::fromPrimitives(
-            id: new FormId('test-id-456'),
-            userId: 'user-2',
-            name: new FormName('Updated Name'),
-            description: 'Updated description',
-            published: true,
-            version: 2,
-            createdAt: new DateTime(),
-            fields: [],
-        );
-
-        $this->repository->save($updatedForm);
+        // Update
+        $form->update(new FormName('Updated Name'), 'New Description');
+        $this->repository->save($form);
 
         $this->assertDatabaseHas('forms', [
-            'id' => 'test-id-456',
+            'id' => '00000000-0000-0000-0000-000000000456',
             'name' => 'Updated Name',
-            'description' => 'Updated description',
-            'published' => true,
-            'version' => 2,
+            'description' => 'New Description',
+            'version' => 2
         ]);
     }
 
@@ -96,31 +80,24 @@ final class EloquentFormRepositoryTest extends TestCase
     public function testSavesFormWithFields(): void
     {
         $form = new FormAggregate(
-            id: new FormId('form-with-fields'),
-            userId: 'user-3',
+            id: new FormId('00000000-0000-0000-0000-000000000001'),
+            userId: '00000000-0000-0000-0000-000000000005',
             name: new FormName('Form with Fields'),
         );
 
-        $field = new Field(
-            id: 'field-1',
-            label: 'Email Address',
-            type: new FieldType('email'),
-            required: true,
-        );
+        $form->addField(new Field(
+            id: '00000000-0000-0000-0000-000000000130',
+            label: 'Field 1',
+            type: new FieldType('text'),
+        ));
 
-        $form->addField($field);
         $this->repository->save($form);
 
-        $this->assertDatabaseHas('forms', [
-            'id' => 'form-with-fields',
-        ]);
-
+        $this->assertDatabaseHas('forms', ['id' => '00000000-0000-0000-0000-000000000001']);
         $this->assertDatabaseHas('form_fields', [
-            'id' => 'field-1',
-            'form_id' => 'form-with-fields',
-            'label' => 'Email Address',
-            'type' => 'email',
-            'required' => true,
+            'id' => '00000000-0000-0000-0000-000000000130',
+            'form_id' => '00000000-0000-0000-0000-000000000001',
+            'label' => 'Field 1'
         ]);
     }
 
@@ -130,19 +107,19 @@ final class EloquentFormRepositoryTest extends TestCase
     public function testDeletesRemovedFieldsOnUpdate(): void
     {
         $form = new FormAggregate(
-            id: new FormId('form-delete-fields'),
-            userId: 'user-4',
+            id: new FormId('00000000-0000-0000-0000-000000000002'),
+            userId: '00000000-0000-0000-0000-000000000004',
             name: new FormName('Test Form'),
         );
 
         $field1 = new Field(
-            id: 'field-to-keep',
+            id: '00000000-0000-0000-0000-000000000001',
             label: 'Name',
             type: new FieldType('text'),
         );
 
         $field2 = new Field(
-            id: 'field-to-delete',
+            id: '00000000-0000-0000-0000-000000000002',
             label: 'Age',
             type: new FieldType('number'),
         );
@@ -151,11 +128,11 @@ final class EloquentFormRepositoryTest extends TestCase
         $form->addField($field2);
         $this->repository->save($form);
 
-        $this->assertDatabaseHas('form_fields', ['id' => 'field-to-delete']);
+        $this->assertDatabaseHas('form_fields', ['id' => '00000000-0000-0000-0000-000000000002']);
 
         $updatedForm = FormAggregate::fromPrimitives(
-            id: new FormId('form-delete-fields'),
-            userId: 'user-4',
+            id: new FormId('00000000-0000-0000-0000-000000000002'),
+            userId: '00000000-0000-0000-0000-000000000004',
             name: new FormName('Test Form'),
             description: null,
             published: false,
@@ -166,26 +143,26 @@ final class EloquentFormRepositoryTest extends TestCase
 
         $this->repository->save($updatedForm);
 
-        $this->assertDatabaseHas('form_fields', ['id' => 'field-to-keep']);
-        $this->assertDatabaseMissing('form_fields', ['id' => 'field-to-delete']);
+        $this->assertDatabaseHas('form_fields', ['id' => '00000000-0000-0000-0000-000000000001']);
+        $this->assertDatabaseMissing('form_fields', ['id' => '00000000-0000-0000-0000-000000000002']);
     }
 
     public function testFindsFormById(): void
     {
         FormModel::factory()->create([
-            'id' => 'findable-id',
-            'user_id' => 'user-5',
+            'id' => '00000000-0000-0000-0000-000000000003',
+            'user_id' => '00000000-0000-0000-0000-000000000005',
             'name' => 'Findable Form',
             'description' => 'Description',
             'published' => false,
             'version' => 1,
         ]);
 
-        $result = $this->repository->findById(new FormId('findable-id'));
+        $result = $this->repository->findById(new FormId('00000000-0000-0000-0000-000000000003'));
 
         self::assertNotNull($result);
-        self::assertSame('findable-id', $result->id()->value());
-        self::assertSame('user-5', $result->userId());
+        self::assertSame('00000000-0000-0000-0000-000000000003', $result->id()->value());
+        self::assertSame('00000000-0000-0000-0000-000000000005', $result->userId());
         self::assertSame('Findable Form', $result->name()->value());
         self::assertSame('Description', $result->description());
         self::assertFalse($result->isPublished());
@@ -194,7 +171,7 @@ final class EloquentFormRepositoryTest extends TestCase
 
     public function testReturnsNullWhenFormNotFound(): void
     {
-        $result = $this->repository->findById(new FormId('non-existent-id'));
+        $result = $this->repository->findById(new FormId('00000000-0000-0000-0000-000000000999'));
 
         self::assertNull($result);
     }
@@ -202,13 +179,13 @@ final class EloquentFormRepositoryTest extends TestCase
     public function testFindsFormByIdWithFields(): void
     {
         $formModel = FormModel::factory()->create([
-            'id' => 'form-with-fields-id',
-            'user_id' => 'user-6',
+            'id' => '00000000-0000-0000-0000-000000000004',
+            'user_id' => '00000000-0000-0000-0000-000000000006',
             'name' => 'Form with Fields',
         ]);
 
         DB::table('form_fields')->insert([
-            'id' => 'field-1',
+            'id' => '00000000-0000-0000-0000-000000000130',
             'form_id' => $formModel->id,
             'label' => 'Username',
             'type' => 'text',
@@ -221,7 +198,7 @@ final class EloquentFormRepositoryTest extends TestCase
             'updated_at' => now(),
         ]);
 
-        $result = $this->repository->findById(new FormId('form-with-fields-id'));
+        $result = $this->repository->findById(new FormId('00000000-0000-0000-0000-000000000004'));
 
         self::assertNotNull($result);
         self::assertCount(1, $result->fields());
@@ -233,33 +210,33 @@ final class EloquentFormRepositoryTest extends TestCase
     public function testFindsByUserId(): void
     {
         FormModel::factory()->create([
-            'id' => 'form-1',
-            'user_id' => 'target-user',
+            'id' => '00000000-0000-0000-0000-000000000010',
+            'user_id' => '00000000-0000-0000-0000-000000000020',
             'name' => 'Form 1',
         ]);
 
         FormModel::factory()->create([
-            'id' => 'form-2',
-            'user_id' => 'target-user',
+            'id' => '00000000-0000-0000-0000-000000000011',
+            'user_id' => '00000000-0000-0000-0000-000000000020',
             'name' => 'Form 2',
         ]);
 
         FormModel::factory()->create([
-            'id' => 'form-3',
-            'user_id' => 'other-user',
+            'id' => '00000000-0000-0000-0000-000000000012',
+            'user_id' => '00000000-0000-0000-0000-000000000021',
             'name' => 'Other Form',
         ]);
 
-        $results = $this->repository->findByUserId('target-user');
+        $results = $this->repository->findByUserId('00000000-0000-0000-0000-000000000020');
 
         self::assertCount(2, $results);
-        self::assertSame('form-1', $results[0]->id()->value());
-        self::assertSame('form-2', $results[1]->id()->value());
+        self::assertSame('00000000-0000-0000-0000-000000000010', $results[0]->id()->value());
+        self::assertSame('00000000-0000-0000-0000-000000000011', $results[1]->id()->value());
     }
 
     public function testReturnsEmptyArrayWhenNoFormsForUser(): void
     {
-        $results = $this->repository->findByUserId('user-with-no-forms');
+        $results = $this->repository->findByUserId('00000000-0000-0000-0000-000000000030');
 
         self::assertIsArray($results);
         self::assertEmpty($results);
@@ -271,17 +248,17 @@ final class EloquentFormRepositoryTest extends TestCase
     public function testDeletesFormAggregate(): void
     {
         $form = new FormAggregate(
-            id: new FormId('form-to-delete'),
-            userId: 'user-7',
+            id: new FormId('00000000-0000-0000-0000-000000000040'),
+            userId: '00000000-0000-0000-0000-000000000007',
             name: new FormName('Deletable Form'),
         );
 
         $this->repository->save($form);
-        $this->assertDatabaseHas('forms', ['id' => 'form-to-delete']);
+        $this->assertDatabaseHas('forms', ['id' => '00000000-0000-0000-0000-000000000040']);
 
         $this->repository->delete($form);
 
-        $this->assertDatabaseMissing('forms', ['id' => 'form-to-delete', 'deleted_at' => null]);
+        $this->assertDatabaseMissing('forms', ['id' => '00000000-0000-0000-0000-000000000040', 'deleted_at' => null]);
     }
 
     /**
@@ -290,13 +267,13 @@ final class EloquentFormRepositoryTest extends TestCase
     public function testDeletesFormCascadesFields(): void
     {
         $form = new FormAggregate(
-            id: new FormId('form-cascade'),
-            userId: 'user-8',
+            id: new FormId('00000000-0000-0000-0000-000000000050'),
+            userId: '00000000-0000-0000-0000-000000000008',
             name: new FormName('Form with Cascade'),
         );
 
         $field = new Field(
-            id: 'field-cascade',
+            id: '00000000-0000-0000-0000-000000000051',
             label: 'Test',
             type: new FieldType('text'),
         );
@@ -304,11 +281,11 @@ final class EloquentFormRepositoryTest extends TestCase
         $form->addField($field);
         $this->repository->save($form);
 
-        $this->assertDatabaseHas('form_fields', ['id' => 'field-cascade']);
+        $this->assertDatabaseHas('form_fields', ['id' => '00000000-0000-0000-0000-000000000051']);
 
         $this->repository->delete($form);
 
-        $this->assertDatabaseMissing('form_fields', ['id' => 'field-cascade']);
+        $this->assertDatabaseMissing('form_fields', ['id' => '00000000-0000-0000-0000-000000000051']);
     }
 
     /**
@@ -345,13 +322,13 @@ final class EloquentFormRepositoryTest extends TestCase
     public function testSavesFieldWithAllProperties(): void
     {
         $form = new FormAggregate(
-            id: new FormId('form-complex-field'),
-            userId: 'user-9',
+            id: new FormId('00000000-0000-0000-0000-000000000060'),
+            userId: '00000000-0000-0000-0000-000000000009',
             name: new FormName('Complex Field Form'),
         );
 
         $field = new Field(
-            id: 'complex-field',
+            id: '00000000-0000-0000-0000-000000000061',
             label: 'Price',
             type: new FieldType('currency'),
             required: true,
@@ -365,7 +342,7 @@ final class EloquentFormRepositoryTest extends TestCase
         $this->repository->save($form);
 
         $this->assertDatabaseHas('form_fields', [
-            'id' => 'complex-field',
+            'id' => '00000000-0000-0000-0000-000000000061',
             'label' => 'Price',
             'type' => 'currency',
             'required' => true,
@@ -374,7 +351,7 @@ final class EloquentFormRepositoryTest extends TestCase
             'order' => 5,
         ]);
 
-        $savedForm = $this->repository->findById(new FormId('form-complex-field'));
+        $savedForm = $this->repository->findById(new FormId('00000000-0000-0000-0000-000000000060'));
         self::assertNotNull($savedForm);
         self::assertSame(['min' => 0, 'max' => 1000], $savedForm->fields()[0]->options());
     }

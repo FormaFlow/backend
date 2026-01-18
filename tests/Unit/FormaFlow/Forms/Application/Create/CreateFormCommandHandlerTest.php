@@ -19,7 +19,7 @@ final class CreateFormCommandHandlerTest extends TestCase
 
         $command = new CreateFormCommand(
             id: '123',
-            userId: 'user-1',
+            userId: '00000000-0000-0000-0000-000000000001',
             name: 'Test Form',
             description: 'Test description',
         );
@@ -29,7 +29,7 @@ final class CreateFormCommandHandlerTest extends TestCase
         $form = $repository->findById(new FormId('123'));
 
         self::assertNotNull($form);
-        self::assertSame('user-1', $form->userId());
+        self::assertSame('00000000-0000-0000-0000-000000000001', $form->userId());
         self::assertSame('Test Form', $form->name()->value());
         self::assertSame('Test description', $form->description());
     }

@@ -8,8 +8,7 @@ use DateTime;
 use FormaFlow\Users\Domain\UserAggregate;
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
 use FormaFlow\Users\Infrastructure\Persistence\EloquentUserRepository;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\TestCase;
+use Tests\TestCase;
 use Illuminate\Support\Facades\Hash;
 use InvalidArgumentException;
 use Shared\Domain\AggregateRoot;
@@ -19,7 +18,6 @@ use Throwable;
 
 final class EloquentUserRepositoryTest extends TestCase
 {
-    use RefreshDatabase;
 
     private EloquentUserRepository $repository;
 
@@ -35,7 +33,7 @@ final class EloquentUserRepositoryTest extends TestCase
     public function testSavesNewUserAggregate(): void
     {
         $user = new UserAggregate(
-            id: new UserId('user-123'),
+            id: new UserId('00000000-0000-0000-0000-000000000123'),
             name: new UserName('John Doe'),
         );
 
@@ -45,7 +43,7 @@ final class EloquentUserRepositoryTest extends TestCase
         $this->repository->save($user);
 
         $this->assertDatabaseHas('users', [
-            'id' => 'user-123',
+            'id' => '00000000-0000-0000-0000-000000000123',
             'name' => 'John Doe',
             'email' => 'john@example.com',
         ]);
@@ -57,7 +55,7 @@ final class EloquentUserRepositoryTest extends TestCase
     public function testUpdatesExistingUserAggregate(): void
     {
         $user = new UserAggregate(
-            id: new UserId('user-456'),
+            id: new UserId('00000000-0000-0000-0000-000000000456'),
             name: new UserName('Original Name'),
         );
 
@@ -67,7 +65,7 @@ final class EloquentUserRepositoryTest extends TestCase
         $this->repository->save($user);
 
         $updatedUser = UserAggregate::fromPrimitives(
-            id: new UserId('user-456'),
+            id: new UserId('00000000-0000-0000-0000-000000000456'),
             name: new UserName('Updated Name'),
             email: 'updated@example.com',
             password: 'new-password',
@@ -79,7 +77,7 @@ final class EloquentUserRepositoryTest extends TestCase
         $this->repository->save($updatedUser);
 
         $this->assertDatabaseHas('users', [
-            'id' => 'user-456',
+            'id' => '00000000-0000-0000-0000-000000000456',
             'name' => 'Updated Name',
             'email' => 'updated@example.com',
             'remember_token' => 'token123',
@@ -89,22 +87,22 @@ final class EloquentUserRepositoryTest extends TestCase
     public function testFindsUserById(): void
     {
         UserModel::factory()->create([
-            'id' => 'findable-user-id',
+            'id' => '00000000-0000-0000-0000-000000000150',
             'name' => 'Jane Smith',
             'email' => 'jane@example.com',
         ]);
 
-        $result = $this->repository->findById(new UserId('findable-user-id'));
+        $result = $this->repository->findById(new UserId('00000000-0000-0000-0000-000000000150'));
 
         self::assertNotNull($result);
-        self::assertSame('findable-user-id', $result->id()->value());
+        self::assertSame('00000000-0000-0000-0000-000000000150', $result->id()->value());
         self::assertSame('Jane Smith', $result->name()->value());
         self::assertSame('jane@example.com', $result->email());
     }
 
     public function testReturnsNullWhenUserNotFoundById(): void
     {
-        $result = $this->repository->findById(new UserId('non-existent-user'));
+        $result = $this->repository->findById(new UserId('00000000-0000-0000-0000-000000000999'));
 
         self::assertNull($result);
     }
@@ -112,7 +110,7 @@ final class EloquentUserRepositoryTest extends TestCase
     public function testFindsByEmail(): void
     {
         UserModel::factory()->create([
-            'id' => 'email-user-id',
+            'id' => '00000000-0000-0000-0000-000000000160',
             'name' => 'Email User',
             'email' => 'unique@example.com',
         ]);
@@ -120,7 +118,7 @@ final class EloquentUserRepositoryTest extends TestCase
         $result = $this->repository->findByEmail('unique@example.com');
 
         self::assertNotNull($result);
-        self::assertSame('email-user-id', $result->id()->value());
+        self::assertSame('00000000-0000-0000-0000-000000000160', $result->id()->value());
         self::assertSame('Email User', $result->name()->value());
         self::assertSame('unique@example.com', $result->email());
     }
@@ -138,7 +136,7 @@ final class EloquentUserRepositoryTest extends TestCase
     public function testDeletesUserAggregate(): void
     {
         $user = new UserAggregate(
-            id: new UserId('user-to-delete'),
+            id: new UserId('00000000-0000-0000-0000-000000000170'),
             name: new UserName('Deletable User'),
         );
 
@@ -147,11 +145,11 @@ final class EloquentUserRepositoryTest extends TestCase
 
         $this->repository->save($user);
 
-        $this->assertDatabaseHas('users', ['id' => 'user-to-delete']);
+        $this->assertDatabaseHas('users', ['id' => '00000000-0000-0000-0000-000000000170']);
 
         $this->repository->delete($user);
 
-        $this->assertDatabaseMissing('users', ['id' => 'user-to-delete']);
+        $this->assertDatabaseMissing('users', ['id' => '00000000-0000-0000-0000-000000000170']);
     }
 
     /**
@@ -190,7 +188,7 @@ final class EloquentUserRepositoryTest extends TestCase
         $verifiedAt = new DateTime('2025-01-01 12:00:00');
 
         $user = UserAggregate::fromPrimitives(
-            id: new UserId('verified-user'),
+            id: new UserId('00000000-0000-0000-0000-000000000070'),
             name: new UserName('Verified User'),
             email: 'verified@example.com',
             password: 'hashed_password',
@@ -201,7 +199,7 @@ final class EloquentUserRepositoryTest extends TestCase
 
         $this->repository->save($user);
 
-        $saved = $this->repository->findById(new UserId('verified-user'));
+        $saved = $this->repository->findById(new UserId('00000000-0000-0000-0000-000000000070'));
 
         self::assertNotNull($saved);
         self::assertNotNull($saved->emailVerifiedAt());
@@ -217,7 +215,7 @@ final class EloquentUserRepositoryTest extends TestCase
     public function testSavesUserWithRememberToken(): void
     {
         $user = new UserAggregate(
-            id: new UserId('token-user'),
+            id: new UserId('00000000-0000-0000-0000-000000000080'),
             name: new UserName('Token User'),
         );
 
@@ -227,7 +225,7 @@ final class EloquentUserRepositoryTest extends TestCase
 
         $this->repository->save($user);
 
-        $saved = $this->repository->findById(new UserId('token-user'));
+        $saved = $this->repository->findById(new UserId('00000000-0000-0000-0000-000000000080'));
 
         self::assertNotNull($saved);
         self::assertSame('remember_me_token_123', $saved->rememberToken());
@@ -242,7 +240,7 @@ final class EloquentUserRepositoryTest extends TestCase
         $hashed = Hash::make($password);
 
         $user = UserAggregate::fromPrimitives(
-            id: new UserId('password-user'),
+            id: new UserId('00000000-0000-0000-0000-000000000090'),
             name: new UserName('Password User'),
             email: 'password@example.com',
             password: $hashed,
@@ -253,7 +251,7 @@ final class EloquentUserRepositoryTest extends TestCase
 
         $this->repository->save($user);
 
-        $saved = $this->repository->findById(new UserId('password-user'));
+        $saved = $this->repository->findById(new UserId('00000000-0000-0000-0000-000000000090'));
 
         self::assertNotNull($saved);
         self::assertSame($hashed, $saved->password());
@@ -265,12 +263,12 @@ final class EloquentUserRepositoryTest extends TestCase
     public function testDoesNotDeleteNonExistentUser(): void
     {
         $user = new UserAggregate(
-            id: new UserId('never-saved-user'),
+            id: new UserId('00000000-0000-0000-0000-000000000100'),
             name: new UserName('Never Saved'),
         );
 
         $this->repository->delete($user);
 
-        $this->assertDatabaseMissing('users', ['id' => 'never-saved-user']);
+        $this->assertDatabaseMissing('users', ['id' => '00000000-0000-0000-0000-000000000100']);
     }
 }

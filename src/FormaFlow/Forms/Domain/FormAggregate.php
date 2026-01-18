@@ -20,8 +20,8 @@ final class FormAggregate extends AggregateRoot
     public function __construct(
         private readonly FormId $id,
         private readonly string $userId,
-        private readonly FormName $name,
-        private readonly ?string $description = null,
+        private FormName $name,
+        private ?string $description = null,
         private readonly DateTime $createdAt = new DateTime(),
     ) {
     }
@@ -69,6 +69,13 @@ final class FormAggregate extends AggregateRoot
     public function isSingleSubmission(): bool
     {
         return $this->singleSubmission;
+    }
+
+    public function update(FormName $name, ?string $description): void
+    {
+        $this->name = $name;
+        $this->description = $description;
+        $this->incrementVersion();
     }
 
     public function updateSettings(bool $isQuiz, bool $singleSubmission): void

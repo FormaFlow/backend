@@ -8,14 +8,12 @@ use Carbon\Carbon;
 use FormaFlow\Entries\Infrastructure\Persistence\Eloquent\EntryModel;
 use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\TestCase;
+use Tests\TestCase;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 final class EntryManagementIntegrationTest extends TestCase
 {
-    use RefreshDatabase;
 
     protected UserModel $user;
     protected FormModel $form;
@@ -29,7 +27,7 @@ final class EntryManagementIntegrationTest extends TestCase
         // Add fields to form
         DB::table('form_fields')->insert([
             [
-                'id' => 'field-amount',
+                'id' => '00000000-0000-0000-0000-000000000110',
                 'form_id' => $this->form->id,
                 'label' => 'Amount',
                 'type' => 'currency',
@@ -42,7 +40,7 @@ final class EntryManagementIntegrationTest extends TestCase
                 'updated_at' => Carbon::now(),
             ],
             [
-                'id' => 'field-date',
+                'id' => '00000000-0000-0000-0000-000000000111',
                 'form_id' => $this->form->id,
                 'label' => 'Date',
                 'type' => 'date',
@@ -55,7 +53,7 @@ final class EntryManagementIntegrationTest extends TestCase
                 'updated_at' => Carbon::now(),
             ],
             [
-                'id' => 'field-category',
+                'id' => '00000000-0000-0000-0000-000000000112',
                 'form_id' => $this->form->id,
                 'label' => 'Category',
                 'type' => 'select',
@@ -75,9 +73,9 @@ final class EntryManagementIntegrationTest extends TestCase
         $entryData = [
             'form_id' => $this->form->id,
             'data' => [
-                'field-amount' => 100.50,
-                'field-date' => '2025-01-15',
-                'field-category' => 'income',
+                '00000000-0000-0000-0000-000000000110' => 100.50,
+                '00000000-0000-0000-0000-000000000111' => '2025-01-15',
+                '00000000-0000-0000-0000-000000000112' => 'income',
             ],
         ];
 
@@ -94,13 +92,13 @@ final class EntryManagementIntegrationTest extends TestCase
         ]);
     }
 
-    public function test_cannot_create_entry_from_unpublished_form(): void
+    public function test_cannot_create_entry_from_published_form(): void
     {
         $unpublishedForm = FormModel::factory()->forUser($this->user)->create(['published' => false]);
 
         $entryData = [
             'form_id' => $unpublishedForm->id,
-            'data' => ['field-amount' => 100],
+            'data' => ['00000000-0000-0000-0000-000000000110' => 100],
         ];
 
         $response = $this
@@ -116,7 +114,7 @@ final class EntryManagementIntegrationTest extends TestCase
         $entryData = [
             'form_id' => $this->form->id,
             'data' => [
-                'field-date' => '2025-01-15',
+                '00000000-0000-0000-0000-000000000111' => '2025-01-15',
                 // missing required 'amount' field
             ],
         ];
@@ -126,7 +124,7 @@ final class EntryManagementIntegrationTest extends TestCase
             ->postJson('/api/v1/entries', $entryData);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonValidationErrors(['data.field-amount']);
+            ->assertJsonValidationErrors(['data.00000000-0000-0000-0000-000000000110']);
     }
 
     public function test_entry_validation_validates_field_types(): void
@@ -134,9 +132,9 @@ final class EntryManagementIntegrationTest extends TestCase
         $entryData = [
             'form_id' => $this->form->id,
             'data' => [
-                'field-amount' => 'not-a-number',
-                'field-date' => '2025-01-15',
-                'field-category' => 'income',
+                '00000000-0000-0000-0000-000000000110' => 'not-a-number',
+                '00000000-0000-0000-0000-000000000111' => '2025-01-15',
+                '00000000-0000-0000-0000-000000000112' => 'income',
             ],
         ];
 
@@ -145,23 +143,23 @@ final class EntryManagementIntegrationTest extends TestCase
             ->postJson('/api/v1/entries', $entryData);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonValidationErrors(['data.field-amount']);
+            ->assertJsonValidationErrors(['data.00000000-0000-0000-0000-000000000110']);
     }
 
     public function test_user_can_update_existing_entry(): void
     {
         $entry = EntryModel::factory()->create([
-            'id' => 'entry-1',
+            'id' => '00000000-0000-0000-0000-000000000201',
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['field-amount' => 100, 'field-date' => '2025-01-15', 'field-category' => 'income'],
+            'data' => ['00000000-0000-0000-0000-000000000110' => 100, '00000000-0000-0000-0000-000000000111' => '2025-01-15', '00000000-0000-0000-0000-000000000112' => 'income'],
         ]);
 
         $updateData = [
             'data' => [
-                'field-amount' => 150.75,
-                'field-date' => '2025-01-16',
-                'field-category' => 'expense',
+                '00000000-0000-0000-0000-000000000110' => 150.75,
+                '00000000-0000-0000-0000-000000000111' => '2025-01-16',
+                '00000000-0000-0000-0000-000000000112' => 'expense',
             ],
         ];
 
@@ -172,16 +170,16 @@ final class EntryManagementIntegrationTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
 
         $updated = EntryModel::query()->find($entry->id);
-        $this->assertEquals(150.75, $updated->data['field-amount']);
+        $this->assertEquals(150.75, $updated->data['00000000-0000-0000-0000-000000000110']);
     }
 
     public function test_user_can_delete_entry(): void
     {
         $entry = EntryModel::factory()->create([
-            'id' => 'entry-to-delete',
+            'id' => '00000000-0000-0000-0000-000000000202',
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['field-amount' => 100],
+            'data' => ['00000000-0000-0000-0000-000000000110' => 100],
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);
@@ -199,11 +197,12 @@ final class EntryManagementIntegrationTest extends TestCase
     {
         // Create 25 entries
         for ($i = 1; $i <= 25; $i++) {
+            $uuid = str_pad((string)$i, 12, '0', STR_PAD_LEFT);
             EntryModel::factory()->create([
-                'id' => "entry-{$i}",
+                'id' => "00000000-0000-0000-0000-{$uuid}",
                 'form_id' => $this->form->id,
                 'user_id' => $this->user->id,
-                'data' => ['field-amount' => $i * 10],
+                'data' => ['00000000-0000-0000-0000-000000000110' => $i * 10],
                 'created_at' => Carbon::now()->subDays(25 - $i),
                 'updated_at' => Carbon::now(),
             ]);
@@ -223,18 +222,18 @@ final class EntryManagementIntegrationTest extends TestCase
     {
         DB::table('entries')->insert([
             [
-                'id' => 'entry-jan',
+                'id' => '00000000-0000-0000-0000-000000000301',
                 'form_id' => $this->form->id,
                 'user_id' => $this->user->id,
-                'data' => json_encode(['field-amount' => 100, 'field-date' => '2025-01-15']),
+                'data' => json_encode(['00000000-0000-0000-0000-000000000110' => 100, '00000000-0000-0000-0000-000000000111' => '2025-01-15']),
                 'created_at' => Carbon::parse('2025-01-15'),
                 'updated_at' => Carbon::now(),
             ],
             [
-                'id' => 'entry-feb',
+                'id' => '00000000-0000-0000-0000-000000000302',
                 'form_id' => $this->form->id,
                 'user_id' => $this->user->id,
-                'data' => json_encode(['field-amount' => 200, 'field-date' => '2025-02-15']),
+                'data' => json_encode(['00000000-0000-0000-0000-000000000110' => 200, '00000000-0000-0000-0000-000000000111' => '2025-02-15']),
                 'created_at' => Carbon::parse('2025-02-15'),
                 'updated_at' => Carbon::now(),
             ],
@@ -254,18 +253,18 @@ final class EntryManagementIntegrationTest extends TestCase
 
         DB::table('entries')->insert([
             [
-                'id' => 'entry-form1',
+                'id' => '00000000-0000-0000-0000-000000000401',
                 'form_id' => $this->form->id,
                 'user_id' => $this->user->id,
-                'data' => json_encode(['field-amount' => 100]),
+                'data' => json_encode(['00000000-0000-0000-0000-000000000110' => 100]),
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
             [
-                'id' => 'entry-form2',
+                'id' => '00000000-0000-0000-0000-000000000402',
                 'form_id' => $anotherForm->id,
                 'user_id' => $this->user->id,
-                'data' => json_encode(['field-amount' => 200]),
+                'data' => json_encode(['00000000-0000-0000-0000-000000000110' => 200]),
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
@@ -283,18 +282,18 @@ final class EntryManagementIntegrationTest extends TestCase
     {
         DB::table('entries')->insert([
             [
-                'id' => 'entry-1',
+                'id' => '00000000-0000-0000-0000-000000000501',
                 'form_id' => $this->form->id,
                 'user_id' => $this->user->id,
-                'data' => json_encode(['field-amount' => 300, 'field-date' => '2025-01-15']),
+                'data' => json_encode(['00000000-0000-0000-0000-000000000110' => 300, '00000000-0000-0000-0000-000000000111' => '2025-01-15']),
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
             [
-                'id' => 'entry-2',
+                'id' => '00000000-0000-0000-0000-000000000502',
                 'form_id' => $this->form->id,
                 'user_id' => $this->user->id,
-                'data' => json_encode(['field-amount' => 100, 'field-date' => '2025-01-16']),
+                'data' => json_encode(['00000000-0000-0000-0000-000000000110' => 100, '00000000-0000-0000-0000-000000000111' => '2025-01-16']),
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
@@ -302,13 +301,13 @@ final class EntryManagementIntegrationTest extends TestCase
 
         $response = $this
             ->actingAs($this->user, 'sanctum')
-            ->getJson('/api/v1/entries?sort_by=data.field-amount&sort_order=asc');
+            ->getJson('/api/v1/entries?sort_by=data.00000000-0000-0000-0000-000000000110&sort_order=asc');
 
         $response->assertStatus(Response::HTTP_OK);
 
         $entries = $response->json('entries');
-        $this->assertEquals(100, $entries[0]['data']['field-amount']);
-        $this->assertEquals(300, $entries[1]['data']['field-amount']);
+        $this->assertEquals(100, $entries[0]['data']['00000000-0000-0000-0000-000000000110']);
+        $this->assertEquals(300, $entries[1]['data']['00000000-0000-0000-0000-000000000110']);
     }
 
     public function test_user_can_add_tags_to_entry(): void
@@ -316,9 +315,9 @@ final class EntryManagementIntegrationTest extends TestCase
         $entryData = [
             'form_id' => $this->form->id,
             'data' => [
-                'field-amount' => 100,
-                'field-date' => '2025-01-15',
-                'field-category' => 'income',
+                '00000000-0000-0000-0000-000000000110' => 100,
+                '00000000-0000-0000-0000-000000000111' => '2025-01-15',
+                '00000000-0000-0000-0000-000000000112' => 'income',
             ],
             'tags' => ['salary', 'monthly', 'recurring'],
         ];
@@ -340,10 +339,10 @@ final class EntryManagementIntegrationTest extends TestCase
     public function test_user_can_filter_entries_by_tags(): void
     {
         $entry = EntryModel::factory()->create([
-            'id' => 'entry-tagged',
+            'id' => '00000000-0000-0000-0000-000000000601',
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['field-amount' => 100],
+            'data' => ['00000000-0000-0000-0000-000000000110' => 100],
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);
@@ -404,10 +403,10 @@ final class EntryManagementIntegrationTest extends TestCase
         $this->markTestIncomplete('Should implement entry_audit_logs / action_history');
 
         $entry = EntryModel::factory()->create([
-            'id' => 'entry-audit',
+            'id' => '00000000-0000-0000-0000-000000000701',
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['field-amount' => 100],
+            'data' => ['00000000-0000-0000-0000-000000000110' => 100],
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);
@@ -415,7 +414,7 @@ final class EntryManagementIntegrationTest extends TestCase
         $this
             ->actingAs($this->user, 'sanctum')
             ->patchJson("/api/v1/entries/{$entry->id}", [
-                'data' => ['field-amount' => 200],
+                'data' => ['00000000-0000-0000-0000-000000000110' => 200],
             ]);
 
         $auditLogs = DB::table('entry_audit_logs')

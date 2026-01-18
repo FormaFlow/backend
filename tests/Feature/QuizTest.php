@@ -8,14 +8,12 @@ use Carbon\Carbon;
 use FormaFlow\Entries\Infrastructure\Persistence\Eloquent\EntryModel;
 use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\TestCase;
+use Tests\TestCase;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 final class QuizTest extends TestCase
 {
-    use RefreshDatabase;
 
     protected ?UserModel $user = null;
     protected string $baseUrl = '/api/v1/entries';
@@ -40,7 +38,7 @@ final class QuizTest extends TestCase
 
         DB::table('form_fields')->insert([
             [
-                'id' => 'q1',
+                'id' => '00000000-0000-0000-0000-000000000140',
                 'form_id' => $form->id,
                 'label' => 'Question 1',
                 'type' => 'text',
@@ -52,7 +50,7 @@ final class QuizTest extends TestCase
                 'updated_at' => Carbon::now(),
             ],
             [
-                'id' => 'q2',
+                'id' => '00000000-0000-0000-0000-000000000141',
                 'form_id' => $form->id,
                 'label' => 'Question 2',
                 'type' => 'number',
@@ -68,8 +66,8 @@ final class QuizTest extends TestCase
         $entryData = [
             'form_id' => $form->id,
             'data' => [
-                'q1' => 'Answer 1', // Correct (10)
-                'q2' => 50,         // Incorrect (0)
+                '00000000-0000-0000-0000-000000000140' => 'Answer 1', // Correct (10)
+                '00000000-0000-0000-0000-000000000141' => 50,         // Incorrect (0)
             ],
         ];
 
@@ -108,7 +106,7 @@ final class QuizTest extends TestCase
 
         DB::table('form_fields')->insert([
             [
-                'id' => 'q1',
+                'id' => '00000000-0000-0000-0000-000000000140',
                 'form_id' => $form->id,
                 'label' => 'Question 1',
                 'type' => 'text',
@@ -124,7 +122,7 @@ final class QuizTest extends TestCase
         $entryData = [
             'form_id' => $form->id,
             'data' => [
-                'q1' => 'Answer 1',
+                '00000000-0000-0000-0000-000000000140' => 'Answer 1',
             ],
         ];
 
@@ -145,7 +143,7 @@ final class QuizTest extends TestCase
 
         DB::table('form_fields')->insert([
             [
-                'id' => 'q1',
+                'id' => '00000000-0000-0000-0000-000000000140',
                 'form_id' => $form->id,
                 'label' => 'Question 1',
                 'type' => 'text',
@@ -157,7 +155,7 @@ final class QuizTest extends TestCase
 
         $entryData = [
             'form_id' => $form->id,
-            'data' => ['q1' => 'val'],
+            'data' => ['00000000-0000-0000-0000-000000000140' => 'val'],
             'duration' => 120, // 2 minutes
         ];
 
@@ -178,7 +176,7 @@ final class QuizTest extends TestCase
 
         DB::table('form_fields')->insert([
             [
-                'id' => 'q1',
+                'id' => '00000000-0000-0000-0000-000000000140',
                 'form_id' => $form->id,
                 'label' => 'Q1',
                 'type' => 'text',
@@ -190,7 +188,7 @@ final class QuizTest extends TestCase
 
         $entryData = [
             'form_id' => $form->id,
-            'data' => ['q1' => 'first'],
+            'data' => ['00000000-0000-0000-0000-000000000140' => 'first'],
         ];
 
         // First submission
@@ -215,7 +213,7 @@ final class QuizTest extends TestCase
 
         DB::table('form_fields')->insert([
             [
-                'id' => 'q1',
+                'id' => '00000000-0000-0000-0000-000000000140',
                 'form_id' => $form->id,
                 'label' => 'Question 1',
                 'type' => 'text',
@@ -230,7 +228,7 @@ final class QuizTest extends TestCase
         $entryData = [
             'form_id' => $form->id,
             'data' => [
-                'q1' => '  pArIs  ', // Mixed case and whitespace
+                '00000000-0000-0000-0000-000000000140' => '  pArIs  ', // Mixed case and whitespace
             ],
         ];
 
@@ -251,7 +249,7 @@ final class QuizTest extends TestCase
 
         DB::table('form_fields')->insert([
             [
-                'id' => 'q1',
+                'id' => '00000000-0000-0000-0000-000000000140',
                 'form_id' => $form->id,
                 'label' => 'Question 1',
                 'type' => 'text',
@@ -266,7 +264,7 @@ final class QuizTest extends TestCase
         $entryData = [
             'form_id' => $form->id,
             'data' => [
-                'q1' => 'медведь', // lowercase
+                '00000000-0000-0000-0000-000000000140' => 'медведь', // lowercase
             ],
         ];
 
