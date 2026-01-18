@@ -8,9 +8,9 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('entries', static function (Blueprint $table) {
-            $table->string('id')->primary();
-            $table->string('form_id');
-            $table->string('user_id');
+            $table->uuid('id')->primary();
+            $table->uuid('form_id');
+            $table->uuid('user_id');
             $table->json('data');
             $table->timestamps();
             $table->softDeletes();

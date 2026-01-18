@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('entry_tags', static function (Blueprint $table) {
-            $table->string('entry_id');
+            $table->uuid('entry_id');
             $table->string('tag');
             $table->timestamps();
 
