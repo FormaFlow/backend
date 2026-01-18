@@ -7,6 +7,7 @@
 .phpunit.result.cache
 /scripts
 /database/database.sqlite
+/database/database.sqlite*
 /composer.lock
 /node_modules
 

@@ -43,6 +43,6 @@ serve:
 	$(ARTISAN) serve
 
 deploy:
-	ssh root@89.169.37.68 "cd /var/www/formaflow/backend && git fetch origin && git reset --hard origin/master && php artisan migrate"
+	ssh root@89.169.37.68 "cd /var/www/formaflow/backend && git fetch origin && git reset --hard origin/master && php artisan migrate --force"
 
 .PHONY: test lint cs cs-fix analyze format format-check migrate fresh key serve deploy
