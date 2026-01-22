@@ -23,8 +23,7 @@ src/FormaFlow/
 ## Стек технологий
 
 - **PHP 8.3** + Laravel 11
-- **PostgreSQL** (Production/Dev)
-- **SQLite** (Testing)
+- **PostgreSQL**
 - **Sanctum** для аутентификации
 - **PHPUnit** для тестирования
 - **Psalm** для статического анализа
@@ -52,9 +51,9 @@ php artisan migrate
 ### Аутентификация
 - `POST /api/v1/register` - Регистрация
 - `POST /api/v1/login` - Вход
-- `POST /api/v1/logout` - Выход (Auth)
-- `GET /api/v1/profile` - Профиль пользователя (Auth)
-- `PATCH /api/v1/profile` - Обновление профиля (Auth)
+- `POST /api/v1/logout` - Выход
+- `GET /api/v1/profile` - Профиль пользователя
+- `PATCH /api/v1/profile` - Обновление профиля
 
 ### Формы
 - `GET /api/v1/forms` - Список форм
@@ -84,10 +83,8 @@ php artisan migrate
 
 ## Тестирование
 
-**Важно:** При запуске тестов вручную всегда используйте конфигурационный файл или запускайте из директории `backend`:
 ```bash
-# Из корня проекта
-./backend/vendor/bin/phpunit -c backend/phpunit.xml
+./vendor/bin/phpunit -c phpunit.xml
 
 # Или через Makefile
 make test
