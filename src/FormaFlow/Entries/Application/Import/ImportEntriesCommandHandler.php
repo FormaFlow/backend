@@ -21,9 +21,6 @@ final readonly class ImportEntriesCommandHandler
     ) {
     }
 
-    /**
-     * @return array{imported: int, errors: string[]}
-     */
     public function handle(ImportEntriesCommand $command): array
     {
         $formId = new FormId($command->formId);
@@ -58,7 +55,6 @@ final readonly class ImportEntriesCommandHandler
 
             $values = str_getcsv($line, $command->delimiter);
 
-            // Handle potentially mismatched header/value counts
             if (count($values) !== count($headers)) {
                 $errors[] = "Row " . ($index + 2) . ": Column count mismatch";
                 continue;

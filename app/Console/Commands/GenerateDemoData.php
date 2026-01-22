@@ -23,7 +23,6 @@ final class GenerateDemoData extends Command
     {
         $this->info('Generating demo data...');
 
-        // 1. Create User
         $randomInt = random_int(1000, 9999);
         $email = "test+{$randomInt}@test.com";
         $password = 'cPAiAibpNzn7g88';
@@ -37,10 +36,7 @@ final class GenerateDemoData extends Command
 
         $this->info("User created: {$email} / {$password}");
 
-        // 2. Budget Form
         $this->createBudgetForm($user);
-
-        // 3. Medicine Form
         $this->createMedicineForm($user);
 
         $this->info('Demo data generation completed!');
@@ -60,7 +56,6 @@ final class GenerateDemoData extends Command
         $categoryId = (string)Str::uuid();
         $descId = (string)Str::uuid();
 
-        // Add fields directly via DB
         DB::table('form_fields')->insert([
             [
                 'id' => $amountId,
@@ -108,15 +103,13 @@ final class GenerateDemoData extends Command
 
         $this->info('Budget form created.');
 
-        // Generate Entries
         $startDate = Carbon::now()->subYears(2);
         $endDate = Carbon::now();
 
         for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
-            // 0-3 entries per day
             $entriesCount = random_int(0, 3);
             for ($i = 0; $i < $entriesCount; $i++) {
-                $isIncome = (random_int(1, 100) > 70); // 30% income, 70% expense
+                $isIncome = (random_int(1, 100) > 70);
                 $category = $isIncome ? 'income' : 'expense';
                 $amount = $isIncome ? random_int(1000, 5000) : random_int(10, 200);
 
@@ -165,8 +158,6 @@ final class GenerateDemoData extends Command
 
         $this->info('Medicine form created.');
 
-        // Generate Entries
-        // Constraint: 35-50 ml per day. 1-5 ml per dose.
         $startDate = Carbon::now()->subYears(2);
         $endDate = Carbon::now();
 
@@ -174,14 +165,11 @@ final class GenerateDemoData extends Command
             $dailyTotal = 0;
             $target = random_int(35, 50);
 
-            // Distribute doses across the day
-            $hour = 8; // Start at 8 AM
+            $hour = 8;
 
             while ($dailyTotal < $target) {
                 $dose = random_int(1, 5);
 
-                // Don't exceed target too much (optional, but requested "35 to 50")
-                // If we are already >= 35, stop.
                 if (($dailyTotal + $dose > 50) && $dailyTotal >= 35) {
                     break;
                 }
@@ -201,7 +189,7 @@ final class GenerateDemoData extends Command
                 $hour++;
                 if ($hour > 22) {
                     break;
-                } // Safety break
+                }
             }
         }
     }

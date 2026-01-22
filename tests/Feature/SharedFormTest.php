@@ -6,8 +6,8 @@ namespace Tests\Feature;
 
 use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
-use Tests\TestCase;
 use Symfony\Component\HttpFoundation\Response;
+use Tests\TestCase;
 
 final class SharedFormTest extends TestCase
 {

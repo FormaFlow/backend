@@ -21,7 +21,6 @@ final class CreateQuizFromJson extends Command
         $path = $this->argument('path');
         $email = $this->option('email');
 
-        // 1. Validate File
         if (!file_exists($path)) {
             $this->error("File not found: {$path}");
             return self::FAILURE;
@@ -35,7 +34,6 @@ final class CreateQuizFromJson extends Command
             return self::FAILURE;
         }
 
-        // 2. Find User
         if ($email) {
             $user = UserModel::query()->where('email', $email)->first();
             if (!$user) {
@@ -43,7 +41,6 @@ final class CreateQuizFromJson extends Command
                 return self::FAILURE;
             }
         } else {
-            // Default to first user if no email provided (convenience for dev)
             $user = UserModel::query()->first();
             if (!$user) {
                 $this->error('No users found in database. Please create a user first or provide --email.');
@@ -52,9 +49,7 @@ final class CreateQuizFromJson extends Command
             $this->info("No email provided. Using user: {$user->email}");
         }
 
-        // 3. Import via Domain Handler
         try {
-            // Ensure data has required structure or defaults compatible with command expectations
             if (!isset($data['is_quiz'])) $data['is_quiz'] = true;
             if (!isset($data['published'])) $data['published'] = true;
 

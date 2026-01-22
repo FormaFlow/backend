@@ -82,7 +82,6 @@ final class FormAggregate extends AggregateRoot
     {
         $this->isQuiz = $isQuiz;
         $this->singleSubmission = $singleSubmission;
-        // Consider recording an event here if needed
     }
 
     /** @return Field[] */

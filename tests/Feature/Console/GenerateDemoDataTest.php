@@ -7,8 +7,8 @@ namespace Tests\Feature\Console;
 use FormaFlow\Entries\Infrastructure\Persistence\Eloquent\EntryModel;
 use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
-use Tests\TestCase;
 use Illuminate\Support\Facades\DB;
+use Tests\TestCase;
 
 final class GenerateDemoDataTest extends TestCase
 {

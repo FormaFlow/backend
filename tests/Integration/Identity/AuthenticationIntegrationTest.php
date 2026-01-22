@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\Integration\Identity;
 
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
-use Tests\TestCase;
 use Illuminate\Support\Facades\RateLimiter;
 use Symfony\Component\HttpFoundation\Response;
+use Tests\TestCase;
 
 final class AuthenticationIntegrationTest extends TestCase
 {
@@ -127,7 +127,6 @@ final class AuthenticationIntegrationTest extends TestCase
             'password' => bcrypt('password123'),
         ]);
 
-        // Attempt multiple failed logins
         for ($i = 0; $i < 10; $i++) {
             $this->postJson('/api/v1/login', [
                 'email' => 'test@example.com',
@@ -135,7 +134,6 @@ final class AuthenticationIntegrationTest extends TestCase
             ]);
         }
 
-        // Next attempt should be rate limited
         $response = $this->postJson('/api/v1/login', [
             'email' => 'test@example.com',
             'password' => 'wrongpassword',

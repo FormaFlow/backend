@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\Integration\Localization;
 
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
-use Tests\TestCase;
 use Symfony\Component\HttpFoundation\Response;
+use Tests\TestCase;
 
 final class LocalizationIntegrationTest extends TestCase
 {

@@ -31,7 +31,6 @@ final readonly class ImportFormFromJsonCommandHandler
             description: $data['description'] ?? null
         );
 
-        // Update settings if provided
         $form->updateSettings(
             isQuiz: $data['is_quiz'] ?? false,
             singleSubmission: $data['single_submission'] ?? false
@@ -39,7 +38,6 @@ final readonly class ImportFormFromJsonCommandHandler
 
         if (isset($data['fields']) && is_array($data['fields'])) {
             foreach ($data['fields'] as $index => $fieldData) {
-                // Handle both snake_case (JSON typical) and camelCase (internal) keys for flexibility
                 $correctAnswer = $fieldData['correct_answer'] ?? $fieldData['correctAnswer'] ?? null;
                 $order = $fieldData['order'] ?? $index;
 
@@ -59,7 +57,6 @@ final readonly class ImportFormFromJsonCommandHandler
             }
         }
 
-        // Auto-publish if requested
         if (isset($data['published']) && $data['published'] === true) {
             $form->publish();
         }

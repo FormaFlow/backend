@@ -8,10 +8,10 @@ use Carbon\Carbon;
 use FormaFlow\Entries\Infrastructure\Persistence\Eloquent\EntryModel;
 use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
-use Tests\TestCase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Symfony\Component\HttpFoundation\Response;
+use Tests\TestCase;
 
 final class EntryApiTest extends TestCase
 {
@@ -191,7 +191,11 @@ final class EntryApiTest extends TestCase
         $entry = EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['00000000-0000-0000-0000-000000000110' => 100, '00000000-0000-0000-0000-000000000111' => '2025-01-15', '00000000-0000-0000-0000-000000000112' => 'income'],
+            'data' => [
+                '00000000-0000-0000-0000-000000000110' => 100,
+                '00000000-0000-0000-0000-000000000111' => '2025-01-15',
+                '00000000-0000-0000-0000-000000000112' => 'income'
+            ],
         ]);
 
         $updateData = [
@@ -364,14 +368,20 @@ final class EntryApiTest extends TestCase
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['00000000-0000-0000-0000-000000000110' => 100, '00000000-0000-0000-0000-000000000111' => '2025-01-10'],
+            'data' => [
+                '00000000-0000-0000-0000-000000000110' => 100,
+                '00000000-0000-0000-0000-000000000111' => '2025-01-10'
+            ],
             'created_at' => Carbon::parse('2025-01-10'),
         ]);
 
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['00000000-0000-0000-0000-000000000110' => 200, '00000000-0000-0000-0000-000000000111' => '2025-02-10'],
+            'data' => [
+                '00000000-0000-0000-0000-000000000110' => 200,
+                '00000000-0000-0000-0000-000000000111' => '2025-02-10'
+            ],
             'created_at' => Carbon::parse('2025-02-10'),
         ]);
 
@@ -389,14 +399,20 @@ final class EntryApiTest extends TestCase
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['00000000-0000-0000-0000-000000000110' => 100, '00000000-0000-0000-0000-000000000111' => '2025-01-10'],
+            'data' => [
+                '00000000-0000-0000-0000-000000000110' => 100,
+                '00000000-0000-0000-0000-000000000111' => '2025-01-10'
+            ],
             'created_at' => Carbon::parse('2025-01-10'),
         ]);
 
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['00000000-0000-0000-0000-000000000110' => 200, '00000000-0000-0000-0000-000000000111' => '2025-02-10'],
+            'data' => [
+                '00000000-0000-0000-0000-000000000110' => 200,
+                '00000000-0000-0000-0000-000000000111' => '2025-02-10'
+            ],
             'created_at' => Carbon::parse('2025-02-10'),
         ]);
 
@@ -414,21 +430,30 @@ final class EntryApiTest extends TestCase
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['00000000-0000-0000-0000-000000000110' => 100, '00000000-0000-0000-0000-000000000111' => '2025-01-15'],
+            'data' => [
+                '00000000-0000-0000-0000-000000000110' => 100,
+                '00000000-0000-0000-0000-000000000111' => '2025-01-15'
+            ],
             'created_at' => Carbon::parse('2025-01-15'),
         ]);
 
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['00000000-0000-0000-0000-000000000110' => 200, '00000000-0000-0000-0000-000000000111' => '2025-02-15'],
+            'data' => [
+                '00000000-0000-0000-0000-000000000110' => 200,
+                '00000000-0000-0000-0000-000000000111' => '2025-02-15'
+            ],
             'created_at' => Carbon::parse('2025-02-15'),
         ]);
 
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['00000000-0000-0000-0000-000000000110' => 300, '00000000-0000-0000-0000-000000000111' => '2025-03-15'],
+            'data' => [
+                '00000000-0000-0000-0000-000000000110' => 300,
+                '00000000-0000-0000-0000-000000000111' => '2025-03-15'
+            ],
             'created_at' => Carbon::parse('2025-03-15'),
         ]);
 
@@ -584,19 +609,28 @@ final class EntryApiTest extends TestCase
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['00000000-0000-0000-0000-000000000110' => 300, '00000000-0000-0000-0000-000000000111' => '2025-01-15'],
+            'data' => [
+                '00000000-0000-0000-0000-000000000110' => 300,
+                '00000000-0000-0000-0000-000000000111' => '2025-01-15'
+            ],
         ]);
 
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['00000000-0000-0000-0000-000000000110' => 100, '00000000-0000-0000-0000-000000000111' => '2025-01-16'],
+            'data' => [
+                '00000000-0000-0000-0000-000000000110' => 100,
+                '00000000-0000-0000-0000-000000000111' => '2025-01-16'
+            ],
         ]);
 
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['00000000-0000-0000-0000-000000000110' => 200, '00000000-0000-0000-0000-000000000111' => '2025-01-17'],
+            'data' => [
+                '00000000-0000-0000-0000-000000000110' => 200,
+                '00000000-0000-0000-0000-000000000111' => '2025-01-17'
+            ],
         ]);
 
         $response = $this
@@ -617,13 +651,19 @@ final class EntryApiTest extends TestCase
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['00000000-0000-0000-0000-000000000110' => 100, '00000000-0000-0000-0000-000000000111' => '2025-01-15'],
+            'data' => [
+                '00000000-0000-0000-0000-000000000110' => 100,
+                '00000000-0000-0000-0000-000000000111' => '2025-01-15'
+            ],
         ]);
 
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['00000000-0000-0000-0000-000000000110' => 300, '00000000-0000-0000-0000-000000000111' => '2025-01-16'],
+            'data' => [
+                '00000000-0000-0000-0000-000000000110' => 300,
+                '00000000-0000-0000-0000-000000000111' => '2025-01-16'
+            ],
         ]);
 
         $response = $this
@@ -644,7 +684,10 @@ final class EntryApiTest extends TestCase
         $entry1 = EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['00000000-0000-0000-0000-000000000110' => 100, '00000000-0000-0000-0000-000000000111' => '2025-01-15'],
+            'data' => [
+                '00000000-0000-0000-0000-000000000110' => 100,
+                '00000000-0000-0000-0000-000000000111' => '2025-01-15'
+            ],
             'created_at' => Carbon::parse('2025-01-15'),
         ]);
         DB::table('entry_tags')->insert(['entry_id' => $entry1->id, 'tag' => 'important']);
@@ -652,14 +695,20 @@ final class EntryApiTest extends TestCase
         EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['00000000-0000-0000-0000-000000000110' => 200, '00000000-0000-0000-0000-000000000111' => '2025-02-15'],
+            'data' => [
+                '00000000-0000-0000-0000-000000000110' => 200,
+                '00000000-0000-0000-0000-000000000111' => '2025-02-15'
+            ],
             'created_at' => Carbon::parse('2025-02-15'),
         ]);
 
         EntryModel::factory()->create([
             'form_id' => $anotherForm->id,
             'user_id' => $this->user->id,
-            'data' => ['00000000-0000-0000-0000-000000000110' => 150, '00000000-0000-0000-0000-000000000111' => '2025-01-20'],
+            'data' => [
+                '00000000-0000-0000-0000-000000000110' => 150,
+                '00000000-0000-0000-0000-000000000111' => '2025-01-20'
+            ],
             'created_at' => Carbon::parse('2025-01-20'),
         ]);
 
@@ -705,7 +754,11 @@ final class EntryApiTest extends TestCase
         $entry = EntryModel::factory()->create([
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['00000000-0000-0000-0000-000000000110' => 123.45, '00000000-0000-0000-0000-000000000111' => '2025-01-20', '00000000-0000-0000-0000-000000000112' => 'food'],
+            'data' => [
+                '00000000-0000-0000-0000-000000000110' => 123.45,
+                '00000000-0000-0000-0000-000000000111' => '2025-01-20',
+                '00000000-0000-0000-0000-000000000112' => 'food'
+            ],
         ]);
 
         $response = $this

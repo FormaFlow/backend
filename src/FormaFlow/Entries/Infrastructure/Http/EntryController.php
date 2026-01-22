@@ -216,10 +216,9 @@ final class EntryController extends Controller
 
         // TODO refactor
         if ($request->has('tags')) {
-            $entryId = $id;
             foreach ($request->input('tags') as $tag) {
                 EntryTagModel::query()->create([
-                    'entry_id' => $entryId,
+                    'entry_id' => $id,
                     'tag' => $tag,
                 ]);
             }

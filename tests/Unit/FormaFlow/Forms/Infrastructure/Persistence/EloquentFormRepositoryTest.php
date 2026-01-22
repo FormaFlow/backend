@@ -13,10 +13,9 @@ use FormaFlow\Forms\Domain\FormId;
 use FormaFlow\Forms\Domain\FormName;
 use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
 use FormaFlow\Forms\Infrastructure\Persistence\EloquentFormRepository;
-use Shared\Domain\UserId;
-use Tests\TestCase;
 use InvalidArgumentException;
 use Shared\Domain\AggregateRoot;
+use Tests\TestCase;
 use Throwable;
 
 final class EloquentFormRepositoryTest extends TestCase
@@ -85,11 +84,13 @@ final class EloquentFormRepositoryTest extends TestCase
             name: new FormName('Form with Fields'),
         );
 
-        $form->addField(new Field(
-            id: '00000000-0000-0000-0000-000000000130',
-            label: 'Field 1',
-            type: new FieldType('text'),
-        ));
+        $form->addField(
+            new Field(
+                id: '00000000-0000-0000-0000-000000000130',
+                label: 'Field 1',
+                type: new FieldType('text'),
+            )
+        );
 
         $this->repository->save($form);
 

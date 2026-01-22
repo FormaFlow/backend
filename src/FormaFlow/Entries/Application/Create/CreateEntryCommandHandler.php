@@ -50,7 +50,6 @@ final readonly class CreateEntryCommandHandler
                 $correctAnswer = $field->correctAnswer();
 
                 if ($submittedValue !== null && $correctAnswer !== null) {
-                    // Robust comparison matching EntryController
                     $v1 = is_string($submittedValue) ? trim($submittedValue) : $submittedValue;
                     $v2 = is_string($correctAnswer) ? trim($correctAnswer) : $correctAnswer;
 

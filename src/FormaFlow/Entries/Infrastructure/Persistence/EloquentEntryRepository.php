@@ -94,7 +94,6 @@ final readonly class EloquentEntryRepository implements EntryRepository
 
             if (str_starts_with($filters['sort_by'], 'data.')) {
                 $field = str_replace('data.', '', $filters['sort_by']);
-                // Laravel handles JSON path sorting for supported drivers
                 $query->orderBy("data->{$field}", $sortOrder);
             } else {
                 $query->orderBy($filters['sort_by'], $sortOrder);
@@ -150,7 +149,6 @@ final readonly class EloquentEntryRepository implements EntryRepository
 
             if (str_starts_with($filters['sort_by'], 'data.')) {
                 $field = str_replace('data.', '', $filters['sort_by']);
-                // Laravel handles JSON path sorting for supported drivers
                 $query->orderBy("data->{$field}", $sortOrder);
             } else {
                 $query->orderBy($filters['sort_by'], $sortOrder);

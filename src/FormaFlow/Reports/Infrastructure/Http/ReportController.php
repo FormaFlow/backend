@@ -40,27 +40,15 @@ final class ReportController extends Controller
             $query->whereDate('created_at', '<=', $validated['date_to']);
         }
 
-        // Clone query for aggregation to avoid modifying the base query if we were to reuse it,
-        // though here we build it once.
         $totalEntries = $query->count();
 
         $stats = [];
         $numericFields = $form->fields->filter(fn($f) => in_array($f->type, ['number', 'currency']));
 
         foreach ($numericFields as $field) {
-            // Re-instantiate query builder or clone? Query builder is mutable.
-            // Simplest is to just call aggregate on the base query with specific selects.
-            // But we need multiple aggregates for multiple fields.
-            // Doing one query per field might be slow but safe for JSON extraction logic.
-            // Optimization: Build one giant SELECT statement.
-
-            // For now, let's keep it simple: One query to get all aggregations is complex with JSON extract in SQL.
-            // Let's do a loop.
-
             $q = clone $query;
             $jsonField = "CAST(data->>'{$field->id}' AS DECIMAL(10, 2))";
 
-            // We can get sum, avg, min, max in one go
             $fieldStats = $q->select(
                 DB::raw("SUM($jsonField) as total"),
                 DB::raw("AVG($jsonField) as average"),
@@ -126,13 +114,10 @@ final class ReportController extends Controller
 
         foreach ($numericFields as $field) {
             $jsonField = "CAST(data->>'{$field->id}' AS DECIMAL(10, 2))";
-            // Default to SUM for now. Maybe user wants AVG?
-            // The prompt says "output all fields", implied Sum usually.
             $selects[] = DB::raw("SUM($jsonField) as \"{$field->id}\"");
         }
 
         if ($numericFields->isEmpty()) {
-            // Return just counts if no numeric fields?
             $selects[] = DB::raw("COUNT(*) as count");
         }
 
@@ -141,7 +126,6 @@ final class ReportController extends Controller
             ->orderBy('date')
             ->get();
 
-        // Transform data to ensure numbers are numbers (SQLite might return strings)
         $transformed = $data->map(function ($item) use ($numericFields) {
             $res = ['date' => $item->date];
             foreach ($numericFields as $field) {
@@ -191,7 +175,6 @@ final class ReportController extends Controller
         }
 
         $field = $validated['field'];
-        // PostgreSQL JSON extraction: data->>'field'
         $jsonField = "CAST(data->>'{$field}' AS DECIMAL(10, 2))";
 
         $result = match ($validated['aggregation']) {
@@ -334,16 +317,13 @@ final class ReportController extends Controller
             ]);
         }
 
-        // CSV Export
         $headers = [];
 
-        // Collect all possible keys from data
         foreach ($entries as $entry) {
             $data = json_decode($entry->data, true);
             $headers = array_unique(array_merge($headers, array_keys($data)));
         }
 
-        // Add standard headers
         $csvHeaders = array_merge(['id', 'created_at'], $headers);
 
         $handle = fopen('php://temp', 'rb+');
@@ -370,15 +350,8 @@ final class ReportController extends Controller
 
     public function weeklySummary(Request $request): JsonResponse
     {
-        // Simple implementation for weekly summary of a form (e.g. Budget)
-        // Assumes fields "amount" and "category" (income/expense) exist or similar logic.
-        // Or it aggregates everything. The test implies general summary.
-        // Let's look at the test: 'total_income', 'total_expense', 'net', 'count'
-        // This implies it looks for 'category' = 'income'/'expense' and sums 'amount'.
-
         $formId = $request->input('form_id');
 
-        // Determine current week
         $startOfWeek = now()->startOfWeek()->format('Y-m-d');
         $endOfWeek = now()->endOfWeek()->format('Y-m-d');
 
@@ -455,12 +428,6 @@ final class ReportController extends Controller
 
     public function predefinedBudget(Request $request): JsonResponse
     {
-        // Find form with name 'Budget Tracker' or similar, or just aggregate all forms?
-        // Test says "access predefined budget report", implies logic specific to budget nature.
-        // It likely aggregates across all forms or a specific budget form if known.
-        // But simpler: The test sets up a 'Budget Tracker' form.
-        // We need to find that form for the user.
-
         $form = DB::table('forms')
             ->where('user_id', $request->user()->id)
             ->where('name', 'Budget Tracker')
@@ -545,7 +512,7 @@ final class ReportController extends Controller
         return response()->json([
             'medicines' => $medicines,
             'total_consumption' => $totalConsumption,
-            'frequency' => $entries->count(), // approximation
+            'frequency' => $entries->count(),
         ]);
     }
 
@@ -597,8 +564,8 @@ final class ReportController extends Controller
         });
 
         return response()->json([
-            'current_weight' => currentWeight,
-            'starting_weight' => startWeight,
+            'current_weight' => $currentWeight,
+            'starting_weight' => $startWeight,
             'change' => $currentWeight - $startWeight,
             'trend' => $trend,
         ]);

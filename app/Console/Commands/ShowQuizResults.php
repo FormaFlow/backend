@@ -18,7 +18,6 @@ final class ShowQuizResults extends Command
 
     public function handle(): void
     {
-        // 1. Find Quiz Forms
         $forms = FormModel::query()
             ->where('is_quiz', true)
             ->get();
@@ -28,7 +27,6 @@ final class ShowQuizResults extends Command
             return;
         }
 
-        // 2. Ask user to select a form
         $formOptions = $forms->pluck('name')->toArray();
 
         $selectedFormName = $this->choice(
@@ -47,7 +45,6 @@ final class ShowQuizResults extends Command
 
         $this->info("Loading results for: {$form->name}");
 
-        // 3. Fetch Entries
         $entries = EntryModel::query()
             ->where('form_id', $form->id)
             ->get();
@@ -57,14 +54,11 @@ final class ShowQuizResults extends Command
             return;
         }
 
-        // 4. Fetch Users
         $userIds = $entries->pluck('user_id')->unique();
         $users = UserModel::query()
             ->whereIn('id', $userIds)
             ->pluck('name', 'id');
 
-        // 5. Build Table
-        // Headers
         $headers = ['User', 'Score', 'Time', 'Date'];
         $sortedFields = $form->fields->sortBy('order');
 
@@ -72,26 +66,20 @@ final class ShowQuizResults extends Command
             $headers[] = Str::limit($field->label, 20);
         }
 
-        // Rows
         $rows = [];
         foreach ($entries as $entry) {
             $row = [];
 
-            // User
             $userName = $users[$entry->user_id] ?? 'Unknown User';
             $row[] = $userName;
 
-            // Score
             $row[] = $entry->score ?? 0;
 
-            // Time
             $duration = $entry->duration ? gmdate("H:i:s", (int)$entry->duration) : '-';
             $row[] = $duration;
 
-            // Date
             $row[] = $entry->created_at->format('Y-m-d H:i');
 
-            // Fields
             foreach ($sortedFields as $field) {
                 $answer = $entry->data[$field->id] ?? '-';
                 $correctAnswer = $field->correct_answer;
@@ -99,7 +87,6 @@ final class ShowQuizResults extends Command
                 $display = (string)$answer;
 
                 if ($form->is_quiz && $correctAnswer !== null && $answer !== '-') {
-                    // Check correctness
                     $trimmedAnswer = is_string($answer) ? trim($answer) : $answer;
                     $trimmedCorrect = is_string($correctAnswer) ? trim($correctAnswer) : $correctAnswer;
 

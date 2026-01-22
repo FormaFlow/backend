@@ -8,12 +8,12 @@ use DateTime;
 use FormaFlow\Users\Domain\UserAggregate;
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
 use FormaFlow\Users\Infrastructure\Persistence\EloquentUserRepository;
-use Tests\TestCase;
 use Illuminate\Support\Facades\Hash;
 use InvalidArgumentException;
 use Shared\Domain\AggregateRoot;
 use Shared\Domain\UserId;
 use Shared\Domain\UserName;
+use Tests\TestCase;
 use Throwable;
 
 final class EloquentUserRepositoryTest extends TestCase

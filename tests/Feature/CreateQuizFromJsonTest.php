@@ -4,8 +4,8 @@ namespace Tests\Feature;
 
 use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
-use Tests\TestCase;
 use Illuminate\Support\Facades\File;
+use Tests\TestCase;
 
 final class CreateQuizFromJsonTest extends TestCase
 {

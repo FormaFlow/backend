@@ -36,7 +36,7 @@ final readonly class PublicApiFormController
 
     public function import(Request $request): JsonResponse
     {
-        $data = $request->validate([
+        $request->validate([
             'name' => 'required|string',
             'description' => 'nullable|string',
             'is_quiz' => 'boolean',
@@ -47,7 +47,6 @@ final readonly class PublicApiFormController
             'fields.*.type' => 'required|string',
         ]);
 
-        // Assign to the first user or a specific system user
         $user = UserModel::query()->first();
         if (!$user) {
             return response()->json(['error' => 'No users found to assign form'], Response::HTTP_INTERNAL_SERVER_ERROR);

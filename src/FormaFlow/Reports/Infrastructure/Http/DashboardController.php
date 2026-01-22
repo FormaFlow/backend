@@ -71,7 +71,6 @@ final class DashboardController extends Controller
         $weeklySql = $isPgsql ? "to_char(created_at, 'YYYY-IW')" : "strftime('%Y-%W', created_at)";
         $monthlySql = $isPgsql ? "to_char(created_at, 'YYYY-MM')" : "strftime('%Y-%m', created_at)";
 
-        // Weekly trends (last 4 weeks)
         $weeklyTrends = DB::table('entries')
             ->where('user_id', $userId)
             ->where('created_at', '>=', now()->subWeeks(4))
@@ -80,7 +79,6 @@ final class DashboardController extends Controller
             ->orderBy('week')
             ->get();
 
-        // Monthly trends (last 6 months)
         $monthlyTrends = DB::table('entries')
             ->where('user_id', $userId)
             ->where('created_at', '>=', now()->subMonths(6))

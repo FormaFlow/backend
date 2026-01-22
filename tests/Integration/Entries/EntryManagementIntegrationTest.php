@@ -8,9 +8,9 @@ use Carbon\Carbon;
 use FormaFlow\Entries\Infrastructure\Persistence\Eloquent\EntryModel;
 use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
-use Tests\TestCase;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
+use Tests\TestCase;
 
 final class EntryManagementIntegrationTest extends TestCase
 {
@@ -152,7 +152,11 @@ final class EntryManagementIntegrationTest extends TestCase
             'id' => '00000000-0000-0000-0000-000000000201',
             'form_id' => $this->form->id,
             'user_id' => $this->user->id,
-            'data' => ['00000000-0000-0000-0000-000000000110' => 100, '00000000-0000-0000-0000-000000000111' => '2025-01-15', '00000000-0000-0000-0000-000000000112' => 'income'],
+            'data' => [
+                '00000000-0000-0000-0000-000000000110' => 100,
+                '00000000-0000-0000-0000-000000000111' => '2025-01-15',
+                '00000000-0000-0000-0000-000000000112' => 'income'
+            ],
         ]);
 
         $updateData = [
@@ -225,7 +229,12 @@ final class EntryManagementIntegrationTest extends TestCase
                 'id' => '00000000-0000-0000-0000-000000000301',
                 'form_id' => $this->form->id,
                 'user_id' => $this->user->id,
-                'data' => json_encode(['00000000-0000-0000-0000-000000000110' => 100, '00000000-0000-0000-0000-000000000111' => '2025-01-15']),
+                'data' => json_encode(
+                    [
+                        '00000000-0000-0000-0000-000000000110' => 100,
+                        '00000000-0000-0000-0000-000000000111' => '2025-01-15'
+                    ]
+                ),
                 'created_at' => Carbon::parse('2025-01-15'),
                 'updated_at' => Carbon::now(),
             ],
@@ -233,7 +242,12 @@ final class EntryManagementIntegrationTest extends TestCase
                 'id' => '00000000-0000-0000-0000-000000000302',
                 'form_id' => $this->form->id,
                 'user_id' => $this->user->id,
-                'data' => json_encode(['00000000-0000-0000-0000-000000000110' => 200, '00000000-0000-0000-0000-000000000111' => '2025-02-15']),
+                'data' => json_encode(
+                    [
+                        '00000000-0000-0000-0000-000000000110' => 200,
+                        '00000000-0000-0000-0000-000000000111' => '2025-02-15'
+                    ]
+                ),
                 'created_at' => Carbon::parse('2025-02-15'),
                 'updated_at' => Carbon::now(),
             ],
@@ -285,7 +299,12 @@ final class EntryManagementIntegrationTest extends TestCase
                 'id' => '00000000-0000-0000-0000-000000000501',
                 'form_id' => $this->form->id,
                 'user_id' => $this->user->id,
-                'data' => json_encode(['00000000-0000-0000-0000-000000000110' => 300, '00000000-0000-0000-0000-000000000111' => '2025-01-15']),
+                'data' => json_encode(
+                    [
+                        '00000000-0000-0000-0000-000000000110' => 300,
+                        '00000000-0000-0000-0000-000000000111' => '2025-01-15'
+                    ]
+                ),
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
@@ -293,7 +312,12 @@ final class EntryManagementIntegrationTest extends TestCase
                 'id' => '00000000-0000-0000-0000-000000000502',
                 'form_id' => $this->form->id,
                 'user_id' => $this->user->id,
-                'data' => json_encode(['00000000-0000-0000-0000-000000000110' => 100, '00000000-0000-0000-0000-000000000111' => '2025-01-16']),
+                'data' => json_encode(
+                    [
+                        '00000000-0000-0000-0000-000000000110' => 100,
+                        '00000000-0000-0000-0000-000000000111' => '2025-01-16'
+                    ]
+                ),
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],

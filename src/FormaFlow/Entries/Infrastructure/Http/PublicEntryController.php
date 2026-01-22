@@ -44,7 +44,6 @@ final readonly class PublicEntryController
         $description = $form->description() ?? __('share.check_entry');
 
         if ($form->isQuiz() && $entry->score() !== null) {
-            // Calculate total points
             $totalPoints = 0;
             foreach ($form->fields() as $field) {
                 $totalPoints += $field->points();
