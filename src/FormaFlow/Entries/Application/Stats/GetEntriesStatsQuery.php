@@ -9,6 +9,7 @@ final readonly class GetEntriesStatsQuery
     public function __construct(
         public string $formId,
         public string $userId,
+        public ?string $date = null,
     ) {
     }
 }

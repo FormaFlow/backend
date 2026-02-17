@@ -146,6 +146,50 @@ final class EntriesStatsTest extends TestCase
             ]);
     }
 
+    public function test_can_get_entries_stats_by_date(): void
+    {
+        $yesterday = Carbon::yesterday();
+        $threeDaysAgo = Carbon::now()->subDays(3);
+
+        // Entry for yesterday
+        EntryModel::factory()->create([
+            'form_id' => $this->form->id,
+            'user_id' => $this->user->id,
+            'data' => ['00000000-0000-0000-0000-000000000110' => 100],
+            'created_at' => $yesterday,
+        ]);
+
+        // Entry for 3 days ago (same month)
+        EntryModel::factory()->create([
+            'form_id' => $this->form->id,
+            'user_id' => $this->user->id,
+            'data' => ['00000000-0000-0000-0000-000000000110' => 50],
+            'created_at' => $threeDaysAgo,
+        ]);
+
+        // Request stats for yesterday
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
+            ->getJson("{$this->baseUrl}/stats?form_id={$this->form->id}&date=" . $yesterday->toDateString());
+
+        $response
+            ->assertStatus(Response::HTTP_OK)
+            ->assertJson([
+                'stats' => [
+                    [
+                        'field' => '_count',
+                        'sum_today' => 1.0,
+                        'sum_month' => 2.0,
+                    ],
+                    [
+                        'field' => '00000000-0000-0000-0000-000000000110',
+                        'sum_today' => 100.0,
+                        'sum_month' => 150.0,
+                    ],
+                ],
+            ]);
+    }
+
     public function test_returns_zero_stats_when_no_entries(): void
     {
         $response = $this

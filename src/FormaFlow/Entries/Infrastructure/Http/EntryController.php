@@ -100,6 +100,7 @@ final class EntryController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'form_id' => 'required|string',
+            'date' => 'nullable|date',
         ]);
 
         if ($validator->fails()) {
@@ -112,6 +113,7 @@ final class EntryController extends Controller
         $query = new GetEntriesStatsQuery(
             formId: $request->input('form_id'),
             userId: $request->user()->id,
+            date: $request->input('date'),
         );
 
         $result = $this->statsHandler->handle($query);

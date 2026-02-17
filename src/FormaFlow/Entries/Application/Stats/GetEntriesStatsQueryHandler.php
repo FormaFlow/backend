@@ -46,11 +46,13 @@ final readonly class GetEntriesStatsQueryHandler
             }
         }
 
-        $todayStart = new DateTimeImmutable('today', $timezone);
-        $todayEnd = (new DateTimeImmutable('tomorrow', $timezone))->modify('-1 second');
+        $baseDate = $query->date ? new DateTimeImmutable($query->date, $timezone) : new DateTimeImmutable('today', $timezone);
 
-        $monthStart = new DateTimeImmutable('first day of this month 00:00:00', $timezone);
-        $monthEnd = new DateTimeImmutable('last day of this month 23:59:59', $timezone);
+        $todayStart = $baseDate->setTime(0, 0, 0);
+        $todayEnd = $baseDate->setTime(23, 59, 59);
+
+        $monthStart = $baseDate->modify('first day of this month 00:00:00');
+        $monthEnd = $baseDate->modify('last day of this month 23:59:59');
 
         $stats = [];
 
