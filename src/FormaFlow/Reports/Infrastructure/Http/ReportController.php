@@ -43,6 +43,16 @@ final class ReportController extends Controller
         $totalEntries = $query->count();
 
         $stats = [];
+        $stats[] = [
+            'field' => '_count',
+            'label' => 'Count',
+            'type' => 'number',
+            'sum' => (float)$totalEntries,
+            'avg' => (float)$totalEntries,
+            'min' => (float)$totalEntries,
+            'max' => (float)$totalEntries,
+        ];
+
         $numericFields = $form->fields->filter(fn($f) => in_array($f->type, ['number', 'currency']));
 
         foreach ($numericFields as $field) {
@@ -111,14 +121,11 @@ final class ReportController extends Controller
             : "strftime('{$dateFormat}', created_at) as date";
 
         $selects = [DB::raw($dateSql)];
+        $selects[] = DB::raw("COUNT(*) as count");
 
         foreach ($numericFields as $field) {
             $jsonField = "CAST(data->>'{$field->id}' AS DECIMAL(10, 2))";
             $selects[] = DB::raw("SUM($jsonField) as \"{$field->id}\"");
-        }
-
-        if ($numericFields->isEmpty()) {
-            $selects[] = DB::raw("COUNT(*) as count");
         }
 
         $data = $query->select($selects)
@@ -128,18 +135,19 @@ final class ReportController extends Controller
 
         $transformed = $data->map(function ($item) use ($numericFields) {
             $res = ['date' => $item->date];
+            $res['count'] = (int)($item->count ?? 0);
             foreach ($numericFields as $field) {
                 $res[$field->id] = (float)($item->{$field->id} ?? 0);
-            }
-            if ($numericFields->isEmpty()) {
-                $res['count'] = (int)($item->count ?? 0);
             }
             return $res;
         });
 
+        $fieldsMetadata = $numericFields->values()->map(fn($f) => ['name' => $f->id, 'label' => $f->label])->toArray();
+        array_unshift($fieldsMetadata, ['name' => 'count', 'label' => 'Entries Count']);
+
         return response()->json([
             'data' => $transformed,
-            'fields' => $numericFields->values()->map(fn($f) => ['name' => $f->id, 'label' => $f->label])
+            'fields' => $fieldsMetadata
         ]);
     }
 
