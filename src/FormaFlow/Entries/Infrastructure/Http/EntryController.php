@@ -160,7 +160,7 @@ final class EntryController extends Controller
         }
 
         $rules = [
-            'created_at' => 'nullable|date_format:Y-m-d',
+            'created_at' => 'nullable|date',
         ];
         $attributes = [];
         foreach ($form->fields() as $field) {
@@ -292,6 +292,7 @@ final class EntryController extends Controller
         }
 
         $rules = [];
+        $rules['created_at'] = 'nullable|date';
         foreach ($form->fields() as $field) {
             $fieldRules = [];
 
@@ -330,6 +331,7 @@ final class EntryController extends Controller
         $command = new UpdateEntryCommand(
             id: $id,
             data: $request->input('data'),
+            createdAt: $request->input('created_at'),
         );
 
         try {

@@ -15,7 +15,7 @@ final class EntryAggregate extends AggregateRoot
         private readonly FormId $formId,
         private readonly string $userId,
         private array $data,
-        private readonly DateTime $createdAt = new DateTime(),
+        private DateTime $createdAt = new DateTime(),
         private ?int $score = null,
         private ?int $duration = null,
     ) {
@@ -70,6 +70,11 @@ final class EntryAggregate extends AggregateRoot
     public function setDuration(int $duration): void
     {
         $this->duration = $duration;
+    }
+
+    public function setCreatedAt(DateTime $createdAt): void
+    {
+        $this->createdAt = $createdAt;
     }
 
     public static function fromPrimitives(

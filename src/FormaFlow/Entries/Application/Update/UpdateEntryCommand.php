@@ -9,6 +9,7 @@ final readonly class UpdateEntryCommand
     public function __construct(
         public string $id,
         public array $data,
+        public ?string $createdAt = null,
     ) {
     }
 }

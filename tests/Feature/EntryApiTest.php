@@ -165,7 +165,7 @@ final class EntryApiTest extends TestCase
                 '00000000-0000-0000-0000-000000000111' => '2025-01-15',
                 '00000000-0000-0000-0000-000000000112' => 'income',
             ],
-            'created_at' => '2025-02-03',
+            'created_at' => '2025-02-03T14:30:00+03:00',
         ];
 
         $response = $this
@@ -178,11 +178,11 @@ final class EntryApiTest extends TestCase
         $this->assertNotNull($createdEntryId);
 
         $createdAtFromResponse = (string)$response->json('created_at');
-        $this->assertStringStartsWith('2025-02-03', $createdAtFromResponse);
+        $this->assertStringStartsWith('2025-02-03T14:30', $createdAtFromResponse);
 
         $entry = EntryModel::query()->find($createdEntryId);
         $this->assertNotNull($entry);
-        $this->assertSame('2025-02-03', $entry->created_at->format('Y-m-d'));
+        $this->assertSame('2025-02-03 14:30', $entry->created_at->format('Y-m-d H:i'));
     }
 
     public function test_fails_to_create_entry_with_invalid_created_at_format(): void
@@ -194,7 +194,7 @@ final class EntryApiTest extends TestCase
                 '00000000-0000-0000-0000-000000000111' => '2025-01-15',
                 '00000000-0000-0000-0000-000000000112' => 'income',
             ],
-            'created_at' => '03.02.2025',
+            'created_at' => 'not-a-date',
         ];
 
         $response = $this
@@ -254,6 +254,7 @@ final class EntryApiTest extends TestCase
                 '00000000-0000-0000-0000-000000000111' => '2025-01-16',
                 '00000000-0000-0000-0000-000000000112' => 'expense',
             ],
+            'created_at' => '2025-03-12T10:15:00+03:00',
         ];
 
         $response = $this
@@ -264,6 +265,7 @@ final class EntryApiTest extends TestCase
 
         $updated = EntryModel::query()->find($entry->id);
         $this->assertEquals(200.75, $updated->data['00000000-0000-0000-0000-000000000110']);
+        $this->assertSame('2025-03-12 10:15', $updated->created_at->format('Y-m-d H:i'));
     }
 
     public function test_user_cannot_update_another_users_entry(): void

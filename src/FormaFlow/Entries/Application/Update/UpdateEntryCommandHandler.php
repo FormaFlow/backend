@@ -24,6 +24,9 @@ final readonly class UpdateEntryCommandHandler
         }
 
         $entry->updateData($command->data);
+        if ($command->createdAt !== null) {
+            $entry->setCreatedAt(new \DateTime($command->createdAt));
+        }
 
         $this->entryRepository->save($entry);
     }
