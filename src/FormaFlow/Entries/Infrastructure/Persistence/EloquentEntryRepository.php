@@ -33,6 +33,7 @@ final readonly class EloquentEntryRepository implements EntryRepository
                 'form_id' => $aggregate->formId()->value(),
                 'user_id' => $aggregate->userId(),
                 'data' => $aggregate->data(),
+                'created_at' => $aggregate->createdAt(),
                 'score' => $aggregate->score(),
                 'duration' => $aggregate->duration(),
             ],

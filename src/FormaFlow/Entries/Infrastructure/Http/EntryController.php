@@ -159,7 +159,9 @@ final class EntryController extends Controller
             return response()->json(['error' => 'Form not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $rules = [];
+        $rules = [
+            'created_at' => 'nullable|date_format:Y-m-d',
+        ];
         $attributes = [];
         foreach ($form->fields() as $field) {
             $fieldRules = [];
@@ -207,6 +209,7 @@ final class EntryController extends Controller
                     userId: $request->user()->id,
                     data: $request->input('data'),
                     duration: $request->has('duration') ? (int)$request->input('duration') : null,
+                    createdAt: $request->input('created_at'),
                 )
             );
         } catch (Throwable $exception) {

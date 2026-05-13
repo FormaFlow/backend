@@ -156,6 +156,56 @@ final class EntryApiTest extends TestCase
         ]);
     }
 
+    public function test_creates_new_entry_with_custom_created_at(): void
+    {
+        $entryData = [
+            'form_id' => $this->form->id,
+            'data' => [
+                '00000000-0000-0000-0000-000000000110' => 150.50,
+                '00000000-0000-0000-0000-000000000111' => '2025-01-15',
+                '00000000-0000-0000-0000-000000000112' => 'income',
+            ],
+            'created_at' => '2025-02-03',
+        ];
+
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
+            ->postJson($this->baseUrl, $entryData);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $createdEntryId = $response->json('id');
+        $this->assertNotNull($createdEntryId);
+
+        $createdAtFromResponse = (string)$response->json('created_at');
+        $this->assertStringStartsWith('2025-02-03', $createdAtFromResponse);
+
+        $entry = EntryModel::query()->find($createdEntryId);
+        $this->assertNotNull($entry);
+        $this->assertSame('2025-02-03', $entry->created_at->format('Y-m-d'));
+    }
+
+    public function test_fails_to_create_entry_with_invalid_created_at_format(): void
+    {
+        $entryData = [
+            'form_id' => $this->form->id,
+            'data' => [
+                '00000000-0000-0000-0000-000000000110' => 150.50,
+                '00000000-0000-0000-0000-000000000111' => '2025-01-15',
+                '00000000-0000-0000-0000-000000000112' => 'income',
+            ],
+            'created_at' => '03.02.2025',
+        ];
+
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
+            ->postJson($this->baseUrl, $entryData);
+
+        $response
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonValidationErrors('created_at');
+    }
+
     public function test_fails_to_create_entry_without_authentication(): void
     {
         $entryData = [

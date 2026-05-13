@@ -69,6 +69,7 @@ final readonly class CreateEntryCommandHandler
             formId: new FormId($command->formId),
             userId: $command->userId,
             data: $command->data,
+            createdAt: $command->createdAt ? new \DateTime($command->createdAt) : new \DateTime(),
             score: $score,
             duration: $command->duration,
         );

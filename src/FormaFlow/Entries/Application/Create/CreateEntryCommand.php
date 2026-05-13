@@ -12,6 +12,7 @@ final readonly class CreateEntryCommand
         public string $userId,
         public array $data,
         public ?int $duration = null,
+        public ?string $createdAt = null,
     ) {
     }
 }
