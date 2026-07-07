@@ -13,6 +13,7 @@ final readonly class UpdateFormCommand
         public ?string $description = null,
         public ?bool $isQuiz = null,
         public ?bool $singleSubmission = null,
+        public ?bool $quickEntryFavorite = null,
     ) {
     }
 }

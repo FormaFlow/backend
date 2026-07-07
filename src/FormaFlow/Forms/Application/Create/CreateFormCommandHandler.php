@@ -26,6 +26,7 @@ final readonly class CreateFormCommandHandler
         );
 
         $form->updateSettings($command->isQuiz(), $command->isSingleSubmission());
+        $form->updateQuickEntryFavorite($command->isQuickEntryFavorite());
 
         $this->repository->save($form);
     }

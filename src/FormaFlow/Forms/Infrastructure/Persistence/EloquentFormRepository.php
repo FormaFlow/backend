@@ -38,6 +38,7 @@ final class EloquentFormRepository implements FormRepository
                     'version' => $aggregate->getVersion(),
                     'is_quiz' => $aggregate->isQuiz(),
                     'single_submission' => $aggregate->isSingleSubmission(),
+                    'quick_entry_favorite' => $aggregate->isQuickEntryFavorite(),
                 ]
             );
 
@@ -123,6 +124,7 @@ final class EloquentFormRepository implements FormRepository
             fields: $fields,
             isQuiz: (bool)$model->is_quiz,
             singleSubmission: (bool)$model->single_submission,
+            quickEntryFavorite: (bool)$model->quick_entry_favorite,
         );
     }
 
@@ -169,6 +171,7 @@ final class EloquentFormRepository implements FormRepository
                 fields: $fields,
                 isQuiz: (bool)$model->is_quiz,
                 singleSubmission: (bool)$model->single_submission,
+                quickEntryFavorite: (bool)$model->quick_entry_favorite,
             );
         }
 

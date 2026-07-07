@@ -76,6 +76,7 @@ final readonly class FormController
             'description' => 'nullable|string',
             'is_quiz' => 'boolean',
             'single_submission' => 'boolean',
+            'quick_entry_favorite' => 'boolean',
         ]);
 
         $command = new CreateFormCommand(
@@ -85,6 +86,7 @@ final readonly class FormController
             description: $validated['description'] ?? null,
             isQuiz: $validated['is_quiz'] ?? false,
             singleSubmission: $validated['single_submission'] ?? false,
+            quickEntryFavorite: $validated['quick_entry_favorite'] ?? false,
         );
 
         $handler->handle($command);
@@ -230,6 +232,7 @@ final readonly class FormController
             'description' => 'nullable|string',
             'is_quiz' => 'sometimes|boolean',
             'single_submission' => 'sometimes|boolean',
+            'quick_entry_favorite' => 'sometimes|boolean',
         ]);
 
         try {
@@ -240,6 +243,7 @@ final readonly class FormController
                 description: array_key_exists('description', $validated) ? $validated['description'] : null,
                 isQuiz: $validated['is_quiz'] ?? null,
                 singleSubmission: $validated['single_submission'] ?? null,
+                quickEntryFavorite: $validated['quick_entry_favorite'] ?? null,
             );
 
             $handler->handle($command);

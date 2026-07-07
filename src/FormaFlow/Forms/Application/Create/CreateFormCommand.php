@@ -13,6 +13,7 @@ final readonly class CreateFormCommand
         private ?string $description = null,
         private bool $isQuiz = false,
         private bool $singleSubmission = false,
+        private bool $quickEntryFavorite = false,
     ) {
     }
 
@@ -44,5 +45,10 @@ final readonly class CreateFormCommand
     public function isSingleSubmission(): bool
     {
         return $this->singleSubmission;
+    }
+
+    public function isQuickEntryFavorite(): bool
+    {
+        return $this->quickEntryFavorite;
     }
 }

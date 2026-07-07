@@ -28,6 +28,7 @@ final class FormModel extends Model
         'version',
         'is_quiz',
         'single_submission',
+        'quick_entry_favorite',
     ];
 
     protected $casts = [
@@ -35,6 +36,7 @@ final class FormModel extends Model
         'version' => 'integer',
         'is_quiz' => 'boolean',
         'single_submission' => 'boolean',
+        'quick_entry_favorite' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',

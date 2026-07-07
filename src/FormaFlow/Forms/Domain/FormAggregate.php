@@ -16,6 +16,7 @@ final class FormAggregate extends AggregateRoot
     private int $version = 1;
     private bool $isQuiz = false;
     private bool $singleSubmission = false;
+    private bool $quickEntryFavorite = false;
 
     public function __construct(
         private readonly FormId $id,
@@ -71,6 +72,11 @@ final class FormAggregate extends AggregateRoot
         return $this->singleSubmission;
     }
 
+    public function isQuickEntryFavorite(): bool
+    {
+        return $this->quickEntryFavorite;
+    }
+
     public function update(FormName $name, ?string $description): void
     {
         $this->name = $name;
@@ -82,6 +88,11 @@ final class FormAggregate extends AggregateRoot
     {
         $this->isQuiz = $isQuiz;
         $this->singleSubmission = $singleSubmission;
+    }
+
+    public function updateQuickEntryFavorite(bool $quickEntryFavorite): void
+    {
+        $this->quickEntryFavorite = $quickEntryFavorite;
     }
 
     /** @return Field[] */
@@ -176,7 +187,8 @@ final class FormAggregate extends AggregateRoot
         DateTime $createdAt,
         array $fields,
         bool $isQuiz = false,
-        bool $singleSubmission = false
+        bool $singleSubmission = false,
+        bool $quickEntryFavorite = false
     ): self {
         $self = new self(
             id: $id,
@@ -191,6 +203,7 @@ final class FormAggregate extends AggregateRoot
         $self->fields = $fields;
         $self->isQuiz = $isQuiz;
         $self->singleSubmission = $singleSubmission;
+        $self->quickEntryFavorite = $quickEntryFavorite;
 
         return $self;
     }

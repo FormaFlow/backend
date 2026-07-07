@@ -41,6 +41,7 @@ final readonly class UpdateFormCommandHandler
             fields: $form->fields(),
             isQuiz: $command->isQuiz ?? $form->isQuiz(),
             singleSubmission: $command->singleSubmission ?? $form->isSingleSubmission(),
+            quickEntryFavorite: $command->quickEntryFavorite ?? $form->isQuickEntryFavorite(),
         );
 
         $this->formRepository->save($updatedForm);

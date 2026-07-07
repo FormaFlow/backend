@@ -36,6 +36,7 @@ final class FormResource extends JsonResource
             'published' => $this->isPublished(),
             'is_quiz' => $this->isQuiz(),
             'single_submission' => $this->isSingleSubmission(),
+            'quick_entry_favorite' => $this->isQuickEntryFavorite(),
             'fields_count' => count($this->fields()),
             'fields' => $fieldsData,
         ];

@@ -14,7 +14,6 @@ use Tests\TestCase;
 
 final class FormApiTest extends TestCase
 {
-
     protected ?UserModel $user = null;
     protected string $baseUrl = '/api/v1/forms';
 
@@ -283,5 +282,46 @@ final class FormApiTest extends TestCase
         $response->assertStatus(Response::HTTP_OK)
             ->assertJsonCount(1, 'forms')
             ->assertJsonPath('forms.0.name', 'Regular Form');
+    }
+
+    public function test_returns_quick_entry_favorite_flag_for_forms(): void
+    {
+        FormModel::factory()->create([
+            'user_id' => $this->user->id,
+            'name' => 'Favorite Quick Form',
+            'quick_entry_favorite' => true,
+        ]);
+
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
+            ->getJson($this->baseUrl);
+
+        $response
+            ->assertStatus(Response::HTTP_OK)
+            ->assertJsonPath('forms.0.name', 'Favorite Quick Form')
+            ->assertJsonPath('forms.0.quick_entry_favorite', true);
+    }
+
+    public function test_updates_quick_entry_favorite_flag(): void
+    {
+        $form = FormModel::factory()->create([
+            'user_id' => $this->user->id,
+            'name' => 'Regular Form',
+            'quick_entry_favorite' => false,
+        ]);
+
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
+            ->patchJson("{$this->baseUrl}/{$form->id}", [
+                'quick_entry_favorite' => true,
+            ]);
+
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJson(['message' => 'Form updated']);
+
+        $this->assertDatabaseHas('forms', [
+            'id' => $form->id,
+            'quick_entry_favorite' => true,
+        ]);
     }
 }
