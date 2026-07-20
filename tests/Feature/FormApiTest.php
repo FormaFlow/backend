@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use Carbon\Carbon;
+use FormaFlow\Entries\Infrastructure\Persistence\Eloquent\EntryModel;
 use FormaFlow\Forms\Domain\FormId;
 use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
@@ -41,6 +42,101 @@ final class FormApiTest extends TestCase
                 'limit' => 15,
                 'offset' => 0
             ]);
+    }
+
+    public function test_lists_paginated_form_summaries_without_fields_newest_first(): void
+    {
+        $oldest = FormModel::factory()->create([
+            'user_id' => $this->user->id,
+            'name' => 'Oldest Form',
+            'created_at' => Carbon::parse('2026-07-01 10:00:00'),
+        ]);
+        $middle = FormModel::factory()->create([
+            'user_id' => $this->user->id,
+            'name' => 'Middle Form',
+            'created_at' => Carbon::parse('2026-07-02 10:00:00'),
+        ]);
+        $newest = FormModel::factory()->create([
+            'user_id' => $this->user->id,
+            'name' => 'Newest Form',
+            'created_at' => Carbon::parse('2026-07-03 10:00:00'),
+        ]);
+
+        foreach (range(1, 3) as $index) {
+            DB::table('form_fields')->insert([
+                'id' => sprintf('00000000-0000-0000-0000-%012d', 200 + $index),
+                'form_id' => $newest->id,
+                'label' => "Field {$index}",
+                'type' => 'text',
+                'required' => false,
+                'options' => null,
+                'unit' => null,
+                'category' => null,
+                'order' => $index,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+        }
+
+        EntryModel::factory()->count(2)->create([
+            'form_id' => $newest->id,
+            'user_id' => $this->user->id,
+        ]);
+
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
+            ->getJson("{$this->baseUrl}?limit=1&offset=0");
+
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJsonCount(1, 'forms')
+            ->assertJsonPath('total', 3)
+            ->assertJsonPath('limit', 1)
+            ->assertJsonPath('offset', 0)
+            ->assertJsonPath('forms.0.id', $newest->id)
+            ->assertJsonPath('forms.0.fields_count', 3)
+            ->assertJsonPath('forms.0.entries_count', 2)
+            ->assertJsonMissingPath('forms.0.fields');
+
+        $secondPage = $this
+            ->actingAs($this->user, 'sanctum')
+            ->getJson("{$this->baseUrl}?limit=1&offset=1");
+
+        $secondPage->assertStatus(Response::HTTP_OK)
+            ->assertJsonCount(1, 'forms')
+            ->assertJsonPath('total', 3)
+            ->assertJsonPath('forms.0.id', $middle->id);
+
+        self::assertNotSame($oldest->id, $secondPage->json('forms.0.id'));
+    }
+
+    public function test_searches_form_summaries_by_name_or_description(): void
+    {
+        FormModel::factory()->create([
+            'user_id' => $this->user->id,
+            'name' => 'Budget Tracker',
+            'description' => 'Monthly expenses',
+        ]);
+        FormModel::factory()->create([
+            'user_id' => $this->user->id,
+            'name' => 'Health Log',
+            'description' => 'Daily measurements',
+        ]);
+
+        $byName = $this
+            ->actingAs($this->user, 'sanctum')
+            ->getJson("{$this->baseUrl}?search=Budget");
+
+        $byName->assertStatus(Response::HTTP_OK)
+            ->assertJsonPath('total', 1)
+            ->assertJsonPath('forms.0.name', 'Budget Tracker');
+
+        $byDescription = $this
+            ->actingAs($this->user, 'sanctum')
+            ->getJson("{$this->baseUrl}?search=measurements");
+
+        $byDescription->assertStatus(Response::HTTP_OK)
+            ->assertJsonPath('total', 1)
+            ->assertJsonPath('forms.0.name', 'Health Log');
     }
 
     public function test_creates_a_new_form_for_authenticated_user_and_returns_id(): void

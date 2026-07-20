@@ -16,11 +16,17 @@ final readonly class FindFormsByUserIdQueryHandler
     /** @return array<string, mixed> */
     public function handle(FindFormsByUserIdQuery $query): array
     {
-        $forms = $this->repository->findByUserId($query->userId(), $query->isQuiz());
+        [$forms, $total] = $this->repository->findSummariesByUserId(
+            userId: $query->userId(),
+            isQuiz: $query->isQuiz(),
+            search: $query->search(),
+            limit: $query->limit(),
+            offset: $query->offset(),
+        );
 
         return [
             'forms' => $forms,
-            'total' => count($forms),
+            'total' => $total,
             'limit' => $query->limit(),
             'offset' => $query->offset(),
         ];

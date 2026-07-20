@@ -11,6 +11,7 @@ final readonly class FindFormsByUserIdQuery
         private int $limit = 15,
         private int $offset = 0,
         private ?bool $isQuiz = null,
+        private ?string $search = null,
     ) {
     }
 
@@ -32,5 +33,10 @@ final readonly class FindFormsByUserIdQuery
     public function isQuiz(): ?bool
     {
         return $this->isQuiz;
+    }
+
+    public function search(): ?string
+    {
+        return $this->search;
     }
 }

@@ -10,6 +10,7 @@ use FormaFlow\Forms\Domain\FormAggregate;
 use FormaFlow\Forms\Domain\FormId;
 use FormaFlow\Forms\Domain\FormName;
 use FormaFlow\Forms\Domain\FormRepository;
+use FormaFlow\Forms\Domain\FormSummary;
 use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
@@ -176,5 +177,55 @@ final class EloquentFormRepository implements FormRepository
         }
 
         return $result;
+    }
+
+    /** @return array{0: FormSummary[], 1: int} */
+    public function findSummariesByUserId(
+        string $userId,
+        ?bool $isQuiz,
+        ?string $search,
+        int $limit,
+        int $offset,
+    ): array {
+        $query = FormModel::query()->where('user_id', $userId);
+
+        if ($isQuiz !== null) {
+            $query->where('is_quiz', $isQuiz);
+        }
+
+        if ($search !== null && $search !== '') {
+            $pattern = '%' . mb_strtolower($search) . '%';
+            $query->where(static function ($query) use ($pattern): void {
+                $query
+                    ->whereRaw('LOWER(name) LIKE ?', [$pattern])
+                    ->orWhereRaw('LOWER(description) LIKE ?', [$pattern]);
+            });
+        }
+
+        $total = (clone $query)->count();
+        $models = $query
+            ->withCount(['fields', 'entries'])
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->limit($limit)
+            ->offset($offset)
+            ->get();
+
+        $summaries = $models->map(static fn(FormModel $model): FormSummary => new FormSummary(
+            id: (string)$model->id,
+            userId: (string)$model->user_id,
+            name: (string)$model->name,
+            description: $model->description,
+            published: (bool)$model->published,
+            isQuiz: (bool)$model->is_quiz,
+            singleSubmission: (bool)$model->single_submission,
+            quickEntryFavorite: (bool)$model->quick_entry_favorite,
+            fieldsCount: (int)$model->fields_count,
+            entriesCount: (int)$model->entries_count,
+            createdAt: $model->created_at,
+            updatedAt: $model->updated_at,
+        ))->all();
+
+        return [$summaries, $total];
     }
 }

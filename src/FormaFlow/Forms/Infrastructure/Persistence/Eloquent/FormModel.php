@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FormaFlow\Forms\Infrastructure\Persistence\Eloquent;
 
 use Database\factories\FormModelFactory;
+use FormaFlow\Entries\Infrastructure\Persistence\Eloquent\EntryModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -45,6 +46,11 @@ final class FormModel extends Model
     public function fields(): HasMany
     {
         return $this->hasMany(FormFieldModel::class, 'form_id', 'id');
+    }
+
+    public function entries(): HasMany
+    {
+        return $this->hasMany(EntryModel::class, 'form_id', 'id');
     }
 
     public static function newFactory(): FormModelFactory

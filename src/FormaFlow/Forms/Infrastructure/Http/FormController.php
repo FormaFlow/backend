@@ -28,6 +28,7 @@ use FormaFlow\Forms\Application\UpdateField\UpdateFieldCommandHandler;
 use FormaFlow\Forms\Domain\FormId;
 use FormaFlow\Forms\Domain\FormRepository;
 use FormaFlow\Forms\Infrastructure\Http\Resources\FormResource;
+use FormaFlow\Forms\Infrastructure\Http\Resources\FormSummaryResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use RuntimeException;
@@ -47,15 +48,21 @@ final readonly class FormController
         FindFormsByUserIdQueryHandler $handler,
     ): JsonResponse {
         $isQuiz = $request->has('is_quiz') ? $request->boolean('is_quiz') : null;
+        $limit = max(1, min(100, (int)$request->input('limit', 15)));
+        $offset = max(0, (int)$request->input('offset', 0));
+        $search = trim((string)$request->input('search', ''));
 
         $query = new FindFormsByUserIdQuery(
             userId: $request->user()->id,
-            isQuiz: $isQuiz
+            limit: $limit,
+            offset: $offset,
+            isQuiz: $isQuiz,
+            search: $search !== '' ? $search : null,
         );
         $result = $handler->handle($query);
 
         $transformedForms = array_map(
-            fn($form) => new FormResource($form),
+            fn($form) => new FormSummaryResource($form),
             $result['forms']
         );
 
