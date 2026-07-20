@@ -155,6 +155,9 @@ final class FormAggregate extends AggregateRoot
         );
 
         $this->fields[$fieldIndex] = $updatedField;
+        if ($this->published) {
+            $this->incrementVersion();
+        }
         $this->recordEvent(new FormFieldUpdated($this->id->value(), $updatedField));
     }
 

@@ -24,10 +24,6 @@ final readonly class UpdateFieldCommandHandler
             throw new InvalidArgumentException('Form not found');
         }
 
-        if ($form->isPublished()) {
-            throw new InvalidArgumentException('Cannot update field in published form');
-        }
-
         $form->updateField($command->fieldId, $command->fieldData);
         $this->formRepository->save($form);
     }

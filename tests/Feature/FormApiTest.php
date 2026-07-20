@@ -253,6 +253,53 @@ final class FormApiTest extends TestCase
         ]);
     }
 
+    public function test_updates_a_field_in_published_form_and_increments_version(): void
+    {
+        $form = FormModel::factory()->published()->create([
+            'user_id' => $this->user->id,
+            'version' => 1,
+        ]);
+
+        DB::table('form_fields')->insert([
+            'id' => '00000000-0000-0000-0000-000000000181',
+            'form_id' => $form->id,
+            'label' => 'Old Label',
+            'type' => 'number',
+            'required' => false,
+            'options' => null,
+            'unit' => 'ml',
+            'category' => null,
+            'order' => 0,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+
+        $response = $this
+            ->actingAs($this->user, 'sanctum')->patchJson(
+                "{$this->baseUrl}/{$form->id}/fields/00000000-0000-0000-0000-000000000181",
+                [
+                    'label' => 'Amount',
+                    'required' => true,
+                    'unit' => 'mg',
+                ]
+            );
+
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJson(['message' => 'Field updated']);
+
+        $this->assertDatabaseHas('form_fields', [
+            'id' => '00000000-0000-0000-0000-000000000181',
+            'label' => 'Amount',
+            'required' => true,
+            'unit' => 'mg',
+        ]);
+        $this->assertDatabaseHas('forms', [
+            'id' => $form->id,
+            'published' => true,
+            'version' => 2,
+        ]);
+    }
+
     public function test_filters_forms_by_is_quiz_parameter(): void
     {
         // Create 1 quiz and 1 regular form
