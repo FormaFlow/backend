@@ -30,6 +30,7 @@ final readonly class UpdateFormCommandHandler
             throw new RuntimeException('Forbidden');
         }
 
+        $isQuiz = $command->isQuiz ?? $form->isQuiz();
         $updatedForm = FormAggregate::fromPrimitives(
             id: $formId,
             userId: $form->userId(),
@@ -39,9 +40,14 @@ final readonly class UpdateFormCommandHandler
             version: $form->isPublished() ? $form->getVersion() + 1 : $form->getVersion(),
             createdAt: $form->createdAt(),
             fields: $form->fields(),
-            isQuiz: $command->isQuiz ?? $form->isQuiz(),
+            isQuiz: $isQuiz,
             singleSubmission: $command->singleSubmission ?? $form->isSingleSubmission(),
             quickEntryFavorite: $command->quickEntryFavorite ?? $form->isQuickEntryFavorite(),
+            reminderIntervalMinutes: !$isQuiz
+                ? null
+                : ($command->reminderIntervalProvided
+                    ? $command->reminderIntervalMinutes
+                    : $form->reminderIntervalMinutes()),
         );
 
         $this->formRepository->save($updatedForm);

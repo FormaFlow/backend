@@ -15,6 +15,8 @@ final class GenerateDemoDataTest extends TestCase
 
     public function test_command_generates_demo_data_successfully(): void
     {
+        $usersBefore = UserModel::query()->count();
+
         // Execute the command
         $this
             ->artisan('demo:generate')
@@ -25,8 +27,11 @@ final class GenerateDemoDataTest extends TestCase
             ->assertSuccessful();
 
         // Check User Creation
-        $this->assertDatabaseCount('users', 1);
-        $user = UserModel::query()->first();
+        self::assertSame($usersBefore + 1, UserModel::query()->count());
+        $user = UserModel::query()
+            ->where('email', 'like', 'test+%@test.com')
+            ->latest('created_at')
+            ->firstOrFail();
         $this->assertMatchesRegularExpression('/^test\+\d+@test\.com$/', $user->email);
 
         // Check Forms Creation

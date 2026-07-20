@@ -30,6 +30,7 @@ final class FormModel extends Model
         'is_quiz',
         'single_submission',
         'quick_entry_favorite',
+        'reminder_interval_minutes',
     ];
 
     protected $casts = [
@@ -38,6 +39,7 @@ final class FormModel extends Model
         'is_quiz' => 'boolean',
         'single_submission' => 'boolean',
         'quick_entry_favorite' => 'boolean',
+        'reminder_interval_minutes' => 'integer',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',

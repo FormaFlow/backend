@@ -24,6 +24,7 @@ class FormModelFactory extends Factory
             'published' => false,
             'version' => 1,
             'quick_entry_favorite' => false,
+            'reminder_interval_minutes' => null,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ];

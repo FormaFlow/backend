@@ -40,6 +40,7 @@ final class EloquentFormRepository implements FormRepository
                     'is_quiz' => $aggregate->isQuiz(),
                     'single_submission' => $aggregate->isSingleSubmission(),
                     'quick_entry_favorite' => $aggregate->isQuickEntryFavorite(),
+                    'reminder_interval_minutes' => $aggregate->reminderIntervalMinutes(),
                 ]
             );
 
@@ -126,6 +127,9 @@ final class EloquentFormRepository implements FormRepository
             isQuiz: (bool)$model->is_quiz,
             singleSubmission: (bool)$model->single_submission,
             quickEntryFavorite: (bool)$model->quick_entry_favorite,
+            reminderIntervalMinutes: $model->reminder_interval_minutes !== null
+                ? (int)$model->reminder_interval_minutes
+                : null,
         );
     }
 
@@ -173,6 +177,9 @@ final class EloquentFormRepository implements FormRepository
                 isQuiz: (bool)$model->is_quiz,
                 singleSubmission: (bool)$model->single_submission,
                 quickEntryFavorite: (bool)$model->quick_entry_favorite,
+                reminderIntervalMinutes: $model->reminder_interval_minutes !== null
+                    ? (int)$model->reminder_interval_minutes
+                    : null,
             );
         }
 

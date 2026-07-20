@@ -6,6 +6,8 @@ namespace App\Providers;
 
 use App\Policies\FormPolicy;
 use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
+use FormaFlow\Reminders\Application\PushGateway;
+use FormaFlow\Reminders\Infrastructure\Push\MinishlinkPushGateway;
 use Illuminate\Console\Command;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Gate;
@@ -15,7 +17,7 @@ final class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        // Bindings moved to module-specific ServiceProviders
+        $this->app->bind(PushGateway::class, MinishlinkPushGateway::class);
     }
 
     public function boot(): void

@@ -17,6 +17,7 @@ final class FormAggregate extends AggregateRoot
     private bool $isQuiz = false;
     private bool $singleSubmission = false;
     private bool $quickEntryFavorite = false;
+    private ?int $reminderIntervalMinutes = null;
 
     public function __construct(
         private readonly FormId $id,
@@ -77,6 +78,11 @@ final class FormAggregate extends AggregateRoot
         return $this->quickEntryFavorite;
     }
 
+    public function reminderIntervalMinutes(): ?int
+    {
+        return $this->reminderIntervalMinutes;
+    }
+
     public function update(FormName $name, ?string $description): void
     {
         $this->name = $name;
@@ -93,6 +99,11 @@ final class FormAggregate extends AggregateRoot
     public function updateQuickEntryFavorite(bool $quickEntryFavorite): void
     {
         $this->quickEntryFavorite = $quickEntryFavorite;
+    }
+
+    public function updateReminderInterval(?int $reminderIntervalMinutes): void
+    {
+        $this->reminderIntervalMinutes = $reminderIntervalMinutes;
     }
 
     /** @return Field[] */
@@ -191,7 +202,8 @@ final class FormAggregate extends AggregateRoot
         array $fields,
         bool $isQuiz = false,
         bool $singleSubmission = false,
-        bool $quickEntryFavorite = false
+        bool $quickEntryFavorite = false,
+        ?int $reminderIntervalMinutes = null,
     ): self {
         $self = new self(
             id: $id,
@@ -207,6 +219,7 @@ final class FormAggregate extends AggregateRoot
         $self->isQuiz = $isQuiz;
         $self->singleSubmission = $singleSubmission;
         $self->quickEntryFavorite = $quickEntryFavorite;
+        $self->reminderIntervalMinutes = $reminderIntervalMinutes;
 
         return $self;
     }

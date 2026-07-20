@@ -14,6 +14,8 @@ final readonly class UpdateFormCommand
         public ?bool $isQuiz = null,
         public ?bool $singleSubmission = null,
         public ?bool $quickEntryFavorite = null,
+        public ?int $reminderIntervalMinutes = null,
+        public bool $reminderIntervalProvided = false,
     ) {
     }
 }

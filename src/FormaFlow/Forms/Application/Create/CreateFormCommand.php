@@ -14,6 +14,7 @@ final readonly class CreateFormCommand
         private bool $isQuiz = false,
         private bool $singleSubmission = false,
         private bool $quickEntryFavorite = false,
+        private ?int $reminderIntervalMinutes = null,
     ) {
     }
 
@@ -50,5 +51,10 @@ final readonly class CreateFormCommand
     public function isQuickEntryFavorite(): bool
     {
         return $this->quickEntryFavorite;
+    }
+
+    public function reminderIntervalMinutes(): ?int
+    {
+        return $this->reminderIntervalMinutes;
     }
 }

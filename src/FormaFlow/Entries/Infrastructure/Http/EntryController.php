@@ -18,6 +18,7 @@ use FormaFlow\Entries\Domain\EntryRepository;
 use FormaFlow\Entries\Infrastructure\Persistence\Eloquent\EntryTagModel;
 use FormaFlow\Forms\Domain\FormId;
 use FormaFlow\Forms\Domain\FormRepository;
+use FormaFlow\Reminders\Infrastructure\Persistence\Eloquent\QuizAssignmentModel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -234,6 +235,15 @@ final class EntryController extends Controller
         if (null === $entry) {
             return response()->json(['error' => 'Entry not found'], Response::HTTP_NOT_FOUND);
         }
+
+        QuizAssignmentModel::query()
+            ->where('form_id', $entry->formId()->value())
+            ->where('recipient_user_id', $request->user()->id)
+            ->whereNull('completed_at')
+            ->update([
+                'completed_at' => now(),
+                'next_reminder_at' => null,
+            ]);
 
         $response = [
             'id' => $entry->id()->value(),

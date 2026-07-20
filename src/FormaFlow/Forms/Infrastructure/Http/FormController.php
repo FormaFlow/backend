@@ -84,6 +84,7 @@ final readonly class FormController
             'is_quiz' => 'boolean',
             'single_submission' => 'boolean',
             'quick_entry_favorite' => 'boolean',
+            'reminder_interval_minutes' => 'nullable|integer|min:60|max:525600',
         ]);
 
         $command = new CreateFormCommand(
@@ -94,6 +95,7 @@ final readonly class FormController
             isQuiz: $validated['is_quiz'] ?? false,
             singleSubmission: $validated['single_submission'] ?? false,
             quickEntryFavorite: $validated['quick_entry_favorite'] ?? false,
+            reminderIntervalMinutes: $validated['reminder_interval_minutes'] ?? null,
         );
 
         $handler->handle($command);
@@ -240,6 +242,7 @@ final readonly class FormController
             'is_quiz' => 'sometimes|boolean',
             'single_submission' => 'sometimes|boolean',
             'quick_entry_favorite' => 'sometimes|boolean',
+            'reminder_interval_minutes' => 'sometimes|nullable|integer|min:60|max:525600',
         ]);
 
         try {
@@ -251,6 +254,8 @@ final readonly class FormController
                 isQuiz: $validated['is_quiz'] ?? null,
                 singleSubmission: $validated['single_submission'] ?? null,
                 quickEntryFavorite: $validated['quick_entry_favorite'] ?? null,
+                reminderIntervalMinutes: $validated['reminder_interval_minutes'] ?? null,
+                reminderIntervalProvided: array_key_exists('reminder_interval_minutes', $validated),
             );
 
             $handler->handle($command);

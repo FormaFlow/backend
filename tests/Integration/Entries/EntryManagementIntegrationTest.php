@@ -402,7 +402,10 @@ final class EntryManagementIntegrationTest extends TestCase
         $response->assertStatus(Response::HTTP_OK)
             ->assertJson(['imported' => 2, 'errors' => []]);
 
-        $this->assertDatabaseCount('entries', 2);
+        self::assertSame(2, EntryModel::query()
+            ->where('form_id', $this->form->id)
+            ->where('user_id', $this->user->id)
+            ->count());
     }
 
     public function test_csv_import_validates_data_against_form_schema(): void

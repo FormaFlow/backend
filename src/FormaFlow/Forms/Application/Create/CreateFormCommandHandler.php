@@ -27,6 +27,7 @@ final readonly class CreateFormCommandHandler
 
         $form->updateSettings($command->isQuiz(), $command->isSingleSubmission());
         $form->updateQuickEntryFavorite($command->isQuickEntryFavorite());
+        $form->updateReminderInterval($command->isQuiz() ? $command->reminderIntervalMinutes() : null);
 
         $this->repository->save($form);
     }

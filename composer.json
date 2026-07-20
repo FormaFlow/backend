@@ -6,7 +6,8 @@
     "laravel/framework": "^11.0",
     "ramsey/uuid": "^4.7",
     "laravel/sanctum": "^4.0",
-    "laravel/tinker": "^2.10"
+    "laravel/tinker": "^2.10",
+    "minishlink/web-push": "^10.1"
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest",

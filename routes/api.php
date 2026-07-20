@@ -9,6 +9,9 @@ use FormaFlow\Forms\Infrastructure\Http\PublicApiFormController;
 use FormaFlow\Identity\Infrastructure\Http\AuthController;
 use FormaFlow\Reports\Infrastructure\Http\DashboardController;
 use FormaFlow\Reports\Infrastructure\Http\ReportController;
+use FormaFlow\Reminders\Infrastructure\Http\PushSubscriptionController;
+use FormaFlow\Reminders\Infrastructure\Http\QuizAssignmentController;
+use FormaFlow\Reminders\Infrastructure\Http\UserSearchController;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -30,6 +33,10 @@ Route::prefix('v1')->group(function () {
         Route::get('/profile', [AuthController::class, 'profile']);
         Route::patch('/profile', [AuthController::class, 'updateProfile']);
         Route::post('/refresh', [AuthController::class, 'refresh']);
+        Route::get('/users/search', UserSearchController::class);
+        Route::get('/push/config', [PushSubscriptionController::class, 'config']);
+        Route::post('/push/subscriptions', [PushSubscriptionController::class, 'store']);
+        Route::delete('/push/subscriptions', [PushSubscriptionController::class, 'destroy']);
 
         Route::prefix('forms')->group(function () {
             Route::get('/', [FormController::class, 'index']);
@@ -42,6 +49,8 @@ Route::prefix('v1')->group(function () {
             Route::post('{id}/publish', [FormController::class, 'publish']);
             Route::post('{id}/fields', [FormController::class, 'addField']);
             Route::post('{id}/entries/import', [FormController::class, 'importEntries']);
+            Route::get('{id}/assignments', [QuizAssignmentController::class, 'index']);
+            Route::post('{id}/assignments', [QuizAssignmentController::class, 'store']);
         });
 
         Route::prefix('entries')->group(function () {
