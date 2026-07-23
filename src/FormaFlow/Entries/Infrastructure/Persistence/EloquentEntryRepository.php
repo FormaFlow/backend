@@ -277,4 +277,45 @@ final readonly class EloquentEntryRepository implements EntryRepository
 
         return $query->count();
     }
+
+    public function getStatsByDay(
+        FormId $formId,
+        string $userId,
+        DateTimeImmutable $startDate,
+        DateTimeImmutable $endDate,
+        array $numericFieldIds,
+        string $timezone,
+    ): array {
+        $dateExpression = "DATE(created_at AT TIME ZONE 'UTC' AT TIME ZONE ?)";
+        $baseQuery = EntryModel::query()
+            ->where('form_id', $formId->value())
+            ->where('user_id', $userId)
+            ->whereBetween('created_at', [$startDate, $endDate]);
+
+        $result = [];
+        $countRows = (clone $baseQuery)
+            ->selectRaw($dateExpression . ' AS date, COUNT(*) AS total', [$timezone])
+            ->groupBy('date')
+            ->get();
+        foreach ($countRows as $row) {
+            $result[$row->date] = [
+                'count' => (int)$row->total,
+                'sums' => [],
+            ];
+        }
+
+        foreach ($numericFieldIds as $fieldId) {
+            $sumExpression = "COALESCE(SUM(CAST(data->>'{$fieldId}' AS DECIMAL(20, 2))), 0)";
+            $sumRows = (clone $baseQuery)
+                ->selectRaw($dateExpression . " AS date, {$sumExpression} AS total", [$timezone])
+                ->groupBy('date')
+                ->get();
+            foreach ($sumRows as $row) {
+                $result[$row->date] ??= ['count' => 0, 'sums' => []];
+                $result[$row->date]['sums'][$fieldId] = (float)$row->total;
+            }
+        }
+
+        return $result;
+    }
 }

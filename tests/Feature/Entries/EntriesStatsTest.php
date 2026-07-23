@@ -208,4 +208,32 @@ final class EntriesStatsTest extends TestCase
                 ],
             ]);
     }
+
+    public function test_returns_daily_stats_for_a_week_in_one_response(): void
+    {
+        Carbon::setTestNow('2026-07-24 12:00:00');
+        EntryModel::factory()->create([
+            'form_id' => $this->form->id,
+            'user_id' => $this->user->id,
+            'data' => ['00000000-0000-0000-0000-000000000110' => 25],
+            'created_at' => Carbon::parse('2026-07-22 09:00:00', 'Europe/Moscow'),
+        ]);
+
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
+            ->getJson("{$this->baseUrl}/stats/week?form_id={$this->form->id}&date=2026-07-24");
+
+        $response
+            ->assertStatus(Response::HTTP_OK)
+            ->assertJsonCount(7, 'days')
+            ->assertJsonPath('days.0.date', '2026-07-24')
+            ->assertJsonPath('days.0.stats.0.field', '_count')
+            ->assertJsonPath('days.0.stats.0.sum', 0)
+            ->assertJsonPath('days.2.date', '2026-07-22')
+            ->assertJsonPath('days.2.stats.0.sum', 1)
+            ->assertJsonPath('months.2026-07.0.field', '_count')
+            ->assertJsonPath('months.2026-07.0.sum_month', 1);
+
+        Carbon::setTestNow();
+    }
 }

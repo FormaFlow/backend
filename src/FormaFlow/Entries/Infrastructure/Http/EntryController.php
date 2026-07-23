@@ -11,6 +11,7 @@ use FormaFlow\Entries\Application\Create\CreateEntryCommand;
 use FormaFlow\Entries\Application\Create\CreateEntryCommandHandler;
 use FormaFlow\Entries\Application\Stats\GetEntriesStatsQuery;
 use FormaFlow\Entries\Application\Stats\GetEntriesStatsQueryHandler;
+use FormaFlow\Entries\Application\Stats\GetEntriesWeekStatsQuery;
 use FormaFlow\Entries\Application\Update\UpdateEntryCommand;
 use FormaFlow\Entries\Application\Update\UpdateEntryCommandHandler;
 use FormaFlow\Entries\Domain\EntryId;
@@ -122,6 +123,33 @@ final class EntryController extends Controller
         return response()->json([
             'stats' => $result->stats,
         ]);
+    }
+
+    /**
+     * @throws DateInvalidTimeZoneException
+     * @throws DateMalformedStringException
+     */
+    public function weeklyStats(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'form_id' => 'required|string',
+            'date' => 'nullable|date_format:Y-m-d',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $result = $this->statsHandler->handleWeek(new GetEntriesWeekStatsQuery(
+            formId: $request->input('form_id'),
+            userId: $request->user()->id,
+            date: $request->input('date'),
+        ));
+
+        return response()->json($result);
     }
 
 

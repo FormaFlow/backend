@@ -40,4 +40,17 @@ interface EntryRepository extends Repository
         DateTimeImmutable $startDate,
         ?DateTimeImmutable $endDate = null
     ): int;
+
+    /**
+     * @param string[] $numericFieldIds
+     * @return array<string, array{count: int, sums: array<string, float>}>
+     */
+    public function getStatsByDay(
+        FormId $formId,
+        string $userId,
+        DateTimeImmutable $startDate,
+        DateTimeImmutable $endDate,
+        array $numericFieldIds,
+        string $timezone,
+    ): array;
 }

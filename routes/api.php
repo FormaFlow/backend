@@ -55,6 +55,7 @@ Route::prefix('v1')->group(function () {
 
         Route::prefix('entries')->group(function () {
             Route::get('/', [EntryController::class, 'index']);
+            Route::get('/stats/week', [EntryController::class, 'weeklyStats']);
             Route::get('/stats', [EntryController::class, 'stats']);
             Route::get('/{id}', [EntryController::class, 'show']);
             Route::post('/', [EntryController::class, 'store']);

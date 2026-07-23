@@ -46,7 +46,9 @@ final readonly class GetEntriesStatsQueryHandler
             }
         }
 
-        $baseDate = $query->date ? new DateTimeImmutable($query->date, $timezone) : new DateTimeImmutable('today', $timezone);
+        $baseDate = $query->date
+            ? new DateTimeImmutable($query->date, $timezone)
+            : new DateTimeImmutable('today', $timezone);
 
         $todayStart = $baseDate->setTime(0, 0, 0);
         $todayEnd = $baseDate->setTime(23, 59, 59);
@@ -117,5 +119,78 @@ final readonly class GetEntriesStatsQueryHandler
         }
 
         return new GetEntriesStatsQueryResult($stats);
+    }
+
+    /**
+     * @return array{
+     *     days: array<int, array{date: string, stats: array<int, array{field: string, sum: float}>}>,
+     *     months: array<string, array<int, array{field: string, sum_month: float}>>
+     * }
+     * @throws DateMalformedStringException
+     * @throws DateInvalidTimeZoneException
+     */
+    public function handleWeek(GetEntriesWeekStatsQuery $query): array
+    {
+        $form = $this->formRepository->findById(new FormId($query->formId));
+        if ($form === null) {
+            return ['days' => [], 'months' => []];
+        }
+
+        $user = $this->userRepository->findById(new UserId($query->userId));
+        $timezoneStr = $user?->timezone() ?? 'Europe/Moscow';
+        $timezone = new DateTimeZone($timezoneStr);
+        $utc = new DateTimeZone('UTC');
+        $baseDate = $query->date
+            ? new DateTimeImmutable($query->date, $timezone)
+            : new DateTimeImmutable('today', $timezone);
+        $endDate = $baseDate->setTime(23, 59, 59);
+        $startDate = $baseDate->modify('-6 days')->setTime(0, 0, 0);
+
+        $numericFields = [];
+        foreach ($form->fields() as $field) {
+            if (in_array($field->type()->value(), ['number', 'currency'], true)) {
+                $numericFields[] = $field->id();
+            }
+        }
+
+        $dailyTotals = $this->entryRepository->getStatsByDay(
+            new FormId($query->formId),
+            $query->userId,
+            $startDate->setTimezone($utc),
+            $endDate->setTimezone($utc),
+            $numericFields,
+            $timezoneStr,
+        );
+
+        $days = [];
+        $months = [];
+        for ($offset = 0; $offset < 7; $offset++) {
+            $day = $baseDate->modify("-{$offset} days")->setTime(0, 0, 0);
+            $date = $day->format('Y-m-d');
+            $totals = $dailyTotals[$date] ?? ['count' => 0, 'sums' => []];
+            $stats = [['field' => '_count', 'sum' => (float)$totals['count']]];
+            foreach ($numericFields as $fieldId) {
+                $stats[] = [
+                    'field' => $fieldId,
+                    'sum' => (float)($totals['sums'][$fieldId] ?? 0),
+                ];
+            }
+            $days[] = ['date' => $date, 'stats' => $stats];
+
+            $monthKey = $day->format('Y-m');
+            if (!isset($months[$monthKey])) {
+                $monthStats = $this->handle(new GetEntriesStatsQuery(
+                    formId: $query->formId,
+                    userId: $query->userId,
+                    date: $date,
+                ));
+                $months[$monthKey] = array_map(static fn(array $stat): array => [
+                    'field' => $stat['field'],
+                    'sum_month' => $stat['sum_month'],
+                ], $monthStats->stats);
+            }
+        }
+
+        return ['days' => $days, 'months' => $months];
     }
 }
