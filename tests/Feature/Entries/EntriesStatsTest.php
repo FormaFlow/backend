@@ -14,7 +14,6 @@ use Tests\TestCase;
 
 final class EntriesStatsTest extends TestCase
 {
-
     protected ?UserModel $user = null;
     protected ?FormModel $form = null;
     protected string $baseUrl = '/api/v1/entries';
@@ -233,6 +232,63 @@ final class EntriesStatsTest extends TestCase
             ->assertJsonPath('days.2.stats.0.sum', 1)
             ->assertJsonPath('months.2026-07.0.field', '_count')
             ->assertJsonPath('months.2026-07.0.sum_month', 1);
+
+        Carbon::setTestNow();
+    }
+
+    public function test_sums_numeric_values_from_an_opted_in_select_field(): void
+    {
+        Carbon::setTestNow('2026-07-29 12:00:00');
+        $selectForm = FormModel::factory()->forUser($this->user)->published()->create();
+        $fieldId = '00000000-0000-0000-0000-000000000112';
+
+        DB::table('form_fields')->insert([
+            'id' => $fieldId,
+            'form_id' => $selectForm->id,
+            'label' => 'Size value',
+            'type' => 'select',
+            'sum_values' => true,
+            'required' => true,
+            'options' => json_encode([
+                ['label' => 'S', 'value' => '10'],
+                ['label' => 'M', 'value' => '20'],
+                ['label' => 'XL', 'value' => '40'],
+            ], JSON_THROW_ON_ERROR),
+            'order' => 0,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+
+        foreach ([10, 20] as $value) {
+            EntryModel::factory()->create([
+                'form_id' => $selectForm->id,
+                'user_id' => $this->user->id,
+                'data' => [$fieldId => (string)$value],
+                'created_at' => Carbon::now(),
+            ]);
+        }
+        EntryModel::factory()->create([
+            'form_id' => $selectForm->id,
+            'user_id' => $this->user->id,
+            'data' => [$fieldId => '40'],
+            'created_at' => Carbon::now()->subDays(3),
+        ]);
+
+        $this
+            ->actingAs($this->user, 'sanctum')
+            ->getJson("{$this->baseUrl}/stats?form_id={$selectForm->id}&date=2026-07-29")
+            ->assertOk()
+            ->assertJsonPath('stats.1.field', $fieldId)
+            ->assertJsonPath('stats.1.sum_today', 30)
+            ->assertJsonPath('stats.1.sum_month', 70);
+
+        $this
+            ->actingAs($this->user, 'sanctum')
+            ->getJson("{$this->baseUrl}/stats/week?form_id={$selectForm->id}&date=2026-07-29")
+            ->assertOk()
+            ->assertJsonPath('days.0.stats.1.field', $fieldId)
+            ->assertJsonPath('days.0.stats.1.sum', 30)
+            ->assertJsonPath('months.2026-07.1.sum_month', 70);
 
         Carbon::setTestNow();
     }

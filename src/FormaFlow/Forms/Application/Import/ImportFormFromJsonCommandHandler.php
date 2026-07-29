@@ -51,7 +51,8 @@ final readonly class ImportFormFromJsonCommandHandler
                     category: $fieldData['category'] ?? null,
                     order: (int)$order,
                     correctAnswer: $correctAnswer,
-                    points: (int)($fieldData['points'] ?? 0)
+                    points: (int)($fieldData['points'] ?? 0),
+                    sumValues: (bool)($fieldData['sum_values'] ?? false),
                 );
                 $form->addField($field);
             }

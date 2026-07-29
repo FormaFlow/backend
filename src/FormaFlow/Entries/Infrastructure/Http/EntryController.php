@@ -199,10 +199,16 @@ final class EntryController extends Controller
                 $fieldRules[] = 'required';
             }
 
+            if ($field->sumValues()) {
+                $fieldRules[] = 'numeric';
+            }
+
             switch ($field->type()->value()) {
                 case 'number':
                 case 'currency':
-                    $fieldRules[] = 'numeric';
+                    if (!$field->sumValues()) {
+                        $fieldRules[] = 'numeric';
+                    }
                     break;
                 case 'email':
                     $fieldRules[] = 'email';
@@ -338,10 +344,16 @@ final class EntryController extends Controller
                 $fieldRules[] = 'required';
             }
 
+            if ($field->sumValues()) {
+                $fieldRules[] = 'numeric';
+            }
+
             switch ($field->type()->value()) {
                 case 'number':
                 case 'currency':
-                    $fieldRules[] = 'numeric';
+                    if (!$field->sumValues()) {
+                        $fieldRules[] = 'numeric';
+                    }
                     break;
                 case 'email':
                     $fieldRules[] = 'email';

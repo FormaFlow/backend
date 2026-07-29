@@ -163,6 +163,7 @@ final class FormAggregate extends AggregateRoot
             order: $fieldData['order'] ?? $existingField->order(),
             correctAnswer: $fieldData['correctAnswer'] ?? $existingField->correctAnswer(),
             points: $fieldData['points'] ?? $existingField->points(),
+            sumValues: $fieldData['sum_values'] ?? $existingField->sumValues(),
         );
 
         $this->fields[$fieldIndex] = $updatedField;

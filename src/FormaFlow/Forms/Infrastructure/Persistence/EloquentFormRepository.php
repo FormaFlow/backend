@@ -56,6 +56,7 @@ final class EloquentFormRepository implements FormRepository
                         'form_id' => $form->id,
                         'label' => $f->label(),
                         'type' => $f->type()->value(),
+                        'sum_values' => $f->sumValues(),
                         'required' => $f->isRequired(),
                         'options' => $f->options(),
                         'unit' => $f->unit(),
@@ -112,6 +113,7 @@ final class EloquentFormRepository implements FormRepository
                 order: (int)$fm->order,
                 correctAnswer: $fm->correct_answer,
                 points: (int)$fm->points,
+                sumValues: (bool)$fm->sum_values,
             );
         }
 
@@ -162,6 +164,7 @@ final class EloquentFormRepository implements FormRepository
                     order: (int)$fm->order,
                     correctAnswer: $fm->correct_answer,
                     points: (int)$fm->points,
+                    sumValues: (bool)$fm->sum_values,
                 );
             }
 

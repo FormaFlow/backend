@@ -17,6 +17,7 @@ final class FormFieldModel extends Model
         'form_id',
         'label',
         'type',
+        'sum_values',
         'required',
         'options',
         'unit',
@@ -27,6 +28,7 @@ final class FormFieldModel extends Model
     ];
     protected $casts = [
         'required' => 'boolean',
+        'sum_values' => 'boolean',
         'options' => 'array',
         'order' => 'integer',
         'created_at' => 'datetime',

@@ -226,7 +226,7 @@ final readonly class EloquentEntryRepository implements EntryRepository
 
         $numericFields = [];
         foreach ($form->fields() as $field) {
-            if (in_array($field->type()->value(), ['number', 'currency'])) {
+            if ($field->isSummable()) {
                 $numericFields[] = $field->id();
             }
         }

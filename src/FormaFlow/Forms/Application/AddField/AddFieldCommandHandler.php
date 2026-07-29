@@ -37,6 +37,7 @@ final readonly class AddFieldCommandHandler
             order: $command->order(),
             correctAnswer: $command->correctAnswer(),
             points: $command->points(),
+            sumValues: $command->sumValues(),
         );
 
         $form->addField($field);

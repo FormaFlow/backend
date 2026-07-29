@@ -171,6 +171,7 @@ final readonly class FormController
             'order' => 'integer',
             'correctAnswer' => 'nullable|string',
             'points' => 'integer',
+            'sum_values' => 'boolean',
         ]);
 
         try {
@@ -186,6 +187,7 @@ final readonly class FormController
                 order: $validated['order'] ?? 0,
                 correctAnswer: $validated['correctAnswer'] ?? null,
                 points: $validated['points'] ?? 0,
+                sumValues: $validated['sum_values'] ?? false,
             );
 
             $handler->handle($command);
@@ -219,6 +221,7 @@ final readonly class FormController
             'order' => 'sometimes|integer',
             'correctAnswer' => 'sometimes|nullable|string',
             'points' => 'sometimes|integer',
+            'sum_values' => 'sometimes|boolean',
         ]);
 
         try {

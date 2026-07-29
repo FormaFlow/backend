@@ -13,7 +13,6 @@ use Tests\TestCase;
 
 final class FormBuilderIntegrationTest extends TestCase
 {
-
     protected UserModel $user;
 
     protected function setUp(): void
@@ -125,6 +124,36 @@ final class FormBuilderIntegrationTest extends TestCase
             ->postJson("/api/v1/forms/{$form->id}/fields", $fieldData);
 
         $response->assertStatus(Response::HTTP_CREATED);
+    }
+
+    public function test_user_can_enable_value_summing_for_a_select_field(): void
+    {
+        $form = FormModel::factory()->forUser($this->user)->create();
+
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
+            ->postJson("/api/v1/forms/{$form->id}/fields", [
+                'label' => 'Size value',
+                'type' => 'select',
+                'sum_values' => true,
+                'options' => [
+                    ['label' => 'S', 'value' => '10'],
+                    ['label' => 'M', 'value' => '20'],
+                ],
+            ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $this->assertDatabaseHas('form_fields', [
+            'form_id' => $form->id,
+            'label' => 'Size value',
+            'sum_values' => true,
+        ]);
+
+        $this
+            ->actingAs($this->user, 'sanctum')
+            ->getJson("/api/v1/forms/{$form->id}")
+            ->assertOk()
+            ->assertJsonPath('fields.0.sum_values', true);
     }
 
     public function test_user_can_add_boolean_field_to_form(): void

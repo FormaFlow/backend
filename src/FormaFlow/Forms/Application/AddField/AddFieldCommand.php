@@ -18,6 +18,7 @@ final readonly class AddFieldCommand
         private int $order = 0,
         private ?string $correctAnswer = null,
         private int $points = 0,
+        private bool $sumValues = false,
     ) {
     }
 
@@ -74,5 +75,10 @@ final readonly class AddFieldCommand
     public function points(): int
     {
         return $this->points;
+    }
+
+    public function sumValues(): bool
+    {
+        return $this->sumValues;
     }
 }

@@ -41,7 +41,7 @@ final readonly class GetEntriesStatsQueryHandler
 
         $numericFields = [];
         foreach ($form->fields() as $field) {
-            if (in_array($field->type()->value(), ['number', 'currency'])) {
+            if ($field->isSummable()) {
                 $numericFields[] = $field->id();
             }
         }
@@ -148,7 +148,7 @@ final readonly class GetEntriesStatsQueryHandler
 
         $numericFields = [];
         foreach ($form->fields() as $field) {
-            if (in_array($field->type()->value(), ['number', 'currency'], true)) {
+            if ($field->isSummable()) {
                 $numericFields[] = $field->id();
             }
         }
