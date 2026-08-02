@@ -21,6 +21,7 @@ final class EntriesStatsTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        Carbon::setTestNow('2026-07-24 12:00:00');
 
         $this->user = UserModel::factory()->create();
 
@@ -54,6 +55,12 @@ final class EntriesStatsTest extends TestCase
                 'updated_at' => Carbon::now(),
             ],
         ]);
+    }
+
+    protected function tearDown(): void
+    {
+        Carbon::setTestNow();
+        parent::tearDown();
     }
 
     public function test_can_get_entries_stats(): void
@@ -92,7 +99,9 @@ final class EntriesStatsTest extends TestCase
 
         $response = $this
             ->actingAs($this->user, 'sanctum')
-            ->getJson("{$this->baseUrl}/stats?form_id={$this->form->id}");
+            ->getJson(
+                "{$this->baseUrl}/stats?form_id={$this->form->id}&date=" . Carbon::now()->toDateString(),
+            );
 
         $response
             ->assertStatus(Response::HTTP_OK)
@@ -130,7 +139,9 @@ final class EntriesStatsTest extends TestCase
 
         $response = $this
             ->actingAs($this->user, 'sanctum')
-            ->getJson("{$this->baseUrl}/stats?form_id={$formWithNoNumeric->id}");
+            ->getJson(
+                "{$this->baseUrl}/stats?form_id={$formWithNoNumeric->id}&date=" . Carbon::now()->toDateString(),
+            );
 
         $response
             ->assertStatus(Response::HTTP_OK)

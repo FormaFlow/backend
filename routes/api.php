@@ -12,6 +12,7 @@ use FormaFlow\Reports\Infrastructure\Http\ReportController;
 use FormaFlow\Reminders\Infrastructure\Http\PushSubscriptionController;
 use FormaFlow\Reminders\Infrastructure\Http\QuizAssignmentController;
 use FormaFlow\Reminders\Infrastructure\Http\UserSearchController;
+use FormaFlow\Payments\Infrastructure\Http\PaymentController;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -81,6 +82,26 @@ Route::prefix('v1')->group(function () {
             Route::get('/week', [DashboardController::class, 'weekSummary']);
             Route::get('/month', [DashboardController::class, 'monthSummary']);
             Route::get('/trends', [DashboardController::class, 'trends']);
+        });
+
+        Route::prefix('payments')->controller(PaymentController::class)->group(function () {
+            Route::get('/overview', 'overview');
+            Route::get('/categories', 'categories');
+            Route::post('/categories', 'storeCategory');
+            Route::patch('/categories/{id}', 'updateCategory');
+            Route::delete('/categories/{id}', 'destroyCategory');
+            Route::get('/plans', 'plans');
+            Route::post('/plans', 'storePlan');
+            Route::get('/plans/{id}', 'showPlan');
+            Route::patch('/plans/{id}', 'updatePlan');
+            Route::delete('/plans/{id}', 'destroyPlan');
+            Route::post('/plans/{id}/close', 'closePlan');
+            Route::get('/occurrences', 'occurrences');
+            Route::post('/plans/{planId}/occurrences', 'storeOccurrence');
+            Route::patch('/occurrences/{id}', 'updateOccurrence');
+            Route::delete('/occurrences/{id}', 'destroyOccurrence');
+            Route::post('/occurrences/{id}/pay', 'pay');
+            Route::post('/occurrences/{id}/reopen', 'reopen');
         });
     });
 });
