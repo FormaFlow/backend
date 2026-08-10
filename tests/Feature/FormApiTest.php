@@ -307,6 +307,27 @@ final class FormApiTest extends TestCase
             ->assertJsonValidationErrors(['type']);
     }
 
+    public function test_can_add_textarea_field(): void
+    {
+        $form = FormModel::factory()->create(['user_id' => $this->user->id]);
+
+        $response = $this
+            ->actingAs($this->user, 'sanctum')
+            ->postJson("{$this->baseUrl}/{$form->id}/fields", [
+                'label' => 'Long notes',
+                'type' => 'textarea',
+                'required' => false,
+                'order' => 1,
+            ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $this->assertDatabaseHas('form_fields', [
+            'form_id' => $form->id,
+            'label' => 'Long notes',
+            'type' => 'textarea',
+        ]);
+    }
+
     public function test_updates_a_field_in_existing_form(): void
     {
         $form = FormModel::factory()->create([

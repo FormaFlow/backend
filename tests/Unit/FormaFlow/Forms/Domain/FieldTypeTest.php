@@ -24,7 +24,7 @@ final class FieldTypeTest extends TestCase
 
     public function testAllValidTypes(): void
     {
-        $validTypes = ['text', 'number', 'date', 'boolean', 'select', 'currency', 'email'];
+        $validTypes = ['text', 'textarea', 'number', 'date', 'boolean', 'select', 'currency', 'email'];
 
         foreach ($validTypes as $type) {
             $fieldType = new FieldType($type);

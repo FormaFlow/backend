@@ -9,7 +9,7 @@ use Shared\Domain\ValueObject;
 
 final class FieldType extends ValueObject
 {
-    private const array VALID = ['text', 'number', 'date', 'boolean', 'select', 'currency', 'email'];
+    private const array VALID = ['text', 'textarea', 'number', 'date', 'boolean', 'select', 'currency', 'email'];
 
     public function __construct(
         private readonly string $type,

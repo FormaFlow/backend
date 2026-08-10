@@ -163,7 +163,7 @@ final readonly class FormController
 
         $validated = $request->validate([
             'label' => 'required|string',
-            'type' => 'required|in:text,number,date,boolean,select,currency,email',
+            'type' => 'required|in:text,textarea,number,date,boolean,select,currency,email',
             'required' => 'boolean',
             'options' => 'nullable|array',
             'unit' => 'nullable|string',
@@ -213,7 +213,7 @@ final readonly class FormController
 
         $validated = $request->validate([
             'label' => 'sometimes|string',
-            'type' => 'sometimes|in:text,number,date,boolean,select,currency,email',
+            'type' => 'sometimes|in:text,textarea,number,date,boolean,select,currency,email',
             'required' => 'sometimes|boolean',
             'options' => 'sometimes|nullable|array',
             'unit' => 'sometimes|nullable|string',
