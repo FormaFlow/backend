@@ -53,6 +53,7 @@ final readonly class ImportFormFromJsonCommandHandler
                     correctAnswer: $correctAnswer,
                     points: (int)($fieldData['points'] ?? 0),
                     sumValues: (bool)($fieldData['sum_values'] ?? false),
+                    trendDirection: (string)($fieldData['trend_direction'] ?? 'neutral'),
                 );
                 $form->addField($field);
             }

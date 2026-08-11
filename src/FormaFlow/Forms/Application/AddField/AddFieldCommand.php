@@ -19,6 +19,7 @@ final readonly class AddFieldCommand
         private ?string $correctAnswer = null,
         private int $points = 0,
         private bool $sumValues = false,
+        private string $trendDirection = 'neutral',
     ) {
     }
 
@@ -80,5 +81,10 @@ final readonly class AddFieldCommand
     public function sumValues(): bool
     {
         return $this->sumValues;
+    }
+
+    public function trendDirection(): string
+    {
+        return $this->trendDirection;
     }
 }

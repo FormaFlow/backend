@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace FormaFlow\Forms\Domain;
 
+use InvalidArgumentException;
+
 final readonly class Field
 {
     public function __construct(
@@ -18,7 +20,11 @@ final readonly class Field
         private ?string $correctAnswer = null,
         private int $points = 0,
         private bool $sumValues = false,
+        private string $trendDirection = 'neutral',
     ) {
+        if (!in_array($this->trendDirection, ['neutral', 'increase_good', 'decrease_good'], true)) {
+            throw new InvalidArgumentException('Invalid trend direction');
+        }
     }
 
     public function id(): string
@@ -74,6 +80,11 @@ final readonly class Field
     public function sumValues(): bool
     {
         return $this->sumValues;
+    }
+
+    public function trendDirection(): string
+    {
+        return $this->trendDirection;
     }
 
     public function isSummable(): bool

@@ -328,6 +328,49 @@ final class FormApiTest extends TestCase
         ]);
     }
 
+    public function test_persists_configurable_trend_direction_for_numeric_field(): void
+    {
+        $form = FormModel::factory()->create(['user_id' => $this->user->id]);
+
+        $this
+            ->actingAs($this->user, 'sanctum')
+            ->postJson("{$this->baseUrl}/{$form->id}/fields", [
+                'label' => 'Revenue',
+                'type' => 'currency',
+                'required' => false,
+                'trend_direction' => 'increase_good',
+            ])
+            ->assertCreated();
+
+        $this->assertDatabaseHas('form_fields', [
+            'form_id' => $form->id,
+            'label' => 'Revenue',
+            'trend_direction' => 'increase_good',
+        ]);
+
+        $this
+            ->actingAs($this->user, 'sanctum')
+            ->getJson("{$this->baseUrl}/{$form->id}")
+            ->assertOk()
+            ->assertJsonPath('fields.0.trend_direction', 'increase_good');
+    }
+
+    public function test_rejects_invalid_trend_direction(): void
+    {
+        $form = FormModel::factory()->create(['user_id' => $this->user->id]);
+
+        $this
+            ->actingAs($this->user, 'sanctum')
+            ->postJson("{$this->baseUrl}/{$form->id}/fields", [
+                'label' => 'Revenue',
+                'type' => 'currency',
+                'required' => false,
+                'trend_direction' => 'sideways_good',
+            ])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('trend_direction');
+    }
+
     public function test_updates_a_field_in_existing_form(): void
     {
         $form = FormModel::factory()->create([

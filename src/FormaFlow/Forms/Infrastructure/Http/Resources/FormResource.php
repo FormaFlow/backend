@@ -20,6 +20,7 @@ final class FormResource extends JsonResource
                 'label' => $field->label(),
                 'type' => $field->type()->value(),
                 'sum_values' => $field->sumValues(),
+                'trend_direction' => $field->trendDirection(),
                 'required' => $field->isRequired(),
                 'options' => $field->options(),
                 'unit' => $field->unit(),

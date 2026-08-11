@@ -172,6 +172,7 @@ final readonly class FormController
             'correctAnswer' => 'nullable|string',
             'points' => 'integer',
             'sum_values' => 'boolean',
+            'trend_direction' => 'in:neutral,increase_good,decrease_good',
         ]);
 
         try {
@@ -188,6 +189,7 @@ final readonly class FormController
                 correctAnswer: $validated['correctAnswer'] ?? null,
                 points: $validated['points'] ?? 0,
                 sumValues: $validated['sum_values'] ?? false,
+                trendDirection: $validated['trend_direction'] ?? 'neutral',
             );
 
             $handler->handle($command);
@@ -222,6 +224,7 @@ final readonly class FormController
             'correctAnswer' => 'sometimes|nullable|string',
             'points' => 'sometimes|integer',
             'sum_values' => 'sometimes|boolean',
+            'trend_direction' => 'sometimes|in:neutral,increase_good,decrease_good',
         ]);
 
         try {

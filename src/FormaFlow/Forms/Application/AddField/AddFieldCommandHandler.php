@@ -38,6 +38,7 @@ final readonly class AddFieldCommandHandler
             correctAnswer: $command->correctAnswer(),
             points: $command->points(),
             sumValues: $command->sumValues(),
+            trendDirection: $command->trendDirection(),
         );
 
         $form->addField($field);

@@ -18,6 +18,7 @@ final class FormFieldModel extends Model
         'label',
         'type',
         'sum_values',
+        'trend_direction',
         'required',
         'options',
         'unit',

@@ -47,7 +47,9 @@ final class FormModel extends Model
 
     public function fields(): HasMany
     {
-        return $this->hasMany(FormFieldModel::class, 'form_id', 'id');
+        return $this->hasMany(FormFieldModel::class, 'form_id', 'id')
+            ->orderBy('order')
+            ->orderBy('id');
     }
 
     public function entries(): HasMany
