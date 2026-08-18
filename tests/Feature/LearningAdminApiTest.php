@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use FormaFlow\Reminders\Application\PushGateway;
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -36,6 +37,41 @@ final class LearningAdminApiTest extends TestCase
             "/api/v1/workspaces/{$workspaceId}/learning/import",
             $this->pack(),
         )->assertCreated()->json('assessment.id');
+        $gateway = new class implements PushGateway {
+            public array $deliveries = [];
+            public function send(array $subscriptions, array $payload): array
+            {
+                $this->deliveries[] = ['subscriptions' => $subscriptions, 'payload' => $payload];
+                return [];
+            }
+        };
+        $this->app->instance(PushGateway::class, $gateway);
+        $assignmentId = $this->actingAs($owner, 'sanctum')
+            ->postJson("/api/v1/workspaces/{$workspaceId}/learning/assignments", [
+                'assessment_id' => $assessmentId,
+                'learner_user_id' => $learner->id,
+            ])
+            ->assertCreated()
+            ->assertJsonPath('notification_sent', false)
+            ->json('assignment.id');
+        self::assertCount(0, $gateway->deliveries);
+        $this->actingAs($learner, 'sanctum')->postJson('/api/v1/push/subscriptions', [
+            'endpoint' => 'https://push.example.test/learner',
+            'keys' => ['p256dh' => 'public', 'auth' => 'auth'],
+            'content_encoding' => 'aes128gcm',
+        ])->assertCreated();
+        self::assertCount(1, $gateway->deliveries);
+        self::assertSame('/learn/assignments/' . $assignmentId, $gateway->deliveries[0]['payload']['url']);
+        $secondAssignmentId = $this->actingAs($owner, 'sanctum')
+            ->postJson("/api/v1/workspaces/{$workspaceId}/learning/assignments", [
+                'assessment_id' => $assessmentId,
+                'learner_user_id' => $learner->id,
+            ])
+            ->assertCreated()
+            ->assertJsonPath('notification_sent', true)
+            ->json('assignment.id');
+        self::assertCount(2, $gateway->deliveries);
+        self::assertSame('/learn/assignments/' . $secondAssignmentId, $gateway->deliveries[1]['payload']['url']);
 
         $this->actingAs($owner, 'sanctum')
             ->getJson("/api/v1/workspaces/{$workspaceId}/learning/assessments")
@@ -62,7 +98,7 @@ final class LearningAdminApiTest extends TestCase
             ->assertOk()
             ->assertJsonPath('learners.0.id', $learner->id)
             ->assertJsonPath('learners.0.target_grade', 2)
-            ->assertJsonPath('learners.0.assignments.total', 0)
+            ->assertJsonPath('learners.0.assignments.total', 2)
             ->assertJsonPath('learners.0.xp_total', 0);
         $this->actingAs($owner, 'sanctum')
             ->putJson("/api/v1/workspaces/{$workspaceId}/learning/schedules/{$learner->id}", [

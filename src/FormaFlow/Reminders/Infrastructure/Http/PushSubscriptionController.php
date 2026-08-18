@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FormaFlow\Reminders\Infrastructure\Http;
 
+use FormaFlow\Learning\Application\LearningAssignmentNotifier;
 use FormaFlow\Reminders\Application\ReminderDispatcher;
 use FormaFlow\Reminders\Infrastructure\Persistence\Eloquent\PushSubscriptionModel;
 use FormaFlow\Reminders\Infrastructure\Persistence\Eloquent\QuizAssignmentModel;
@@ -14,8 +15,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 final readonly class PushSubscriptionController
 {
-    public function __construct(private ReminderDispatcher $reminderDispatcher)
-    {
+    public function __construct(
+        private ReminderDispatcher $reminderDispatcher,
+        private LearningAssignmentNotifier $learningAssignmentNotifier,
+    ) {
     }
 
     public function store(Request $request): JsonResponse
@@ -48,6 +51,7 @@ final readonly class PushSubscriptionController
             ->whereNull('completed_at')
             ->whereNull('last_notified_at')
             ->each(fn(QuizAssignmentModel $assignment) => $this->reminderDispatcher->dispatch($assignment));
+        $this->learningAssignmentNotifier->notifyLatestPending($request->user()->id);
 
         return response()->json(['id' => $subscription->id], Response::HTTP_CREATED);
     }
