@@ -29,6 +29,7 @@ use FormaFlow\Forms\Domain\FormId;
 use FormaFlow\Forms\Domain\FormRepository;
 use FormaFlow\Forms\Infrastructure\Http\Resources\FormResource;
 use FormaFlow\Forms\Infrastructure\Http\Resources\FormSummaryResource;
+use FormaFlow\Reminders\Infrastructure\Persistence\Eloquent\QuizLibraryItemModel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use RuntimeException;
@@ -82,6 +83,7 @@ final readonly class FormController
             'name' => 'required|string|min:3|max:255',
             'description' => 'nullable|string',
             'is_quiz' => 'boolean',
+            'timer_enabled' => 'boolean',
             'single_submission' => 'boolean',
             'quick_entry_favorite' => 'boolean',
             'reminder_interval_minutes' => 'nullable|integer|min:60|max:525600',
@@ -93,6 +95,7 @@ final readonly class FormController
             name: $validated['name'],
             description: $validated['description'] ?? null,
             isQuiz: $validated['is_quiz'] ?? false,
+            timerEnabled: $validated['timer_enabled'] ?? false,
             singleSubmission: $validated['single_submission'] ?? false,
             quickEntryFavorite: $validated['quick_entry_favorite'] ?? false,
             reminderIntervalMinutes: $validated['reminder_interval_minutes'] ?? null,
@@ -117,6 +120,18 @@ final readonly class FormController
 
         if ($form->userId() !== $request->user()->id && !$form->isPublished()) {
             return response()->json(['error' => 'Forbidden'], Response::HTTP_FORBIDDEN);
+        }
+
+        if ($form->isQuiz() && $form->userId() !== $request->user()->id) {
+            $libraryItem = QuizLibraryItemModel::query()->firstOrNew([
+                'form_id' => $form->id()->value(),
+                'user_id' => $request->user()->id,
+            ]);
+            if (!$libraryItem->exists) {
+                $libraryItem->id = Uuid::generate();
+            }
+            $libraryItem->last_opened_at = now();
+            $libraryItem->save();
         }
 
         return response()->json(new FormResource($form));
@@ -246,6 +261,7 @@ final readonly class FormController
             'name' => 'sometimes|string|min:3|max:255',
             'description' => 'nullable|string',
             'is_quiz' => 'sometimes|boolean',
+            'timer_enabled' => 'sometimes|boolean',
             'single_submission' => 'sometimes|boolean',
             'quick_entry_favorite' => 'sometimes|boolean',
             'reminder_interval_minutes' => 'sometimes|nullable|integer|min:60|max:525600',
@@ -258,6 +274,7 @@ final readonly class FormController
                 name: $validated['name'] ?? null,
                 description: array_key_exists('description', $validated) ? $validated['description'] : null,
                 isQuiz: $validated['is_quiz'] ?? null,
+                timerEnabled: $validated['timer_enabled'] ?? null,
                 singleSubmission: $validated['single_submission'] ?? null,
                 quickEntryFavorite: $validated['quick_entry_favorite'] ?? null,
                 reminderIntervalMinutes: $validated['reminder_interval_minutes'] ?? null,

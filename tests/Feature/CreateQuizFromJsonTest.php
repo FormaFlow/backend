@@ -44,6 +44,7 @@ final class CreateQuizFromJsonTest extends TestCase
             'name' => 'General Knowledge Quiz',
             'description' => 'A fun quiz for friends',
             'is_quiz' => true,
+            'timer_enabled' => true,
             'single_submission' => true,
             'fields' => [
                 [
@@ -84,6 +85,7 @@ final class CreateQuizFromJsonTest extends TestCase
             'name' => 'General Knowledge Quiz',
             'user_id' => $user->id,
             'is_quiz' => true,
+            'timer_enabled' => true,
             'single_submission' => true
         ]);
 

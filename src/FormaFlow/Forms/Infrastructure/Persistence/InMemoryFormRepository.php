@@ -77,6 +77,7 @@ final class InMemoryFormRepository implements FormRepository
                 description: $form->description(),
                 published: $form->isPublished(),
                 isQuiz: $form->isQuiz(),
+                timerEnabled: $form->isTimerEnabled(),
                 singleSubmission: $form->isSingleSubmission(),
                 quickEntryFavorite: $form->isQuickEntryFavorite(),
                 fieldsCount: count($form->fields()),

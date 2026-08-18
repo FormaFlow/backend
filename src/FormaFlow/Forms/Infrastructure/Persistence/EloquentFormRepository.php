@@ -38,6 +38,7 @@ final class EloquentFormRepository implements FormRepository
                     'published' => $aggregate->isPublished(),
                     'version' => $aggregate->getVersion(),
                     'is_quiz' => $aggregate->isQuiz(),
+                    'timer_enabled' => $aggregate->isTimerEnabled(),
                     'single_submission' => $aggregate->isSingleSubmission(),
                     'quick_entry_favorite' => $aggregate->isQuickEntryFavorite(),
                     'reminder_interval_minutes' => $aggregate->reminderIntervalMinutes(),
@@ -129,6 +130,7 @@ final class EloquentFormRepository implements FormRepository
             createdAt: $model->created_at,
             fields: $fields,
             isQuiz: (bool)$model->is_quiz,
+            timerEnabled: (bool)$model->timer_enabled,
             singleSubmission: (bool)$model->single_submission,
             quickEntryFavorite: (bool)$model->quick_entry_favorite,
             reminderIntervalMinutes: $model->reminder_interval_minutes !== null
@@ -181,6 +183,7 @@ final class EloquentFormRepository implements FormRepository
                 createdAt: $model->created_at,
                 fields: $fields,
                 isQuiz: (bool)$model->is_quiz,
+                timerEnabled: (bool)$model->timer_enabled,
                 singleSubmission: (bool)$model->single_submission,
                 quickEntryFavorite: (bool)$model->quick_entry_favorite,
                 reminderIntervalMinutes: $model->reminder_interval_minutes !== null
@@ -231,6 +234,7 @@ final class EloquentFormRepository implements FormRepository
             description: $model->description,
             published: (bool)$model->published,
             isQuiz: (bool)$model->is_quiz,
+            timerEnabled: (bool)$model->timer_enabled,
             singleSubmission: (bool)$model->single_submission,
             quickEntryFavorite: (bool)$model->quick_entry_favorite,
             fieldsCount: (int)$model->fields_count,

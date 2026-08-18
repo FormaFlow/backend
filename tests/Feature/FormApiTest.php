@@ -491,6 +491,45 @@ final class FormApiTest extends TestCase
             ->assertJsonPath('forms.0.name', 'Regular Form');
     }
 
+    public function test_quiz_timer_is_opt_in_and_can_be_updated(): void
+    {
+        $created = $this
+            ->actingAs($this->user, 'sanctum')
+            ->postJson($this->baseUrl, [
+                'name' => 'Timed Quiz',
+                'is_quiz' => true,
+            ])
+            ->assertCreated();
+
+        $formId = $created->json('id');
+        $this->assertDatabaseHas('forms', [
+            'id' => $formId,
+            'timer_enabled' => false,
+        ]);
+
+        $this
+            ->actingAs($this->user, 'sanctum')
+            ->getJson("{$this->baseUrl}/{$formId}")
+            ->assertOk()
+            ->assertJsonPath('timer_enabled', false);
+
+        $this
+            ->actingAs($this->user, 'sanctum')
+            ->patchJson("{$this->baseUrl}/{$formId}", ['timer_enabled' => true])
+            ->assertOk();
+
+        $this->assertDatabaseHas('forms', [
+            'id' => $formId,
+            'timer_enabled' => true,
+        ]);
+
+        $this
+            ->actingAs($this->user, 'sanctum')
+            ->getJson("{$this->baseUrl}/{$formId}")
+            ->assertOk()
+            ->assertJsonPath('timer_enabled', true);
+    }
+
     public function test_returns_quick_entry_favorite_flag_for_forms(): void
     {
         FormModel::factory()->create([

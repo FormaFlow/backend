@@ -45,7 +45,7 @@ final class LearningAdminApiTest extends TestCase
         $this->actingAs($owner, 'sanctum')
             ->getJson("/api/v1/workspaces/{$workspaceId}/learning/library")
             ->assertOk()
-            ->assertJsonCount(4, 'packs')
+            ->assertJsonCount(6, 'packs')
             ->assertJsonPath('packs.0.questions', 100);
         $starterId = $this->actingAs($owner, 'sanctum')
             ->postJson("/api/v1/workspaces/{$workspaceId}/learning/library/grade-1-math-foundation-100/install")

@@ -41,6 +41,7 @@ final readonly class UpdateFormCommandHandler
             createdAt: $form->createdAt(),
             fields: $form->fields(),
             isQuiz: $isQuiz,
+            timerEnabled: $isQuiz && ($command->timerEnabled ?? $form->isTimerEnabled()),
             singleSubmission: $command->singleSubmission ?? $form->isSingleSubmission(),
             quickEntryFavorite: $command->quickEntryFavorite ?? $form->isQuickEntryFavorite(),
             reminderIntervalMinutes: !$isQuiz

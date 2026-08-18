@@ -19,6 +19,7 @@ final class FormSummaryResource extends JsonResource
             'description' => $this->description,
             'published' => $this->published,
             'is_quiz' => $this->isQuiz,
+            'timer_enabled' => $this->timerEnabled,
             'single_submission' => $this->singleSubmission,
             'quick_entry_favorite' => $this->quickEntryFavorite,
             'fields_count' => $this->fieldsCount,

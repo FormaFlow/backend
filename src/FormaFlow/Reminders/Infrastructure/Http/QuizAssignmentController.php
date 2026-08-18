@@ -8,7 +8,9 @@ use FormaFlow\Entries\Infrastructure\Persistence\Eloquent\EntryModel;
 use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
 use FormaFlow\Reminders\Application\ReminderDispatcher;
 use FormaFlow\Reminders\Infrastructure\Persistence\Eloquent\QuizAssignmentModel;
+use FormaFlow\Reminders\Infrastructure\Persistence\Eloquent\QuizLibraryItemModel;
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Shared\Infrastructure\Uuid;
@@ -34,6 +36,72 @@ final readonly class QuizAssignmentController
             ->get();
 
         return response()->json(['assignments' => $this->serialize($assignments)]);
+    }
+
+    public function library(Request $request): JsonResponse
+    {
+        $userId = $request->user()->id;
+        $assignments = QuizAssignmentModel::query()
+            ->where('recipient_user_id', $userId)
+            ->get()
+            ->keyBy('form_id');
+        $openedFormIds = QuizLibraryItemModel::query()
+            ->where('user_id', $userId)
+            ->pluck('form_id');
+        $sharedFormIds = $assignments->keys()->merge($openedFormIds)->unique()->values()->all();
+
+        $forms = FormModel::query()
+            ->where('is_quiz', true)
+            ->where(static function (Builder $query) use ($userId, $sharedFormIds): void {
+                $query->where('user_id', $userId);
+                if ($sharedFormIds !== []) {
+                    $query->orWhereIn('id', $sharedFormIds);
+                }
+            })
+            ->withCount('fields')
+            ->withCount([
+                'entries as user_entries_count' => static fn($query) => $query->where('user_id', $userId),
+            ])
+            ->orderByDesc('updated_at')
+            ->get();
+
+        $latestEntries = EntryModel::query()
+            ->where('user_id', $userId)
+            ->whereIn('form_id', $forms->pluck('id'))
+            ->orderByDesc('created_at')
+            ->get()
+            ->unique('form_id')
+            ->keyBy('form_id');
+
+        $quizzes = [];
+        foreach ($forms as $form) {
+            $assignment = $assignments->get($form->id);
+            $latestEntry = $latestEntries->get($form->id);
+            $accessType = $form->user_id === $userId
+                ? 'owned'
+                : ($assignment !== null ? 'assigned' : 'opened');
+            $completedAt = $assignment?->completed_at ?? $latestEntry?->created_at;
+
+            $quizzes[] = [
+                'id' => $form->id,
+                'name' => $form->name,
+                'description' => $form->description,
+                'published' => $form->published,
+                'is_quiz' => true,
+                'timer_enabled' => $form->timer_enabled,
+                'single_submission' => $form->single_submission,
+                'quick_entry_favorite' => $form->quick_entry_favorite,
+                'reminder_interval_minutes' => $form->reminder_interval_minutes,
+                'fields_count' => (int)$form->fields_count,
+                'entries_count' => (int)$form->user_entries_count,
+                'access_type' => $accessType,
+                'completed_at' => $completedAt?->format('c'),
+                'created_at' => $form->created_at?->format('c'),
+                'updated_at' => $form->updated_at?->format('c'),
+            ];
+        }
+
+        return response()->json(['quizzes' => $quizzes]);
     }
 
     public function store(Request $request, string $formId): JsonResponse

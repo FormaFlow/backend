@@ -161,6 +161,77 @@ final class QuizReminderApiTest extends TestCase
             ->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
+    public function test_user_quiz_library_contains_owned_and_assigned_quizzes_only(): void
+    {
+        $ownedQuiz = FormModel::factory()->forUser($this->recipient)->published()->create([
+            'name' => 'My own quiz',
+            'is_quiz' => true,
+        ]);
+        $unrelatedQuiz = FormModel::factory()->published()->create([
+            'name' => 'Unrelated quiz',
+            'is_quiz' => true,
+        ]);
+        FormModel::factory()->forUser($this->recipient)->published()->create([
+            'name' => 'Regular form',
+            'is_quiz' => false,
+        ]);
+        DB::table('quiz_assignments')->insert([
+            'id' => '00000000-0000-0000-0000-000000000304',
+            'form_id' => $this->quiz->id,
+            'assigner_user_id' => $this->owner->id,
+            'recipient_user_id' => $this->recipient->id,
+            'next_reminder_at' => Carbon::now()->addHour(),
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+
+        $response = $this
+            ->actingAs($this->recipient, 'sanctum')
+            ->getJson('/api/v1/quizzes');
+
+        $response->assertOk()
+            ->assertJsonCount(2, 'quizzes')
+            ->assertJsonFragment([
+                'id' => $ownedQuiz->id,
+                'access_type' => 'owned',
+                'completed_at' => null,
+            ])
+            ->assertJsonFragment([
+                'id' => $this->quiz->id,
+                'access_type' => 'assigned',
+                'completed_at' => null,
+            ])
+            ->assertJsonMissing(['id' => $unrelatedQuiz->id]);
+    }
+
+    public function test_opening_shared_quiz_adds_it_to_library_and_reports_completion(): void
+    {
+        $this
+            ->actingAs($this->recipient, 'sanctum')
+            ->getJson("/api/v1/forms/{$this->quiz->id}")
+            ->assertOk();
+
+        $this->assertDatabaseHas('quiz_library_items', [
+            'form_id' => $this->quiz->id,
+            'user_id' => $this->recipient->id,
+        ]);
+
+        EntryModel::factory()->create([
+            'form_id' => $this->quiz->id,
+            'user_id' => $this->recipient->id,
+            'created_at' => Carbon::parse('2026-08-18 12:00:00'),
+        ]);
+
+        $this
+            ->actingAs($this->recipient, 'sanctum')
+            ->getJson('/api/v1/quizzes')
+            ->assertOk()
+            ->assertJsonCount(1, 'quizzes')
+            ->assertJsonPath('quizzes.0.id', $this->quiz->id)
+            ->assertJsonPath('quizzes.0.access_type', 'opened')
+            ->assertJsonPath('quizzes.0.completed_at', '2026-08-18T12:00:00+00:00');
+    }
+
     public function test_due_reminder_is_completed_without_push_when_recipient_already_submitted(): void
     {
         $assignmentId = '00000000-0000-0000-0000-000000000301';
