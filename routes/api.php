@@ -38,6 +38,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/push/config', [PushSubscriptionController::class, 'config']);
         Route::post('/push/subscriptions', [PushSubscriptionController::class, 'store']);
         Route::delete('/push/subscriptions', [PushSubscriptionController::class, 'destroy']);
+        Route::get('/quizzes', [QuizAssignmentController::class, 'library']);
 
         Route::prefix('forms')->group(function () {
             Route::get('/', [FormController::class, 'index']);

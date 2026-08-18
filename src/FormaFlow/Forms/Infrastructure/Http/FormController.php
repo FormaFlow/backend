@@ -29,6 +29,7 @@ use FormaFlow\Forms\Domain\FormId;
 use FormaFlow\Forms\Domain\FormRepository;
 use FormaFlow\Forms\Infrastructure\Http\Resources\FormResource;
 use FormaFlow\Forms\Infrastructure\Http\Resources\FormSummaryResource;
+use FormaFlow\Reminders\Infrastructure\Persistence\Eloquent\QuizLibraryItemModel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use RuntimeException;
@@ -119,6 +120,18 @@ final readonly class FormController
 
         if ($form->userId() !== $request->user()->id && !$form->isPublished()) {
             return response()->json(['error' => 'Forbidden'], Response::HTTP_FORBIDDEN);
+        }
+
+        if ($form->isQuiz() && $form->userId() !== $request->user()->id) {
+            $libraryItem = QuizLibraryItemModel::query()->firstOrNew([
+                'form_id' => $form->id()->value(),
+                'user_id' => $request->user()->id,
+            ]);
+            if (!$libraryItem->exists) {
+                $libraryItem->id = Uuid::generate();
+            }
+            $libraryItem->last_opened_at = now();
+            $libraryItem->save();
         }
 
         return response()->json(new FormResource($form));
