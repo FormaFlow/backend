@@ -10,6 +10,7 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
@@ -30,11 +31,18 @@ final class UserModel extends Model implements AuthenticatableContract, Authoriz
         'id',
         'name',
         'email',
+        'login_name',
+        'account_type',
         'password',
         'timezone',
         'email_verified_at',
         'remember_token',
     ];
+
+    public function learnerProfile(): HasOne
+    {
+        return $this->hasOne(\FormaFlow\Workspaces\Infrastructure\Persistence\Eloquent\LearnerProfileModel::class, 'user_id');
+    }
 
     protected $hidden = [
         'password',

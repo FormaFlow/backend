@@ -8,6 +8,8 @@ use App\Policies\FormPolicy;
 use FormaFlow\Forms\Infrastructure\Persistence\Eloquent\FormModel;
 use FormaFlow\Reminders\Application\PushGateway;
 use FormaFlow\Reminders\Infrastructure\Push\MinishlinkPushGateway;
+use FormaFlow\Learning\Application\TutorGateway;
+use FormaFlow\Learning\Infrastructure\Tutor\MockTutorGateway;
 use Illuminate\Console\Command;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Gate;
@@ -18,6 +20,7 @@ final class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(PushGateway::class, MinishlinkPushGateway::class);
+        $this->app->bind(TutorGateway::class, MockTutorGateway::class);
     }
 
     public function boot(): void

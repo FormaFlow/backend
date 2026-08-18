@@ -14,12 +14,24 @@ use Tests\TestCase;
 final class PublicApiTest extends TestCase
 {
 
-    public function test_public_entry_api_returns_entry_data(): void
+    public function test_public_entry_api_requires_an_explicit_share_token(): void
     {
         $user = UserModel::factory()->create();
         $form = FormModel::factory()->create([
             'user_id' => $user->id,
             'published' => true,
+        ]);
+        DB::table('form_fields')->insert([
+            'id' => '00000000-0000-0000-0000-000000000129',
+            'form_id' => $form->id,
+            'label' => 'Secret question',
+            'type' => 'text',
+            'required' => true,
+            'correct_answer' => 'hidden answer',
+            'points' => 10,
+            'order' => 0,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
         ]);
 
         $entryId = '00000000-0000-0000-0000-000000000120';
@@ -35,9 +47,15 @@ final class PublicApiTest extends TestCase
             'duration' => 120,
         ]);
 
-        $response = $this->getJson("/api/v1/public/entries/{$entryId}");
+        $this->getJson("/api/v1/public/entries/{$entryId}")
+            ->assertStatus(Response::HTTP_NOT_FOUND);
 
-        $response->assertStatus(Response::HTTP_OK)
+        $share = $this->actingAs($user, 'sanctum')
+            ->postJson("/api/v1/entries/{$entryId}/share")
+            ->assertStatus(Response::HTTP_CREATED);
+
+        $this->getJson("/api/v1/public/entries/{$entryId}?share_token=" . $share->json('share_token'))
+            ->assertStatus(Response::HTTP_OK)
             ->assertJson([
                 'id' => $entryId,
                 'form_id' => $form->id,
@@ -61,7 +79,8 @@ final class PublicApiTest extends TestCase
             ->assertJson([
                 'id' => $form->id,
                 'name' => 'Public Form',
-            ]);
+            ])
+            ->assertJsonMissingPath('fields.0.correctAnswer');
     }
 
     public function test_public_form_api_returns_404_for_unpublished_form(): void
@@ -111,13 +130,16 @@ final class PublicApiTest extends TestCase
             'score' => 5,
         ]);
 
-        $response = $this->get("/shared/result/{$entryId}");
+        $share = $this->actingAs($user, 'sanctum')
+            ->postJson("/api/v1/entries/{$entryId}/share")
+            ->assertCreated();
+        $response = $this->get("/shared/result/{$entryId}?share_token=" . $share->json('share_token'));
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertSee('<meta property="og:title" content="I scored 5 / 10 in Quiz Form!"', false);
     }
 
-    public function test_imports_form_via_public_api(): void
+    public function test_public_form_import_is_not_available(): void
     {
         // Ensure at least one user exists
         $user = UserModel::factory()->create();
@@ -137,20 +159,9 @@ final class PublicApiTest extends TestCase
             ]
         ];
 
-        $response = $this->postJson('/api/v1/public/forms/import', $formData);
+        $this->postJson('/api/v1/public/forms/import', $formData)
+            ->assertStatus(Response::HTTP_METHOD_NOT_ALLOWED);
 
-        $response->assertStatus(Response::HTTP_CREATED)
-            ->assertJsonStructure(['id', 'message']);
-
-        $this->assertDatabaseHas('forms', [
-            'name' => 'Imported Quiz',
-            'is_quiz' => true,
-            'published' => true,
-        ]);
-
-        $this->assertDatabaseHas('form_fields', [
-            'label' => 'Question 1',
-            'points' => 10,
-        ]);
+        $this->assertDatabaseMissing('forms', ['name' => 'Imported Quiz']);
     }
 }

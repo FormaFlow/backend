@@ -23,7 +23,6 @@ class EntryResource extends JsonResource
         return [
             'id' => $this->resource->id()->value(),
             'form_id' => $this->resource->formId()->value(),
-            'user_id' => $this->resource->userId(),
             'data' => $this->resource->data(),
             'score' => $this->resource->score(),
             'duration' => $this->resource->duration(),

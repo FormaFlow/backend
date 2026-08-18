@@ -23,6 +23,7 @@ final class FormModel extends Model
     protected $fillable = [
         'id',
         'user_id',
+        'workspace_id',
         'name',
         'description',
         'published',
