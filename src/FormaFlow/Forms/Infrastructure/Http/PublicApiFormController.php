@@ -40,6 +40,7 @@ final readonly class PublicApiFormController
             'name' => 'required|string',
             'description' => 'nullable|string',
             'is_quiz' => 'boolean',
+            'timer_enabled' => 'boolean',
             'single_submission' => 'boolean',
             'published' => 'boolean',
             'fields' => 'array',

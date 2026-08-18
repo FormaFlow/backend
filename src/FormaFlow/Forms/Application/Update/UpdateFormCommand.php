@@ -12,6 +12,7 @@ final readonly class UpdateFormCommand
         public ?string $name = null,
         public ?string $description = null,
         public ?bool $isQuiz = null,
+        public ?bool $timerEnabled = null,
         public ?bool $singleSubmission = null,
         public ?bool $quickEntryFavorite = null,
         public ?int $reminderIntervalMinutes = null,

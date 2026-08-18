@@ -37,6 +37,7 @@ final class FormResource extends JsonResource
             'description' => $this->description(),
             'published' => $this->isPublished(),
             'is_quiz' => $this->isQuiz(),
+            'timer_enabled' => $this->isTimerEnabled(),
             'single_submission' => $this->isSingleSubmission(),
             'quick_entry_favorite' => $this->isQuickEntryFavorite(),
             'reminder_interval_minutes' => $this->reminderIntervalMinutes(),

@@ -23,6 +23,7 @@ class FormModelFactory extends Factory
             'description' => fake()->sentence(),
             'published' => false,
             'version' => 1,
+            'timer_enabled' => false,
             'quick_entry_favorite' => false,
             'reminder_interval_minutes' => null,
             'created_at' => Carbon::now(),

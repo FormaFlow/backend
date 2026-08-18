@@ -35,6 +35,9 @@ final readonly class ImportFormFromJsonCommandHandler
             isQuiz: $data['is_quiz'] ?? false,
             singleSubmission: $data['single_submission'] ?? false
         );
+        $form->updateTimerEnabled(
+            ($data['is_quiz'] ?? false) && ($data['timer_enabled'] ?? false)
+        );
 
         if (isset($data['fields']) && is_array($data['fields'])) {
             foreach ($data['fields'] as $index => $fieldData) {

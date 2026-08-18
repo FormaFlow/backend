@@ -15,6 +15,7 @@ final class FormAggregate extends AggregateRoot
     private bool $published = false;
     private int $version = 1;
     private bool $isQuiz = false;
+    private bool $timerEnabled = false;
     private bool $singleSubmission = false;
     private bool $quickEntryFavorite = false;
     private ?int $reminderIntervalMinutes = null;
@@ -68,6 +69,11 @@ final class FormAggregate extends AggregateRoot
         return $this->isQuiz;
     }
 
+    public function isTimerEnabled(): bool
+    {
+        return $this->timerEnabled;
+    }
+
     public function isSingleSubmission(): bool
     {
         return $this->singleSubmission;
@@ -94,6 +100,11 @@ final class FormAggregate extends AggregateRoot
     {
         $this->isQuiz = $isQuiz;
         $this->singleSubmission = $singleSubmission;
+    }
+
+    public function updateTimerEnabled(bool $timerEnabled): void
+    {
+        $this->timerEnabled = $timerEnabled;
     }
 
     public function updateQuickEntryFavorite(bool $quickEntryFavorite): void
@@ -203,6 +214,7 @@ final class FormAggregate extends AggregateRoot
         DateTime $createdAt,
         array $fields,
         bool $isQuiz = false,
+        bool $timerEnabled = false,
         bool $singleSubmission = false,
         bool $quickEntryFavorite = false,
         ?int $reminderIntervalMinutes = null,
@@ -219,6 +231,7 @@ final class FormAggregate extends AggregateRoot
         $self->version = $version;
         $self->fields = $fields;
         $self->isQuiz = $isQuiz;
+        $self->timerEnabled = $timerEnabled;
         $self->singleSubmission = $singleSubmission;
         $self->quickEntryFavorite = $quickEntryFavorite;
         $self->reminderIntervalMinutes = $reminderIntervalMinutes;
