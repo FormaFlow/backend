@@ -1,0 +1,561 @@
+{
+  "schema": "formaflow.learning-pack.v1",
+  "pack": {
+    "external_id": "formaflow-original-grade4-russian-diagnostic",
+    "version": 1,
+    "title": "Русский язык: диагностика за 1–4 классы",
+    "description": "25 оригинальных заданий FormaFlow по орфографии, составу слова, частям речи и предложению.",
+    "subject": "russian",
+    "purpose": "diagnostic",
+    "target_grade": 5,
+    "coverage_from_grade": 1,
+    "coverage_to_grade": 4,
+    "source": {
+      "name": "FormaFlow Original",
+      "type": "owned",
+      "usage_scope": "publishable",
+      "license_name": "FormaFlow proprietary original content"
+    }
+  },
+  "questions": [
+    {
+      "external_id": "g4r-001",
+      "prompt": "Вставь пропущенную букву: тр…ва",
+      "type": "short_text",
+      "answer_config": {
+        "accepted": [
+          "а"
+        ]
+      },
+      "points": 10,
+      "explanation": "Проверочное слово «травы»: под ударением слышится А.",
+      "topic": "Безударные гласные",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4r-002",
+      "prompt": "Вставь пропущенную букву: л…са (множественное число от «лес»)",
+      "type": "short_text",
+      "answer_config": {
+        "accepted": [
+          "е"
+        ]
+      },
+      "points": 10,
+      "explanation": "Проверочное слово «лес»: пишем Е.",
+      "topic": "Безударные гласные",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4r-003",
+      "prompt": "Вставь пропущенную букву: гр…бы",
+      "type": "short_text",
+      "answer_config": {
+        "accepted": [
+          "и"
+        ]
+      },
+      "points": 10,
+      "explanation": "Проверочное слово «гриб»: пишем И.",
+      "topic": "Безударные гласные",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4r-004",
+      "prompt": "Вставь пропущенную букву: м…ря",
+      "type": "short_text",
+      "answer_config": {
+        "accepted": [
+          "о"
+        ]
+      },
+      "points": 10,
+      "explanation": "Проверочное слово «море»: пишем О.",
+      "topic": "Безударные гласные",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4r-005",
+      "prompt": "Вставь пропущенную букву: зв…зда",
+      "type": "short_text",
+      "answer_config": {
+        "accepted": [
+          "е"
+        ]
+      },
+      "points": 10,
+      "explanation": "Проверочное слово «звёзды»: пишем Е.",
+      "topic": "Безударные гласные",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4r-006",
+      "prompt": "Вставь пропущенную букву: сн…га",
+      "type": "short_text",
+      "answer_config": {
+        "accepted": [
+          "е"
+        ]
+      },
+      "points": 10,
+      "explanation": "Проверочное слово «снег»: пишем Е.",
+      "topic": "Безударные гласные",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4r-007",
+      "prompt": "В каком слове нужен мягкий знак?",
+      "type": "single_choice",
+      "answer_config": {
+        "correct": [
+          "коньки"
+        ]
+      },
+      "points": 10,
+      "explanation": "Мягкий знак показывает мягкость Н: коньки.",
+      "topic": "Состав слова и части речи",
+      "difficulty": "normal",
+      "options": [
+        {
+          "label": "конки",
+          "value": "конки"
+        },
+        {
+          "label": "коньки",
+          "value": "коньки"
+        },
+        {
+          "label": "конъки",
+          "value": "конъки"
+        }
+      ]
+    },
+    {
+      "external_id": "g4r-008",
+      "prompt": "Выбери слово с приставкой.",
+      "type": "single_choice",
+      "answer_config": {
+        "correct": [
+          "поход"
+        ]
+      },
+      "points": 10,
+      "explanation": "В слове «поход» приставка по- и корень -ход-.",
+      "topic": "Состав слова и части речи",
+      "difficulty": "normal",
+      "options": [
+        {
+          "label": "поход",
+          "value": "поход"
+        },
+        {
+          "label": "погода",
+          "value": "погода"
+        },
+        {
+          "label": "поле",
+          "value": "поле"
+        }
+      ]
+    },
+    {
+      "external_id": "g4r-009",
+      "prompt": "Выбери имя существительное.",
+      "type": "single_choice",
+      "answer_config": {
+        "correct": [
+          "веселье"
+        ]
+      },
+      "points": 10,
+      "explanation": "«Веселье» называет предмет/явление и отвечает на вопрос «что?».",
+      "topic": "Состав слова и части речи",
+      "difficulty": "normal",
+      "options": [
+        {
+          "label": "весёлый",
+          "value": "весёлый"
+        },
+        {
+          "label": "веселье",
+          "value": "веселье"
+        },
+        {
+          "label": "веселиться",
+          "value": "веселиться"
+        }
+      ]
+    },
+    {
+      "external_id": "g4r-010",
+      "prompt": "Выбери глагол.",
+      "type": "single_choice",
+      "answer_config": {
+        "correct": [
+          "рисовать"
+        ]
+      },
+      "points": 10,
+      "explanation": "«Рисовать» обозначает действие и отвечает на вопрос «что делать?».",
+      "topic": "Состав слова и части речи",
+      "difficulty": "normal",
+      "options": [
+        {
+          "label": "рисунок",
+          "value": "рисунок"
+        },
+        {
+          "label": "рисовать",
+          "value": "рисовать"
+        },
+        {
+          "label": "красивый",
+          "value": "красивый"
+        }
+      ]
+    },
+    {
+      "external_id": "g4r-011",
+      "prompt": "Выбери имя прилагательное.",
+      "type": "single_choice",
+      "answer_config": {
+        "correct": [
+          "морозный"
+        ]
+      },
+      "points": 10,
+      "explanation": "«Морозный» обозначает признак и отвечает на вопрос «какой?».",
+      "topic": "Состав слова и части речи",
+      "difficulty": "normal",
+      "options": [
+        {
+          "label": "мороз",
+          "value": "мороз"
+        },
+        {
+          "label": "морозить",
+          "value": "морозить"
+        },
+        {
+          "label": "морозный",
+          "value": "морозный"
+        }
+      ]
+    },
+    {
+      "external_id": "g4r-012",
+      "prompt": "В каком слове пишется разделительный Ъ?",
+      "type": "single_choice",
+      "answer_config": {
+        "correct": [
+          "объезд"
+        ]
+      },
+      "points": 10,
+      "explanation": "После приставки на согласную перед Е пишется разделительный Ъ: объезд.",
+      "topic": "Состав слова и части речи",
+      "difficulty": "normal",
+      "options": [
+        {
+          "label": "объезд",
+          "value": "объезд"
+        },
+        {
+          "label": "вьюга",
+          "value": "вьюга"
+        },
+        {
+          "label": "семья",
+          "value": "семья"
+        }
+      ]
+    },
+    {
+      "external_id": "g4r-013",
+      "prompt": "Какое слово является проверочным для «д…жди»?",
+      "type": "single_choice",
+      "answer_config": {
+        "correct": [
+          "дождь"
+        ]
+      },
+      "points": 10,
+      "explanation": "В слове «дождь» гласная О под ударением.",
+      "topic": "Состав слова и части речи",
+      "difficulty": "normal",
+      "options": [
+        {
+          "label": "дождик",
+          "value": "дождик"
+        },
+        {
+          "label": "дождь",
+          "value": "дождь"
+        },
+        {
+          "label": "дождевой",
+          "value": "дождевой"
+        }
+      ]
+    },
+    {
+      "external_id": "g4r-014",
+      "prompt": "Какое предложение вопросительное?",
+      "type": "single_choice",
+      "answer_config": {
+        "correct": [
+          "Когда наступит весна?"
+        ]
+      },
+      "points": 10,
+      "explanation": "Вопросительное предложение содержит вопрос и заканчивается знаком вопроса.",
+      "topic": "Состав слова и части речи",
+      "difficulty": "normal",
+      "options": [
+        {
+          "label": "Наступила весна.",
+          "value": "Наступила весна."
+        },
+        {
+          "label": "Когда наступит весна?",
+          "value": "Когда наступит весна?"
+        },
+        {
+          "label": "Пусть наступит весна!",
+          "value": "Пусть наступит весна!"
+        }
+      ]
+    },
+    {
+      "external_id": "g4r-015",
+      "prompt": "Выбери слова с парной согласной на конце.",
+      "type": "multiple_choice",
+      "answer_config": {
+        "correct": [
+          "дуб",
+          "гриб"
+        ]
+      },
+      "points": 10,
+      "explanation": "В словах «дуб» и «гриб» конечный Б оглушается и требует проверки.",
+      "topic": "Язык и речь",
+      "difficulty": "normal",
+      "options": [
+        {
+          "label": "дуб",
+          "value": "дуб"
+        },
+        {
+          "label": "дом",
+          "value": "дом"
+        },
+        {
+          "label": "гриб",
+          "value": "гриб"
+        },
+        {
+          "label": "кот",
+          "value": "кот"
+        }
+      ]
+    },
+    {
+      "external_id": "g4r-016",
+      "prompt": "Выбери имена собственные.",
+      "type": "multiple_choice",
+      "answer_config": {
+        "correct": [
+          "Москва",
+          "Волга"
+        ]
+      },
+      "points": 10,
+      "explanation": "Названия города Москва и реки Волга пишутся с заглавной буквы.",
+      "topic": "Язык и речь",
+      "difficulty": "normal",
+      "options": [
+        {
+          "label": "Москва",
+          "value": "Москва"
+        },
+        {
+          "label": "река",
+          "value": "река"
+        },
+        {
+          "label": "Волга",
+          "value": "Волга"
+        },
+        {
+          "label": "город",
+          "value": "город"
+        }
+      ]
+    },
+    {
+      "external_id": "g4r-017",
+      "prompt": "Выбери однокоренные слова.",
+      "type": "multiple_choice",
+      "answer_config": {
+        "correct": [
+          "лес",
+          "лесник",
+          "лесной"
+        ]
+      },
+      "points": 10,
+      "explanation": "Общий корень -лес- и общее значение имеют лес, лесник, лесной.",
+      "topic": "Язык и речь",
+      "difficulty": "normal",
+      "options": [
+        {
+          "label": "лес",
+          "value": "лес"
+        },
+        {
+          "label": "лесник",
+          "value": "лесник"
+        },
+        {
+          "label": "лестница",
+          "value": "лестница"
+        },
+        {
+          "label": "лесной",
+          "value": "лесной"
+        }
+      ]
+    },
+    {
+      "external_id": "g4r-018",
+      "prompt": "Выбери словосочетания.",
+      "type": "multiple_choice",
+      "answer_config": {
+        "correct": [
+          "яркое солнце",
+          "читать книгу"
+        ]
+      },
+      "points": 10,
+      "explanation": "Словосочетание не является грамматической основой: «яркое солнце», «читать книгу».",
+      "topic": "Язык и речь",
+      "difficulty": "normal",
+      "options": [
+        {
+          "label": "яркое солнце",
+          "value": "яркое солнце"
+        },
+        {
+          "label": "солнце светит",
+          "value": "солнце светит"
+        },
+        {
+          "label": "читать книгу",
+          "value": "читать книгу"
+        },
+        {
+          "label": "наступило утро",
+          "value": "наступило утро"
+        }
+      ]
+    },
+    {
+      "external_id": "g4r-019",
+      "prompt": "Подлежащее и сказуемое образуют грамматическую основу предложения.",
+      "type": "boolean",
+      "answer_config": {
+        "correct": [
+          true
+        ]
+      },
+      "points": 10,
+      "explanation": "Это главные члены предложения.",
+      "topic": "Правила русского языка",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4r-020",
+      "prompt": "После Ж и Ш всегда пишется буква Ы.",
+      "type": "boolean",
+      "answer_config": {
+        "correct": [
+          false
+        ]
+      },
+      "points": 10,
+      "explanation": "Сочетания ЖИ и ШИ пишутся с И.",
+      "topic": "Правила русского языка",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4r-021",
+      "prompt": "Предлог со словом пишется раздельно.",
+      "type": "boolean",
+      "answer_config": {
+        "correct": [
+          true
+        ]
+      },
+      "points": 10,
+      "explanation": "Предлог — отдельное служебное слово.",
+      "topic": "Правила русского языка",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4r-022",
+      "prompt": "Корень — изменяемая часть слова, которая служит для связи слов.",
+      "type": "boolean",
+      "answer_config": {
+        "correct": [
+          false
+        ]
+      },
+      "points": 10,
+      "explanation": "Для связи слов служит окончание; корень хранит общее значение родственных слов.",
+      "topic": "Правила русского языка",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4r-023",
+      "prompt": "Текст состоит из предложений, связанных общей темой и основной мыслью.",
+      "type": "boolean",
+      "answer_config": {
+        "correct": [
+          true
+        ]
+      },
+      "points": 10,
+      "explanation": "Связность, тема и основная мысль отличают текст от набора предложений.",
+      "topic": "Правила русского языка",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4r-024",
+      "prompt": "В конце побудительного предложения может стоять восклицательный знак.",
+      "type": "boolean",
+      "answer_config": {
+        "correct": [
+          true
+        ]
+      },
+      "points": 10,
+      "explanation": "Сильное побуждение часто оформляется восклицательным знаком.",
+      "topic": "Правила русского языка",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4r-025",
+      "prompt": "Слово «пальто» изменяется по падежам и числам.",
+      "type": "boolean",
+      "answer_config": {
+        "correct": [
+          false
+        ]
+      },
+      "points": 10,
+      "explanation": "«Пальто» — несклоняемое существительное.",
+      "topic": "Правила русского языка",
+      "difficulty": "normal"
+    }
+  ]
+}

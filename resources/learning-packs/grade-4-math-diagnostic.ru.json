@@ -1,0 +1,498 @@
+{
+  "schema": "formaflow.learning-pack.v1",
+  "pack": {
+    "external_id": "formaflow-original-grade4-math-diagnostic",
+    "version": 1,
+    "title": "Математика: диагностика за 1–4 классы",
+    "description": "30 оригинальных заданий FormaFlow для проверки вычислений, задач, дробей и геометрии.",
+    "subject": "math",
+    "purpose": "diagnostic",
+    "target_grade": 5,
+    "coverage_from_grade": 1,
+    "coverage_to_grade": 4,
+    "source": {
+      "name": "FormaFlow Original",
+      "type": "owned",
+      "usage_scope": "publishable",
+      "license_name": "FormaFlow proprietary original content"
+    }
+  },
+  "questions": [
+    {
+      "external_id": "g4m-001",
+      "prompt": "Вычисли: 248 + 137.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "385"
+        ]
+      },
+      "points": 10,
+      "explanation": "Выполни действие по разрядам. Ответ: 385.",
+      "topic": "Письменные вычисления",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4m-002",
+      "prompt": "Вычисли: 900 − 456.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "444"
+        ]
+      },
+      "points": 10,
+      "explanation": "Выполни действие по разрядам. Ответ: 444.",
+      "topic": "Письменные вычисления",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4m-003",
+      "prompt": "Вычисли: 36 × 7.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "252"
+        ]
+      },
+      "points": 10,
+      "explanation": "Выполни действие по разрядам. Ответ: 252.",
+      "topic": "Письменные вычисления",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4m-004",
+      "prompt": "Вычисли: 864 ÷ 8.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "108"
+        ]
+      },
+      "points": 10,
+      "explanation": "Выполни действие по разрядам. Ответ: 108.",
+      "topic": "Письменные вычисления",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4m-005",
+      "prompt": "Вычисли: 1250 + 375.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "1625"
+        ]
+      },
+      "points": 10,
+      "explanation": "Выполни действие по разрядам. Ответ: 1625.",
+      "topic": "Письменные вычисления",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4m-006",
+      "prompt": "Вычисли: 700 − 268.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "432"
+        ]
+      },
+      "points": 10,
+      "explanation": "Выполни действие по разрядам. Ответ: 432.",
+      "topic": "Письменные вычисления",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4m-007",
+      "prompt": "Вычисли: 48 × 6.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "288"
+        ]
+      },
+      "points": 10,
+      "explanation": "Выполни действие по разрядам. Ответ: 288.",
+      "topic": "Письменные вычисления",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4m-008",
+      "prompt": "Вычисли: 945 ÷ 9.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "105"
+        ]
+      },
+      "points": 10,
+      "explanation": "Выполни действие по разрядам. Ответ: 105.",
+      "topic": "Письменные вычисления",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4m-009",
+      "prompt": "Запиши словами дробь 1/2.",
+      "type": "short_text",
+      "answer_config": {
+        "accepted": [
+          "половина"
+        ]
+      },
+      "points": 10,
+      "explanation": "Числитель 1 показывает число долей, знаменатель 2 — на сколько равных долей разделили целое.",
+      "topic": "Дроби",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4m-010",
+      "prompt": "Запиши словами дробь 1/4.",
+      "type": "short_text",
+      "answer_config": {
+        "accepted": [
+          "четверть"
+        ]
+      },
+      "points": 10,
+      "explanation": "Числитель 1 показывает число долей, знаменатель 4 — на сколько равных долей разделили целое.",
+      "topic": "Дроби",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4m-011",
+      "prompt": "Запиши словами дробь 3/4.",
+      "type": "short_text",
+      "answer_config": {
+        "accepted": [
+          "три четверти"
+        ]
+      },
+      "points": 10,
+      "explanation": "Числитель 3 показывает число долей, знаменатель 4 — на сколько равных долей разделили целое.",
+      "topic": "Дроби",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4m-012",
+      "prompt": "Запиши словами дробь 2/3.",
+      "type": "short_text",
+      "answer_config": {
+        "accepted": [
+          "две трети"
+        ]
+      },
+      "points": 10,
+      "explanation": "Числитель 2 показывает число долей, знаменатель 3 — на сколько равных долей разделили целое.",
+      "topic": "Дроби",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4m-013",
+      "prompt": "Поставь знак >, < или =: 3/9 … 5/9.",
+      "type": "single_choice",
+      "answer_config": {
+        "correct": [
+          "<"
+        ]
+      },
+      "points": 10,
+      "explanation": "При одинаковых знаменателях больше дробь с большим числителем: 3/9 < 5/9.",
+      "topic": "Дроби",
+      "difficulty": "normal",
+      "options": [
+        {
+          "label": ">",
+          "value": ">"
+        },
+        {
+          "label": "<",
+          "value": "<"
+        },
+        {
+          "label": "=",
+          "value": "="
+        }
+      ]
+    },
+    {
+      "external_id": "g4m-014",
+      "prompt": "Поставь знак >, < или =: 7/9 … 4/9.",
+      "type": "single_choice",
+      "answer_config": {
+        "correct": [
+          ">"
+        ]
+      },
+      "points": 10,
+      "explanation": "При одинаковых знаменателях больше дробь с большим числителем: 7/9 > 4/9.",
+      "topic": "Дроби",
+      "difficulty": "normal",
+      "options": [
+        {
+          "label": ">",
+          "value": ">"
+        },
+        {
+          "label": "<",
+          "value": "<"
+        },
+        {
+          "label": "=",
+          "value": "="
+        }
+      ]
+    },
+    {
+      "external_id": "g4m-015",
+      "prompt": "Поставь знак >, < или =: 6/9 … 6/9.",
+      "type": "single_choice",
+      "answer_config": {
+        "correct": [
+          "="
+        ]
+      },
+      "points": 10,
+      "explanation": "При одинаковых знаменателях больше дробь с большим числителем: 6/9 = 6/9.",
+      "topic": "Дроби",
+      "difficulty": "normal",
+      "options": [
+        {
+          "label": ">",
+          "value": ">"
+        },
+        {
+          "label": "<",
+          "value": "<"
+        },
+        {
+          "label": "=",
+          "value": "="
+        }
+      ]
+    },
+    {
+      "external_id": "g4m-016",
+      "prompt": "Поставь знак >, < или =: 2/9 … 8/9.",
+      "type": "single_choice",
+      "answer_config": {
+        "correct": [
+          "<"
+        ]
+      },
+      "points": 10,
+      "explanation": "При одинаковых знаменателях больше дробь с большим числителем: 2/9 < 8/9.",
+      "topic": "Дроби",
+      "difficulty": "normal",
+      "options": [
+        {
+          "label": ">",
+          "value": ">"
+        },
+        {
+          "label": "<",
+          "value": "<"
+        },
+        {
+          "label": "=",
+          "value": "="
+        }
+      ]
+    },
+    {
+      "external_id": "g4m-017",
+      "prompt": "В 6 коробках по 24 карандаша. Сколько карандашей всего?",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "144"
+        ]
+      },
+      "points": 10,
+      "explanation": "Умножаем число коробок на количество в каждой: 6 × 24 = 144.",
+      "topic": "Текстовые задачи",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4m-018",
+      "prompt": "Автобус проехал 180 км за 3 часа с одинаковой скоростью. Какова скорость?",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "60"
+        ]
+      },
+      "points": 10,
+      "explanation": "Скорость равна расстоянию, делённому на время: 180 ÷ 3 = 60 км/ч.",
+      "topic": "Текстовые задачи",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4m-019",
+      "prompt": "Периметр квадрата 36 см. Чему равна его сторона?",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "9"
+        ]
+      },
+      "points": 10,
+      "explanation": "У квадрата четыре равные стороны: 36 ÷ 4 = 9 см.",
+      "topic": "Текстовые задачи",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4m-020",
+      "prompt": "Длина прямоугольника 12 см, ширина 5 см. Найди площадь.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "60"
+        ]
+      },
+      "points": 10,
+      "explanation": "Площадь прямоугольника: 12 × 5 = 60 см².",
+      "topic": "Текстовые задачи",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4m-021",
+      "prompt": "В библиотеке 320 книг. 85 выдали. Сколько осталось?",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "235"
+        ]
+      },
+      "points": 10,
+      "explanation": "Вычитаем выданные книги: 320 − 85 = 235.",
+      "topic": "Текстовые задачи",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4m-022",
+      "prompt": "К 275 прибавили неизвестное число и получили 430. Найди число.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "155"
+        ]
+      },
+      "points": 10,
+      "explanation": "Неизвестное слагаемое: 430 − 275 = 155.",
+      "topic": "Текстовые задачи",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4m-023",
+      "prompt": "1 километр равен 1000 метрам.",
+      "type": "boolean",
+      "answer_config": {
+        "correct": [
+          true
+        ]
+      },
+      "points": 10,
+      "explanation": "По определению 1 км = 1000 м.",
+      "topic": "Величины и свойства",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4m-024",
+      "prompt": "В одном часе 100 минут.",
+      "type": "boolean",
+      "answer_config": {
+        "correct": [
+          false
+        ]
+      },
+      "points": 10,
+      "explanation": "В одном часе 60 минут.",
+      "topic": "Величины и свойства",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4m-025",
+      "prompt": "У прямоугольника все четыре стороны обязательно равны.",
+      "type": "boolean",
+      "answer_config": {
+        "correct": [
+          false
+        ]
+      },
+      "points": 10,
+      "explanation": "У прямоугольника равны только противоположные стороны; все стороны равны у квадрата.",
+      "topic": "Величины и свойства",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4m-026",
+      "prompt": "Число 345 делится на 5.",
+      "type": "boolean",
+      "answer_config": {
+        "correct": [
+          true
+        ]
+      },
+      "points": 10,
+      "explanation": "Число делится на 5, если оканчивается на 0 или 5.",
+      "topic": "Величины и свойства",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4m-027",
+      "prompt": "Произведение любого числа на ноль равно нулю.",
+      "type": "boolean",
+      "answer_config": {
+        "correct": [
+          true
+        ]
+      },
+      "points": 10,
+      "explanation": "Ноль групп любого размера дают ноль.",
+      "topic": "Величины и свойства",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4m-028",
+      "prompt": "Острый угол меньше прямого.",
+      "type": "boolean",
+      "answer_config": {
+        "correct": [
+          true
+        ]
+      },
+      "points": 10,
+      "explanation": "Прямой угол равен 90°, острый — меньше 90°.",
+      "topic": "Величины и свойства",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4m-029",
+      "prompt": "Число 901 меньше числа 899.",
+      "type": "boolean",
+      "answer_config": {
+        "correct": [
+          false
+        ]
+      },
+      "points": 10,
+      "explanation": "901 больше 899.",
+      "topic": "Величины и свойства",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4m-030",
+      "prompt": "Половина числа 48 равна 24.",
+      "type": "boolean",
+      "answer_config": {
+        "correct": [
+          true
+        ]
+      },
+      "points": 10,
+      "explanation": "48 ÷ 2 = 24.",
+      "topic": "Величины и свойства",
+      "difficulty": "normal"
+    }
+  ]
+}

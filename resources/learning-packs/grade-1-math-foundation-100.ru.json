@@ -1,0 +1,1842 @@
+{
+  "schema": "formaflow.learning-pack.v1",
+  "pack": {
+    "external_id": "formaflow-original-grade1-math-100",
+    "version": 1,
+    "title": "Математика: уверенная база за 1 класс",
+    "description": "100 оригинальных заданий FormaFlow для диагностики и повторения программы первого класса.",
+    "subject": "math",
+    "purpose": "diagnostic",
+    "target_grade": 2,
+    "coverage_from_grade": 1,
+    "coverage_to_grade": 1,
+    "source": {
+      "name": "FormaFlow Original",
+      "type": "owned",
+      "usage_scope": "publishable",
+      "license_name": "FormaFlow proprietary original content"
+    }
+  },
+  "questions": [
+    {
+      "external_id": "math-001",
+      "prompt": "Сколько будет 0 + 2?",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "2"
+        ]
+      },
+      "points": 10,
+      "explanation": "Соедини 0 и 2: получится 2.",
+      "topic": "Сложение до 20",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-002",
+      "prompt": "Сколько будет 1 + 5?",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "6"
+        ]
+      },
+      "points": 10,
+      "explanation": "Соедини 1 и 5: получится 6.",
+      "topic": "Сложение до 20",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-003",
+      "prompt": "Сколько будет 2 + 8?",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "10"
+        ]
+      },
+      "points": 10,
+      "explanation": "Соедини 2 и 8: получится 10.",
+      "topic": "Сложение до 20",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-004",
+      "prompt": "Сколько будет 3 + 1?",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "4"
+        ]
+      },
+      "points": 10,
+      "explanation": "Соедини 3 и 1: получится 4.",
+      "topic": "Сложение до 20",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-005",
+      "prompt": "Сколько будет 4 + 4?",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "8"
+        ]
+      },
+      "points": 10,
+      "explanation": "Соедини 4 и 4: получится 8.",
+      "topic": "Сложение до 20",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-006",
+      "prompt": "Сколько будет 5 + 7?",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "12"
+        ]
+      },
+      "points": 10,
+      "explanation": "Соедини 5 и 7: получится 12.",
+      "topic": "Сложение до 20",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-007",
+      "prompt": "Сколько будет 6 + 0?",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "6"
+        ]
+      },
+      "points": 10,
+      "explanation": "Соедини 6 и 0: получится 6.",
+      "topic": "Сложение до 20",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-008",
+      "prompt": "Сколько будет 7 + 3?",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "10"
+        ]
+      },
+      "points": 10,
+      "explanation": "Соедини 7 и 3: получится 10.",
+      "topic": "Сложение до 20",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-009",
+      "prompt": "Сколько будет 8 + 6?",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "14"
+        ]
+      },
+      "points": 10,
+      "explanation": "Соедини 8 и 6: получится 14.",
+      "topic": "Сложение до 20",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-010",
+      "prompt": "Сколько будет 9 + 9?",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "18"
+        ]
+      },
+      "points": 10,
+      "explanation": "Соедини 9 и 9: получится 18.",
+      "topic": "Сложение до 20",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-011",
+      "prompt": "Вычисли: 10 − 4.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "6"
+        ]
+      },
+      "points": 10,
+      "explanation": "От 10 отсчитай назад 4 шагов. Получится 6.",
+      "topic": "Вычитание",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-012",
+      "prompt": "Вычисли: 11 − 5.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "6"
+        ]
+      },
+      "points": 10,
+      "explanation": "От 11 отсчитай назад 5 шагов. Получится 6.",
+      "topic": "Вычитание",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-013",
+      "prompt": "Вычисли: 12 − 6.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "6"
+        ]
+      },
+      "points": 10,
+      "explanation": "От 12 отсчитай назад 6 шагов. Получится 6.",
+      "topic": "Вычитание",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-014",
+      "prompt": "Вычисли: 13 − 7.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "6"
+        ]
+      },
+      "points": 10,
+      "explanation": "От 13 отсчитай назад 7 шагов. Получится 6.",
+      "topic": "Вычитание",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-015",
+      "prompt": "Вычисли: 14 − 1.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "13"
+        ]
+      },
+      "points": 10,
+      "explanation": "От 14 отсчитай назад 1 шагов. Получится 13.",
+      "topic": "Вычитание",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-016",
+      "prompt": "Вычисли: 15 − 2.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "13"
+        ]
+      },
+      "points": 10,
+      "explanation": "От 15 отсчитай назад 2 шагов. Получится 13.",
+      "topic": "Вычитание",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-017",
+      "prompt": "Вычисли: 16 − 3.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "13"
+        ]
+      },
+      "points": 10,
+      "explanation": "От 16 отсчитай назад 3 шагов. Получится 13.",
+      "topic": "Вычитание",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-018",
+      "prompt": "Вычисли: 17 − 4.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "13"
+        ]
+      },
+      "points": 10,
+      "explanation": "От 17 отсчитай назад 4 шагов. Получится 13.",
+      "topic": "Вычитание",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-019",
+      "prompt": "Вычисли: 18 − 5.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "13"
+        ]
+      },
+      "points": 10,
+      "explanation": "От 18 отсчитай назад 5 шагов. Получится 13.",
+      "topic": "Вычитание",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-020",
+      "prompt": "Вычисли: 19 − 6.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "13"
+        ]
+      },
+      "points": 10,
+      "explanation": "От 19 отсчитай назад 6 шагов. Получится 13.",
+      "topic": "Вычитание",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-021",
+      "prompt": "Вычисли: 20 − 7.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "13"
+        ]
+      },
+      "points": 10,
+      "explanation": "От 20 отсчитай назад 7 шагов. Получится 13.",
+      "topic": "Вычитание",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-022",
+      "prompt": "Вычисли: 21 − 1.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "20"
+        ]
+      },
+      "points": 10,
+      "explanation": "От 21 отсчитай назад 1 шагов. Получится 20.",
+      "topic": "Вычитание",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-023",
+      "prompt": "Вычисли: 22 − 2.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "20"
+        ]
+      },
+      "points": 10,
+      "explanation": "От 22 отсчитай назад 2 шагов. Получится 20.",
+      "topic": "Вычитание",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-024",
+      "prompt": "Вычисли: 23 − 3.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "20"
+        ]
+      },
+      "points": 10,
+      "explanation": "От 23 отсчитай назад 3 шагов. Получится 20.",
+      "topic": "Вычитание",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-025",
+      "prompt": "Вычисли: 24 − 4.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "20"
+        ]
+      },
+      "points": 10,
+      "explanation": "От 24 отсчитай назад 4 шагов. Получится 20.",
+      "topic": "Вычитание",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-026",
+      "prompt": "Вычисли: 25 − 5.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "20"
+        ]
+      },
+      "points": 10,
+      "explanation": "От 25 отсчитай назад 5 шагов. Получится 20.",
+      "topic": "Вычитание",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-027",
+      "prompt": "Вычисли: 26 − 6.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "20"
+        ]
+      },
+      "points": 10,
+      "explanation": "От 26 отсчитай назад 6 шагов. Получится 20.",
+      "topic": "Вычитание",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-028",
+      "prompt": "Вычисли: 27 − 7.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "20"
+        ]
+      },
+      "points": 10,
+      "explanation": "От 27 отсчитай назад 7 шагов. Получится 20.",
+      "topic": "Вычитание",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-029",
+      "prompt": "Вычисли: 28 − 1.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "27"
+        ]
+      },
+      "points": 10,
+      "explanation": "От 28 отсчитай назад 1 шагов. Получится 27.",
+      "topic": "Вычитание",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-030",
+      "prompt": "Вычисли: 29 − 2.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "27"
+        ]
+      },
+      "points": 10,
+      "explanation": "От 29 отсчитай назад 2 шагов. Получится 27.",
+      "topic": "Вычитание",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-031",
+      "prompt": "Какой знак нужно поставить: 4 □ 10?",
+      "type": "single_choice",
+      "options": [
+        {
+          "label": "больше >",
+          "value": ">"
+        },
+        {
+          "label": "меньше <",
+          "value": "<"
+        },
+        {
+          "label": "равно =",
+          "value": "="
+        }
+      ],
+      "answer_config": {
+        "correct": [
+          "<"
+        ]
+      },
+      "points": 10,
+      "explanation": "Сравни числа: 4 < 10.",
+      "topic": "Сравнение чисел",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-032",
+      "prompt": "Какой знак нужно поставить: 8 □ 17?",
+      "type": "single_choice",
+      "options": [
+        {
+          "label": "больше >",
+          "value": ">"
+        },
+        {
+          "label": "меньше <",
+          "value": "<"
+        },
+        {
+          "label": "равно =",
+          "value": "="
+        }
+      ],
+      "answer_config": {
+        "correct": [
+          "<"
+        ]
+      },
+      "points": 10,
+      "explanation": "Сравни числа: 8 < 17.",
+      "topic": "Сравнение чисел",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-033",
+      "prompt": "Какой знак нужно поставить: 12 □ 3?",
+      "type": "single_choice",
+      "options": [
+        {
+          "label": "больше >",
+          "value": ">"
+        },
+        {
+          "label": "меньше <",
+          "value": "<"
+        },
+        {
+          "label": "равно =",
+          "value": "="
+        }
+      ],
+      "answer_config": {
+        "correct": [
+          ">"
+        ]
+      },
+      "points": 10,
+      "explanation": "Сравни числа: 12 > 3.",
+      "topic": "Сравнение чисел",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-034",
+      "prompt": "Какой знак нужно поставить: 16 □ 10?",
+      "type": "single_choice",
+      "options": [
+        {
+          "label": "больше >",
+          "value": ">"
+        },
+        {
+          "label": "меньше <",
+          "value": "<"
+        },
+        {
+          "label": "равно =",
+          "value": "="
+        }
+      ],
+      "answer_config": {
+        "correct": [
+          ">"
+        ]
+      },
+      "points": 10,
+      "explanation": "Сравни числа: 16 > 10.",
+      "topic": "Сравнение чисел",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-035",
+      "prompt": "Какой знак нужно поставить: 20 □ 17?",
+      "type": "single_choice",
+      "options": [
+        {
+          "label": "больше >",
+          "value": ">"
+        },
+        {
+          "label": "меньше <",
+          "value": "<"
+        },
+        {
+          "label": "равно =",
+          "value": "="
+        }
+      ],
+      "answer_config": {
+        "correct": [
+          ">"
+        ]
+      },
+      "points": 10,
+      "explanation": "Сравни числа: 20 > 17.",
+      "topic": "Сравнение чисел",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-036",
+      "prompt": "Какой знак нужно поставить: 3 □ 3?",
+      "type": "single_choice",
+      "options": [
+        {
+          "label": "больше >",
+          "value": ">"
+        },
+        {
+          "label": "меньше <",
+          "value": "<"
+        },
+        {
+          "label": "равно =",
+          "value": "="
+        }
+      ],
+      "answer_config": {
+        "correct": [
+          "="
+        ]
+      },
+      "points": 10,
+      "explanation": "Сравни числа: 3 = 3.",
+      "topic": "Сравнение чисел",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-037",
+      "prompt": "Какой знак нужно поставить: 7 □ 10?",
+      "type": "single_choice",
+      "options": [
+        {
+          "label": "больше >",
+          "value": ">"
+        },
+        {
+          "label": "меньше <",
+          "value": "<"
+        },
+        {
+          "label": "равно =",
+          "value": "="
+        }
+      ],
+      "answer_config": {
+        "correct": [
+          "<"
+        ]
+      },
+      "points": 10,
+      "explanation": "Сравни числа: 7 < 10.",
+      "topic": "Сравнение чисел",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-038",
+      "prompt": "Какой знак нужно поставить: 11 □ 17?",
+      "type": "single_choice",
+      "options": [
+        {
+          "label": "больше >",
+          "value": ">"
+        },
+        {
+          "label": "меньше <",
+          "value": "<"
+        },
+        {
+          "label": "равно =",
+          "value": "="
+        }
+      ],
+      "answer_config": {
+        "correct": [
+          "<"
+        ]
+      },
+      "points": 10,
+      "explanation": "Сравни числа: 11 < 17.",
+      "topic": "Сравнение чисел",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-039",
+      "prompt": "Какой знак нужно поставить: 15 □ 3?",
+      "type": "single_choice",
+      "options": [
+        {
+          "label": "больше >",
+          "value": ">"
+        },
+        {
+          "label": "меньше <",
+          "value": "<"
+        },
+        {
+          "label": "равно =",
+          "value": "="
+        }
+      ],
+      "answer_config": {
+        "correct": [
+          ">"
+        ]
+      },
+      "points": 10,
+      "explanation": "Сравни числа: 15 > 3.",
+      "topic": "Сравнение чисел",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-040",
+      "prompt": "Какой знак нужно поставить: 19 □ 10?",
+      "type": "single_choice",
+      "options": [
+        {
+          "label": "больше >",
+          "value": ">"
+        },
+        {
+          "label": "меньше <",
+          "value": "<"
+        },
+        {
+          "label": "равно =",
+          "value": "="
+        }
+      ],
+      "answer_config": {
+        "correct": [
+          ">"
+        ]
+      },
+      "points": 10,
+      "explanation": "Сравни числа: 19 > 10.",
+      "topic": "Сравнение чисел",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-041",
+      "prompt": "Какой знак нужно поставить: 2 □ 17?",
+      "type": "single_choice",
+      "options": [
+        {
+          "label": "больше >",
+          "value": ">"
+        },
+        {
+          "label": "меньше <",
+          "value": "<"
+        },
+        {
+          "label": "равно =",
+          "value": "="
+        }
+      ],
+      "answer_config": {
+        "correct": [
+          "<"
+        ]
+      },
+      "points": 10,
+      "explanation": "Сравни числа: 2 < 17.",
+      "topic": "Сравнение чисел",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-042",
+      "prompt": "Какой знак нужно поставить: 6 □ 3?",
+      "type": "single_choice",
+      "options": [
+        {
+          "label": "больше >",
+          "value": ">"
+        },
+        {
+          "label": "меньше <",
+          "value": "<"
+        },
+        {
+          "label": "равно =",
+          "value": "="
+        }
+      ],
+      "answer_config": {
+        "correct": [
+          ">"
+        ]
+      },
+      "points": 10,
+      "explanation": "Сравни числа: 6 > 3.",
+      "topic": "Сравнение чисел",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-043",
+      "prompt": "Какой знак нужно поставить: 10 □ 10?",
+      "type": "single_choice",
+      "options": [
+        {
+          "label": "больше >",
+          "value": ">"
+        },
+        {
+          "label": "меньше <",
+          "value": "<"
+        },
+        {
+          "label": "равно =",
+          "value": "="
+        }
+      ],
+      "answer_config": {
+        "correct": [
+          "="
+        ]
+      },
+      "points": 10,
+      "explanation": "Сравни числа: 10 = 10.",
+      "topic": "Сравнение чисел",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-044",
+      "prompt": "Какой знак нужно поставить: 14 □ 17?",
+      "type": "single_choice",
+      "options": [
+        {
+          "label": "больше >",
+          "value": ">"
+        },
+        {
+          "label": "меньше <",
+          "value": "<"
+        },
+        {
+          "label": "равно =",
+          "value": "="
+        }
+      ],
+      "answer_config": {
+        "correct": [
+          "<"
+        ]
+      },
+      "points": 10,
+      "explanation": "Сравни числа: 14 < 17.",
+      "topic": "Сравнение чисел",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-045",
+      "prompt": "Какой знак нужно поставить: 18 □ 3?",
+      "type": "single_choice",
+      "options": [
+        {
+          "label": "больше >",
+          "value": ">"
+        },
+        {
+          "label": "меньше <",
+          "value": "<"
+        },
+        {
+          "label": "равно =",
+          "value": "="
+        }
+      ],
+      "answer_config": {
+        "correct": [
+          ">"
+        ]
+      },
+      "points": 10,
+      "explanation": "Сравни числа: 18 > 3.",
+      "topic": "Сравнение чисел",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-046",
+      "prompt": "Какой знак нужно поставить: 1 □ 10?",
+      "type": "single_choice",
+      "options": [
+        {
+          "label": "больше >",
+          "value": ">"
+        },
+        {
+          "label": "меньше <",
+          "value": "<"
+        },
+        {
+          "label": "равно =",
+          "value": "="
+        }
+      ],
+      "answer_config": {
+        "correct": [
+          "<"
+        ]
+      },
+      "points": 10,
+      "explanation": "Сравни числа: 1 < 10.",
+      "topic": "Сравнение чисел",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-047",
+      "prompt": "Какой знак нужно поставить: 5 □ 17?",
+      "type": "single_choice",
+      "options": [
+        {
+          "label": "больше >",
+          "value": ">"
+        },
+        {
+          "label": "меньше <",
+          "value": "<"
+        },
+        {
+          "label": "равно =",
+          "value": "="
+        }
+      ],
+      "answer_config": {
+        "correct": [
+          "<"
+        ]
+      },
+      "points": 10,
+      "explanation": "Сравни числа: 5 < 17.",
+      "topic": "Сравнение чисел",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-048",
+      "prompt": "Какой знак нужно поставить: 9 □ 3?",
+      "type": "single_choice",
+      "options": [
+        {
+          "label": "больше >",
+          "value": ">"
+        },
+        {
+          "label": "меньше <",
+          "value": "<"
+        },
+        {
+          "label": "равно =",
+          "value": "="
+        }
+      ],
+      "answer_config": {
+        "correct": [
+          ">"
+        ]
+      },
+      "points": 10,
+      "explanation": "Сравни числа: 9 > 3.",
+      "topic": "Сравнение чисел",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-049",
+      "prompt": "Какой знак нужно поставить: 13 □ 10?",
+      "type": "single_choice",
+      "options": [
+        {
+          "label": "больше >",
+          "value": ">"
+        },
+        {
+          "label": "меньше <",
+          "value": "<"
+        },
+        {
+          "label": "равно =",
+          "value": "="
+        }
+      ],
+      "answer_config": {
+        "correct": [
+          ">"
+        ]
+      },
+      "points": 10,
+      "explanation": "Сравни числа: 13 > 10.",
+      "topic": "Сравнение чисел",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-050",
+      "prompt": "Какой знак нужно поставить: 17 □ 17?",
+      "type": "single_choice",
+      "options": [
+        {
+          "label": "больше >",
+          "value": ">"
+        },
+        {
+          "label": "меньше <",
+          "value": "<"
+        },
+        {
+          "label": "равно =",
+          "value": "="
+        }
+      ],
+      "answer_config": {
+        "correct": [
+          "="
+        ]
+      },
+      "points": 10,
+      "explanation": "Сравни числа: 17 = 17.",
+      "topic": "Сравнение чисел",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-051",
+      "prompt": "Какой знак нужно поставить: 0 □ 3?",
+      "type": "single_choice",
+      "options": [
+        {
+          "label": "больше >",
+          "value": ">"
+        },
+        {
+          "label": "меньше <",
+          "value": "<"
+        },
+        {
+          "label": "равно =",
+          "value": "="
+        }
+      ],
+      "answer_config": {
+        "correct": [
+          "<"
+        ]
+      },
+      "points": 10,
+      "explanation": "Сравни числа: 0 < 3.",
+      "topic": "Сравнение чисел",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-052",
+      "prompt": "Какой знак нужно поставить: 4 □ 10?",
+      "type": "single_choice",
+      "options": [
+        {
+          "label": "больше >",
+          "value": ">"
+        },
+        {
+          "label": "меньше <",
+          "value": "<"
+        },
+        {
+          "label": "равно =",
+          "value": "="
+        }
+      ],
+      "answer_config": {
+        "correct": [
+          "<"
+        ]
+      },
+      "points": 10,
+      "explanation": "Сравни числа: 4 < 10.",
+      "topic": "Сравнение чисел",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-053",
+      "prompt": "Какой знак нужно поставить: 8 □ 17?",
+      "type": "single_choice",
+      "options": [
+        {
+          "label": "больше >",
+          "value": ">"
+        },
+        {
+          "label": "меньше <",
+          "value": "<"
+        },
+        {
+          "label": "равно =",
+          "value": "="
+        }
+      ],
+      "answer_config": {
+        "correct": [
+          "<"
+        ]
+      },
+      "points": 10,
+      "explanation": "Сравни числа: 8 < 17.",
+      "topic": "Сравнение чисел",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-054",
+      "prompt": "Какой знак нужно поставить: 12 □ 3?",
+      "type": "single_choice",
+      "options": [
+        {
+          "label": "больше >",
+          "value": ">"
+        },
+        {
+          "label": "меньше <",
+          "value": "<"
+        },
+        {
+          "label": "равно =",
+          "value": "="
+        }
+      ],
+      "answer_config": {
+        "correct": [
+          ">"
+        ]
+      },
+      "points": 10,
+      "explanation": "Сравни числа: 12 > 3.",
+      "topic": "Сравнение чисел",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-055",
+      "prompt": "Какой знак нужно поставить: 16 □ 10?",
+      "type": "single_choice",
+      "options": [
+        {
+          "label": "больше >",
+          "value": ">"
+        },
+        {
+          "label": "меньше <",
+          "value": "<"
+        },
+        {
+          "label": "равно =",
+          "value": "="
+        }
+      ],
+      "answer_config": {
+        "correct": [
+          ">"
+        ]
+      },
+      "points": 10,
+      "explanation": "Сравни числа: 16 > 10.",
+      "topic": "Сравнение чисел",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-056",
+      "prompt": "Какой знак нужно поставить: 20 □ 17?",
+      "type": "single_choice",
+      "options": [
+        {
+          "label": "больше >",
+          "value": ">"
+        },
+        {
+          "label": "меньше <",
+          "value": "<"
+        },
+        {
+          "label": "равно =",
+          "value": "="
+        }
+      ],
+      "answer_config": {
+        "correct": [
+          ">"
+        ]
+      },
+      "points": 10,
+      "explanation": "Сравни числа: 20 > 17.",
+      "topic": "Сравнение чисел",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-057",
+      "prompt": "Какой знак нужно поставить: 3 □ 3?",
+      "type": "single_choice",
+      "options": [
+        {
+          "label": "больше >",
+          "value": ">"
+        },
+        {
+          "label": "меньше <",
+          "value": "<"
+        },
+        {
+          "label": "равно =",
+          "value": "="
+        }
+      ],
+      "answer_config": {
+        "correct": [
+          "="
+        ]
+      },
+      "points": 10,
+      "explanation": "Сравни числа: 3 = 3.",
+      "topic": "Сравнение чисел",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-058",
+      "prompt": "Какой знак нужно поставить: 7 □ 10?",
+      "type": "single_choice",
+      "options": [
+        {
+          "label": "больше >",
+          "value": ">"
+        },
+        {
+          "label": "меньше <",
+          "value": "<"
+        },
+        {
+          "label": "равно =",
+          "value": "="
+        }
+      ],
+      "answer_config": {
+        "correct": [
+          "<"
+        ]
+      },
+      "points": 10,
+      "explanation": "Сравни числа: 7 < 10.",
+      "topic": "Сравнение чисел",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-059",
+      "prompt": "Какой знак нужно поставить: 11 □ 17?",
+      "type": "single_choice",
+      "options": [
+        {
+          "label": "больше >",
+          "value": ">"
+        },
+        {
+          "label": "меньше <",
+          "value": "<"
+        },
+        {
+          "label": "равно =",
+          "value": "="
+        }
+      ],
+      "answer_config": {
+        "correct": [
+          "<"
+        ]
+      },
+      "points": 10,
+      "explanation": "Сравни числа: 11 < 17.",
+      "topic": "Сравнение чисел",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-060",
+      "prompt": "Какой знак нужно поставить: 15 □ 3?",
+      "type": "single_choice",
+      "options": [
+        {
+          "label": "больше >",
+          "value": ">"
+        },
+        {
+          "label": "меньше <",
+          "value": "<"
+        },
+        {
+          "label": "равно =",
+          "value": "="
+        }
+      ],
+      "answer_config": {
+        "correct": [
+          ">"
+        ]
+      },
+      "points": 10,
+      "explanation": "Сравни числа: 15 > 3.",
+      "topic": "Сравнение чисел",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-061",
+      "prompt": "Продолжи ряд: 2, 3, □, 5.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "4"
+        ]
+      },
+      "points": 10,
+      "explanation": "Каждое следующее число больше на 1, поэтому пропущено 4.",
+      "topic": "Числовые последовательности",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-062",
+      "prompt": "Продолжи ряд: 4, 5, □, 7.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "6"
+        ]
+      },
+      "points": 10,
+      "explanation": "Каждое следующее число больше на 1, поэтому пропущено 6.",
+      "topic": "Числовые последовательности",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-063",
+      "prompt": "Продолжи ряд: 6, 8, □, 12.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "10"
+        ]
+      },
+      "points": 10,
+      "explanation": "Каждое следующее число больше на 2, поэтому пропущено 10.",
+      "topic": "Числовые последовательности",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-064",
+      "prompt": "Продолжи ряд: 8, 9, □, 11.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "10"
+        ]
+      },
+      "points": 10,
+      "explanation": "Каждое следующее число больше на 1, поэтому пропущено 10.",
+      "topic": "Числовые последовательности",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-065",
+      "prompt": "Продолжи ряд: 10, 11, □, 13.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "12"
+        ]
+      },
+      "points": 10,
+      "explanation": "Каждое следующее число больше на 1, поэтому пропущено 12.",
+      "topic": "Числовые последовательности",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-066",
+      "prompt": "Продолжи ряд: 12, 14, □, 18.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "16"
+        ]
+      },
+      "points": 10,
+      "explanation": "Каждое следующее число больше на 2, поэтому пропущено 16.",
+      "topic": "Числовые последовательности",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-067",
+      "prompt": "Продолжи ряд: 14, 15, □, 17.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "16"
+        ]
+      },
+      "points": 10,
+      "explanation": "Каждое следующее число больше на 1, поэтому пропущено 16.",
+      "topic": "Числовые последовательности",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-068",
+      "prompt": "Продолжи ряд: 16, 17, □, 19.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "18"
+        ]
+      },
+      "points": 10,
+      "explanation": "Каждое следующее число больше на 1, поэтому пропущено 18.",
+      "topic": "Числовые последовательности",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-069",
+      "prompt": "Продолжи ряд: 0, 2, □, 6.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "4"
+        ]
+      },
+      "points": 10,
+      "explanation": "Каждое следующее число больше на 2, поэтому пропущено 4.",
+      "topic": "Числовые последовательности",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-070",
+      "prompt": "Продолжи ряд: 2, 3, □, 5.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "4"
+        ]
+      },
+      "points": 10,
+      "explanation": "Каждое следующее число больше на 1, поэтому пропущено 4.",
+      "topic": "Числовые последовательности",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-071",
+      "prompt": "Продолжи ряд: 4, 5, □, 7.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "6"
+        ]
+      },
+      "points": 10,
+      "explanation": "Каждое следующее число больше на 1, поэтому пропущено 6.",
+      "topic": "Числовые последовательности",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-072",
+      "prompt": "Продолжи ряд: 6, 8, □, 12.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "10"
+        ]
+      },
+      "points": 10,
+      "explanation": "Каждое следующее число больше на 2, поэтому пропущено 10.",
+      "topic": "Числовые последовательности",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-073",
+      "prompt": "Продолжи ряд: 8, 9, □, 11.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "10"
+        ]
+      },
+      "points": 10,
+      "explanation": "Каждое следующее число больше на 1, поэтому пропущено 10.",
+      "topic": "Числовые последовательности",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-074",
+      "prompt": "Продолжи ряд: 10, 11, □, 13.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "12"
+        ]
+      },
+      "points": 10,
+      "explanation": "Каждое следующее число больше на 1, поэтому пропущено 12.",
+      "topic": "Числовые последовательности",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-075",
+      "prompt": "Продолжи ряд: 12, 14, □, 18.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "16"
+        ]
+      },
+      "points": 10,
+      "explanation": "Каждое следующее число больше на 2, поэтому пропущено 16.",
+      "topic": "Числовые последовательности",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-076",
+      "prompt": "Верно ли равенство: 3 + 2 = 6?",
+      "type": "boolean",
+      "answer_config": {
+        "correct": [
+          false
+        ]
+      },
+      "points": 10,
+      "explanation": "3 + 2 = 5, поэтому утверждение неверное.",
+      "topic": "Проверка равенств",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-077",
+      "prompt": "Верно ли равенство: 4 + 3 = 7?",
+      "type": "boolean",
+      "answer_config": {
+        "correct": [
+          true
+        ]
+      },
+      "points": 10,
+      "explanation": "4 + 3 = 7, поэтому утверждение верное.",
+      "topic": "Проверка равенств",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-078",
+      "prompt": "Верно ли равенство: 5 + 4 = 10?",
+      "type": "boolean",
+      "answer_config": {
+        "correct": [
+          false
+        ]
+      },
+      "points": 10,
+      "explanation": "5 + 4 = 9, поэтому утверждение неверное.",
+      "topic": "Проверка равенств",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-079",
+      "prompt": "Верно ли равенство: 6 + 1 = 7?",
+      "type": "boolean",
+      "answer_config": {
+        "correct": [
+          true
+        ]
+      },
+      "points": 10,
+      "explanation": "6 + 1 = 7, поэтому утверждение верное.",
+      "topic": "Проверка равенств",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-080",
+      "prompt": "Верно ли равенство: 7 + 2 = 10?",
+      "type": "boolean",
+      "answer_config": {
+        "correct": [
+          false
+        ]
+      },
+      "points": 10,
+      "explanation": "7 + 2 = 9, поэтому утверждение неверное.",
+      "topic": "Проверка равенств",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-081",
+      "prompt": "Верно ли равенство: 8 + 3 = 11?",
+      "type": "boolean",
+      "answer_config": {
+        "correct": [
+          true
+        ]
+      },
+      "points": 10,
+      "explanation": "8 + 3 = 11, поэтому утверждение верное.",
+      "topic": "Проверка равенств",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-082",
+      "prompt": "Верно ли равенство: 9 + 4 = 14?",
+      "type": "boolean",
+      "answer_config": {
+        "correct": [
+          false
+        ]
+      },
+      "points": 10,
+      "explanation": "9 + 4 = 13, поэтому утверждение неверное.",
+      "topic": "Проверка равенств",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-083",
+      "prompt": "Верно ли равенство: 10 + 1 = 11?",
+      "type": "boolean",
+      "answer_config": {
+        "correct": [
+          true
+        ]
+      },
+      "points": 10,
+      "explanation": "10 + 1 = 11, поэтому утверждение верное.",
+      "topic": "Проверка равенств",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-084",
+      "prompt": "Верно ли равенство: 11 + 2 = 14?",
+      "type": "boolean",
+      "answer_config": {
+        "correct": [
+          false
+        ]
+      },
+      "points": 10,
+      "explanation": "11 + 2 = 13, поэтому утверждение неверное.",
+      "topic": "Проверка равенств",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-085",
+      "prompt": "Верно ли равенство: 12 + 3 = 15?",
+      "type": "boolean",
+      "answer_config": {
+        "correct": [
+          true
+        ]
+      },
+      "points": 10,
+      "explanation": "12 + 3 = 15, поэтому утверждение верное.",
+      "topic": "Проверка равенств",
+      "difficulty": "easy"
+    },
+    {
+      "external_id": "math-086",
+      "prompt": "У Маши было 5 карандашей. Ей дали ещё 2. Сколько карандашей стало?",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "7"
+        ]
+      },
+      "points": 10,
+      "explanation": "Слово «ещё» подсказывает сложение: 5 + 2 = 7.",
+      "topic": "Текстовые задачи",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-087",
+      "prompt": "У Маши было 6 яблок. Ей дали ещё 3. Сколько яблок стало?",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "9"
+        ]
+      },
+      "points": 10,
+      "explanation": "Слово «ещё» подсказывает сложение: 6 + 3 = 9.",
+      "topic": "Текстовые задачи",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-088",
+      "prompt": "У Маши было 7 кубиков. Ей дали ещё 4. Сколько кубиков стало?",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "11"
+        ]
+      },
+      "points": 10,
+      "explanation": "Слово «ещё» подсказывает сложение: 7 + 4 = 11.",
+      "topic": "Текстовые задачи",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-089",
+      "prompt": "У Маши было 8 наклеек. Ей дали ещё 5. Сколько наклеек стало?",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "13"
+        ]
+      },
+      "points": 10,
+      "explanation": "Слово «ещё» подсказывает сложение: 8 + 5 = 13.",
+      "topic": "Текстовые задачи",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-090",
+      "prompt": "У Маши было 9 книг. Ей дали ещё 1. Сколько книг стало?",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "10"
+        ]
+      },
+      "points": 10,
+      "explanation": "Слово «ещё» подсказывает сложение: 9 + 1 = 10.",
+      "topic": "Текстовые задачи",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-091",
+      "prompt": "У Маши было 10 карандашей. Ей дали ещё 2. Сколько карандашей стало?",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "12"
+        ]
+      },
+      "points": 10,
+      "explanation": "Слово «ещё» подсказывает сложение: 10 + 2 = 12.",
+      "topic": "Текстовые задачи",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-092",
+      "prompt": "У Маши было 11 яблок. Ей дали ещё 3. Сколько яблок стало?",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "14"
+        ]
+      },
+      "points": 10,
+      "explanation": "Слово «ещё» подсказывает сложение: 11 + 3 = 14.",
+      "topic": "Текстовые задачи",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-093",
+      "prompt": "У Маши было 12 кубиков. Ей дали ещё 4. Сколько кубиков стало?",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "16"
+        ]
+      },
+      "points": 10,
+      "explanation": "Слово «ещё» подсказывает сложение: 12 + 4 = 16.",
+      "topic": "Текстовые задачи",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-094",
+      "prompt": "У Маши было 13 наклеек. Ей дали ещё 5. Сколько наклеек стало?",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "18"
+        ]
+      },
+      "points": 10,
+      "explanation": "Слово «ещё» подсказывает сложение: 13 + 5 = 18.",
+      "topic": "Текстовые задачи",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-095",
+      "prompt": "У Маши было 14 книг. Ей дали ещё 1. Сколько книг стало?",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "15"
+        ]
+      },
+      "points": 10,
+      "explanation": "Слово «ещё» подсказывает сложение: 14 + 1 = 15.",
+      "topic": "Текстовые задачи",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-096",
+      "prompt": "У Маши было 15 карандашей. Ей дали ещё 2. Сколько карандашей стало?",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "17"
+        ]
+      },
+      "points": 10,
+      "explanation": "Слово «ещё» подсказывает сложение: 15 + 2 = 17.",
+      "topic": "Текстовые задачи",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-097",
+      "prompt": "У Маши было 16 яблок. Ей дали ещё 3. Сколько яблок стало?",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "19"
+        ]
+      },
+      "points": 10,
+      "explanation": "Слово «ещё» подсказывает сложение: 16 + 3 = 19.",
+      "topic": "Текстовые задачи",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-098",
+      "prompt": "У Маши было 17 кубиков. Ей дали ещё 4. Сколько кубиков стало?",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "21"
+        ]
+      },
+      "points": 10,
+      "explanation": "Слово «ещё» подсказывает сложение: 17 + 4 = 21.",
+      "topic": "Текстовые задачи",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-099",
+      "prompt": "У Маши было 18 наклеек. Ей дали ещё 5. Сколько наклеек стало?",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "23"
+        ]
+      },
+      "points": 10,
+      "explanation": "Слово «ещё» подсказывает сложение: 18 + 5 = 23.",
+      "topic": "Текстовые задачи",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "math-100",
+      "prompt": "У Маши было 19 книг. Ей дали ещё 1. Сколько книг стало?",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "20"
+        ]
+      },
+      "points": 10,
+      "explanation": "Слово «ещё» подсказывает сложение: 19 + 1 = 20.",
+      "topic": "Текстовые задачи",
+      "difficulty": "normal"
+    }
+  ]
+}

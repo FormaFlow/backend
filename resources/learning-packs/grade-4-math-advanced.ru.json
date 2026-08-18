@@ -1,0 +1,324 @@
+{
+  "schema": "formaflow.learning-pack.v1",
+  "pack": {
+    "external_id": "formaflow-original-grade4-math-advanced",
+    "version": 1,
+    "title": "Математика: вступительная работа после 4 класса",
+    "description": "30 оригинальных заданий повышенной сложности: вычисления, уравнения, дроби, величины, геометрия, логика и многошаговые задачи. Рекомендуемое время — 55 минут.",
+    "subject": "math",
+    "purpose": "diagnostic",
+    "target_grade": 5,
+    "coverage_from_grade": 1,
+    "coverage_to_grade": 4,
+    "source": {
+      "name": "FormaFlow Original — федеральная программа НОО",
+      "type": "owned",
+      "usage_scope": "publishable",
+      "license_name": "FormaFlow proprietary original content",
+      "url": "https://edsoo.ru/wp-content/uploads/2025/06/08_frp_matematika-1-4_27052025_itog-na-sajt.pdf"
+    }
+  },
+  "questions": [
+    {
+      "external_id": "g4ma-001",
+      "prompt": "Вычисли, соблюдая порядок действий: \\(7200-48\\cdot75\\).",
+      "type": "number",
+      "answer_config": {"accepted": ["3600"]},
+      "points": 10,
+      "explanation": "Сначала умножение: \\(48\\cdot75=3600\\), затем \\(7200-3600=3600\\).",
+      "topic": "Порядок действий",
+      "difficulty": "hard"
+    },
+    {
+      "external_id": "g4ma-002",
+      "prompt": "Вычисли: \\((936:12+47)\\cdot6\\).",
+      "type": "number",
+      "answer_config": {"accepted": ["750"]},
+      "points": 10,
+      "explanation": "\\(936:12=78\\), \\(78+47=125\\), \\(125\\cdot6=750\\).",
+      "topic": "Порядок действий",
+      "difficulty": "hard"
+    },
+    {
+      "external_id": "g4ma-003",
+      "prompt": "Найди значение выражения: \\(25000-(3846+7154)\\).",
+      "type": "number",
+      "answer_config": {"accepted": ["14000"]},
+      "points": 10,
+      "explanation": "В скобках получается 11 000, затем \\(25000-11000=14000\\).",
+      "topic": "Порядок действий",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4ma-004",
+      "prompt": "Вычисли столбиком или удобным способом: \\(306\\cdot47\\).",
+      "type": "number",
+      "answer_config": {"accepted": ["14382"]},
+      "points": 10,
+      "explanation": "\\(306\\cdot40+306\\cdot7=12240+2142=14382\\).",
+      "topic": "Многозначные числа",
+      "difficulty": "hard"
+    },
+    {
+      "external_id": "g4ma-005",
+      "prompt": "Вычисли: \\(8640:24\\).",
+      "type": "number",
+      "answer_config": {"accepted": ["360"]},
+      "points": 10,
+      "explanation": "Проверка: \\(360\\cdot24=8640\\).",
+      "topic": "Деление многозначных чисел",
+      "difficulty": "hard"
+    },
+    {
+      "external_id": "g4ma-006",
+      "prompt": "Реши уравнение: \\(18x=12852\\).",
+      "type": "number",
+      "answer_config": {"accepted": ["714"]},
+      "points": 12,
+      "explanation": "\\(x=12852:18=714\\). Проверка: \\(714\\cdot18=12852\\).",
+      "topic": "Уравнения",
+      "difficulty": "hard"
+    },
+    {
+      "external_id": "g4ma-007",
+      "prompt": "Реши уравнение: \\(\\dfrac{x-375}{25}=29\\).",
+      "type": "number",
+      "answer_config": {"accepted": ["1100"]},
+      "points": 12,
+      "explanation": "\\(x-375=29\\cdot25=725\\), поэтому \\(x=1100\\).",
+      "topic": "Уравнения",
+      "difficulty": "hard"
+    },
+    {
+      "external_id": "g4ma-008",
+      "prompt": "Найди \\(\\dfrac{3}{8}\\) от числа 960.",
+      "type": "number",
+      "answer_config": {"accepted": ["360"]},
+      "points": 10,
+      "explanation": "\\(960:8\\cdot3=120\\cdot3=360\\).",
+      "topic": "Дроби",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4ma-009",
+      "prompt": "Раздели 9876 на 35 с остатком. Запиши ответ в виде «частное ост. остаток».",
+      "type": "short_text",
+      "answer_config": {"accepted": ["282 ост. 6", "282 ост 6", "282 остаток 6"]},
+      "points": 12,
+      "explanation": "\\(35\\cdot282=9870\\), а \\(9876-9870=6\\).",
+      "topic": "Деление с остатком",
+      "difficulty": "hard"
+    },
+    {
+      "external_id": "g4ma-010",
+      "prompt": "Сравни дроби: \\(\\dfrac{7}{12}\\;…\\;\\dfrac{5}{8}\\).",
+      "type": "single_choice",
+      "options": [{"label": ">", "value": ">"}, {"label": "<", "value": "<"}, {"label": "=", "value": "="}],
+      "answer_config": {"correct": ["<"]},
+      "points": 12,
+      "explanation": "Приведём к знаменателю 24: \\(14/24<15/24\\).",
+      "topic": "Дроби",
+      "difficulty": "hard"
+    },
+    {
+      "external_id": "g4ma-011",
+      "prompt": "Автобус ехал 3 часа со скоростью 72 км/ч и ещё 2 часа со скоростью 64 км/ч. Какой путь он проехал?",
+      "type": "number",
+      "answer_config": {"accepted": ["344"]},
+      "points": 12,
+      "explanation": "\\(72\\cdot3+64\\cdot2=216+128=344\\) км.",
+      "topic": "Движение",
+      "difficulty": "hard"
+    },
+    {
+      "external_id": "g4ma-012",
+      "prompt": "Купили 4 книги по 385 рублей и 3 тетради по 240 рублей. Сколько рублей сдачи получили с 3000 рублей?",
+      "type": "number",
+      "answer_config": {"accepted": ["740"]},
+      "points": 12,
+      "explanation": "Покупка стоит \\(4\\cdot385+3\\cdot240=2260\\) рублей. Сдача: 740 рублей.",
+      "topic": "Задачи на стоимость",
+      "difficulty": "hard"
+    },
+    {
+      "external_id": "g4ma-013",
+      "prompt": "Из одного пункта одновременно в одном направлении вышли два велосипедиста со скоростями 18 км/ч и 15 км/ч. Какое расстояние будет между ними через 4 часа?",
+      "type": "number",
+      "answer_config": {"accepted": ["12"]},
+      "points": 12,
+      "explanation": "Скорость удаления 3 км/ч, поэтому за 4 часа расстояние станет 12 км.",
+      "topic": "Движение",
+      "difficulty": "hard"
+    },
+    {
+      "external_id": "g4ma-014",
+      "prompt": "Площадь прямоугольника 864 см², ширина 24 см. Найди его периметр.",
+      "type": "number",
+      "answer_config": {"accepted": ["120"]},
+      "points": 12,
+      "explanation": "Длина \\(864:24=36\\) см. Периметр \\(2\\cdot(36+24)=120\\) см.",
+      "topic": "Геометрия",
+      "difficulty": "hard"
+    },
+    {
+      "external_id": "g4ma-015",
+      "prompt": "Прямоугольный участок 30 м × 24 м. Внутри него занята квадратная площадка со стороной 8 м. Какова площадь оставшейся части?",
+      "type": "number",
+      "answer_config": {"accepted": ["656"]},
+      "points": 12,
+      "explanation": "\\(30\\cdot24-8\\cdot8=720-64=656\\) м².",
+      "topic": "Составные фигуры",
+      "difficulty": "hard"
+    },
+    {
+      "external_id": "g4ma-016",
+      "prompt": "Найди объём прямоугольной коробки размером 8 см × 5 см × 3 см.",
+      "type": "number",
+      "answer_config": {"accepted": ["120"]},
+      "points": 10,
+      "explanation": "\\(V=8\\cdot5\\cdot3=120\\) см³.",
+      "topic": "Пространственные фигуры",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4ma-017",
+      "prompt": "Вырази 3 т 45 кг в килограммах.",
+      "type": "number",
+      "answer_config": {"accepted": ["3045"]},
+      "points": 10,
+      "explanation": "3 т = 3000 кг; \\(3000+45=3045\\) кг.",
+      "topic": "Величины",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4ma-018",
+      "prompt": "Экскурсия началась в 10:35 и закончилась в 14:20. Сколько минут она длилась?",
+      "type": "number",
+      "answer_config": {"accepted": ["225"]},
+      "points": 12,
+      "explanation": "От 10:35 до 14:20 прошло 3 часа 45 минут, то есть 225 минут.",
+      "topic": "Время",
+      "difficulty": "hard"
+    },
+    {
+      "external_id": "g4ma-019",
+      "prompt": "За четыре дня ученик решил 18, 24, 27 и 31 задачу. Сколько задач в среднем он решал за день?",
+      "type": "number",
+      "answer_config": {"accepted": ["25"]},
+      "points": 12,
+      "explanation": "Всего 100 задач; \\(100:4=25\\).",
+      "topic": "Среднее арифметическое",
+      "difficulty": "hard"
+    },
+    {
+      "external_id": "g4ma-020",
+      "prompt": "Продолжи закономерность: 2, 6, 12, 20, 30, …",
+      "type": "number",
+      "answer_config": {"accepted": ["42"]},
+      "points": 12,
+      "explanation": "Разности равны 4, 6, 8, 10; следующая разность 12, значит \\(30+12=42\\).",
+      "topic": "Закономерности",
+      "difficulty": "hard"
+    },
+    {
+      "external_id": "g4ma-021",
+      "prompt": "В трёхзначном числе цифра сотен вдвое больше цифры десятков, цифра единиц на 3 меньше цифры десятков, а сумма цифр равна 9. Найди число.",
+      "type": "number",
+      "answer_config": {"accepted": ["630"]},
+      "points": 15,
+      "explanation": "Цифры 6, 3 и 0 удовлетворяют всем трём условиям. Получается 630.",
+      "topic": "Логика и числа",
+      "difficulty": "hard"
+    },
+    {
+      "external_id": "g4ma-022",
+      "prompt": "В понедельник библиотека выдала 18 книг, во вторник на 7 больше, а в среду вдвое больше, чем в понедельник. Сколько книг выдали за три дня?",
+      "type": "number",
+      "answer_config": {"accepted": ["79"]},
+      "points": 12,
+      "explanation": "\\(18+(18+7)+18\\cdot2=18+25+36=79\\).",
+      "topic": "Работа с данными",
+      "difficulty": "hard"
+    },
+    {
+      "external_id": "g4ma-023",
+      "prompt": "Из города A в город B ведут 3 дороги, а из B в C — 4 дороги. Сколькими способами можно проехать из A в C через B?",
+      "type": "number",
+      "answer_config": {"accepted": ["12"]},
+      "points": 12,
+      "explanation": "Для каждой из 3 первых дорог есть 4 продолжения: \\(3\\cdot4=12\\).",
+      "topic": "Комбинаторика",
+      "difficulty": "hard"
+    },
+    {
+      "external_id": "g4ma-024",
+      "prompt": "Найди наименьшее четырёхзначное число, которое оканчивается цифрой 6 и делится на 9.",
+      "type": "number",
+      "answer_config": {"accepted": ["1026"]},
+      "points": 15,
+      "explanation": "У числа 1026 сумма цифр равна 9, поэтому оно делится на 9; меньшего подходящего четырёхзначного числа нет.",
+      "topic": "Делимость",
+      "difficulty": "hard"
+    },
+    {
+      "external_id": "g4ma-025",
+      "prompt": "В понедельник Аня прочитала \\(\\dfrac{2}{5}\\) книги, после чего осталось 180 страниц. Сколько страниц в книге?",
+      "type": "number",
+      "answer_config": {"accepted": ["300"]},
+      "points": 15,
+      "explanation": "Осталось \\(3/5\\) книги. Одна пятая — 60 страниц, вся книга — 300 страниц.",
+      "topic": "Дроби и текстовые задачи",
+      "difficulty": "hard"
+    },
+    {
+      "external_id": "g4ma-026",
+      "prompt": "Три одинаковых станка за 4 часа изготовили 240 деталей. Сколько деталей изготовят пять таких станков за 6 часов?",
+      "type": "number",
+      "answer_config": {"accepted": ["600"]},
+      "points": 15,
+      "explanation": "Один станок делает \\(240:3:4=20\\) деталей в час. Тогда \\(20\\cdot5\\cdot6=600\\).",
+      "topic": "Производительность",
+      "difficulty": "hard"
+    },
+    {
+      "external_id": "g4ma-027",
+      "prompt": "Для 6 человек нужно 450 г крупы. Сколько граммов крупы нужно для 10 человек при той же норме?",
+      "type": "number",
+      "answer_config": {"accepted": ["750"]},
+      "points": 12,
+      "explanation": "На одного человека приходится 75 г, на десятерых — 750 г.",
+      "topic": "Пропорциональные зависимости",
+      "difficulty": "hard"
+    },
+    {
+      "external_id": "g4ma-028",
+      "prompt": "Верно ли утверждение: у любого прямоугольного треугольника два угла острые?",
+      "type": "boolean",
+      "answer_config": {"correct": [true]},
+      "points": 10,
+      "explanation": "Да. Один угол прямой, а сумма двух остальных равна 90°, поэтому оба они острые.",
+      "topic": "Геометрия",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g4ma-029",
+      "prompt": "Площадь квадрата равна 196 см². Найди его периметр.",
+      "type": "number",
+      "answer_config": {"accepted": ["56"]},
+      "points": 12,
+      "explanation": "Сторона квадрата 14 см, потому что \\(14\\cdot14=196\\). Периметр \\(14\\cdot4=56\\) см.",
+      "topic": "Геометрия",
+      "difficulty": "hard"
+    },
+    {
+      "external_id": "g4ma-030",
+      "prompt": "Реши уравнение: \\(5(x-18)+35=245\\).",
+      "type": "number",
+      "answer_config": {"accepted": ["60"]},
+      "points": 15,
+      "explanation": "\\(5(x-18)=210\\), \\(x-18=42\\), значит \\(x=60\\).",
+      "topic": "Уравнения",
+      "difficulty": "hard"
+    }
+  ]
+}

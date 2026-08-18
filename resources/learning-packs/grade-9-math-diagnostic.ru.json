@@ -1,0 +1,560 @@
+{
+  "schema": "formaflow.learning-pack.v1",
+  "pack": {
+    "external_id": "formaflow-original-grade9-math-diagnostic",
+    "version": 1,
+    "title": "Математика: диагностика за 9 класс",
+    "description": "30 оригинальных заданий FormaFlow по алгебре, функциям, вероятности и геометрии для подготовки к аттестации.",
+    "subject": "math",
+    "purpose": "diagnostic",
+    "target_grade": 9,
+    "coverage_from_grade": 5,
+    "coverage_to_grade": 9,
+    "source": {
+      "name": "FormaFlow Original",
+      "type": "owned",
+      "usage_scope": "publishable",
+      "license_name": "FormaFlow proprietary original content"
+    }
+  },
+  "questions": [
+    {
+      "external_id": "g9m-001",
+      "prompt": "Реши уравнение: 3x + 7 = 22.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "5"
+        ]
+      },
+      "points": 10,
+      "explanation": "Вычти 7: 3x = 15. Раздели на 3: x = 5.",
+      "topic": "Алгебраические уравнения",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g9m-002",
+      "prompt": "Реши уравнение: 5x − 9 = 2x + 12.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "7"
+        ]
+      },
+      "points": 10,
+      "explanation": "Перенеси 2x влево, 9 вправо: 3x = 21, значит x = 7.",
+      "topic": "Алгебраические уравнения",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g9m-003",
+      "prompt": "Реши уравнение: 4(x − 2) = 20.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "7"
+        ]
+      },
+      "points": 10,
+      "explanation": "Раздели на 4: x − 2 = 5, поэтому x = 7.",
+      "topic": "Алгебраические уравнения",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g9m-004",
+      "prompt": "Реши уравнение: x/3 + 4 = 9.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "15"
+        ]
+      },
+      "points": 10,
+      "explanation": "Вычти 4: x/3 = 5. Умножь на 3: x = 15.",
+      "topic": "Алгебраические уравнения",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g9m-005",
+      "prompt": "Найди меньший корень уравнения x² − 5x + 6 = 0.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "2"
+        ]
+      },
+      "points": 10,
+      "explanation": "Разложение: (x − 2)(x − 3) = 0. Меньший корень 2.",
+      "topic": "Алгебраические уравнения",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g9m-006",
+      "prompt": "Найди больший корень уравнения x² − 7x + 12 = 0.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "4"
+        ]
+      },
+      "points": 10,
+      "explanation": "Разложение: (x − 3)(x − 4) = 0. Больший корень 4.",
+      "topic": "Алгебраические уравнения",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g9m-007",
+      "prompt": "Реши неравенство 2x + 3 > 11. Укажи наименьшее целое решение.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "5"
+        ]
+      },
+      "points": 10,
+      "explanation": "2x > 8, значит x > 4. Наименьшее целое решение 5.",
+      "topic": "Алгебраические уравнения",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g9m-008",
+      "prompt": "При каком x значение выражения 2x − 1 равно 13?",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "7"
+        ]
+      },
+      "points": 10,
+      "explanation": "2x − 1 = 13, поэтому 2x = 14 и x = 7.",
+      "topic": "Алгебраические уравнения",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g9m-009",
+      "prompt": "Для функции y = 2x − 3 найди y при x = 5.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "7"
+        ],
+        "tolerance": 0.0001
+      },
+      "points": 10,
+      "explanation": "Подставь 5: y = 2 · 5 − 3 = 7.",
+      "topic": "Функции, последовательности и вероятность",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g9m-010",
+      "prompt": "Для функции y = x² − 4 найди y при x = −3.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "5"
+        ],
+        "tolerance": 0.0001
+      },
+      "points": 10,
+      "explanation": "Квадрат −3 равен 9: y = 9 − 4 = 5.",
+      "topic": "Функции, последовательности и вероятность",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g9m-011",
+      "prompt": "Арифметическая прогрессия: 4, 7, 10, … Найди пятый член.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "16"
+        ],
+        "tolerance": 0.0001
+      },
+      "points": 10,
+      "explanation": "Разность равна 3. Пятый член: 4 + 4 · 3 = 16.",
+      "topic": "Функции, последовательности и вероятность",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g9m-012",
+      "prompt": "Геометрическая прогрессия: 3, 6, 12, … Найди пятый член.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "48"
+        ],
+        "tolerance": 0.0001
+      },
+      "points": 10,
+      "explanation": "Знаменатель равен 2: 3, 6, 12, 24, 48.",
+      "topic": "Функции, последовательности и вероятность",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g9m-013",
+      "prompt": "Найди среднее арифметическое чисел 6, 8, 10, 12.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "9"
+        ],
+        "tolerance": 0.0001
+      },
+      "points": 10,
+      "explanation": "Сумма 36, чисел 4: 36 ÷ 4 = 9.",
+      "topic": "Функции, последовательности и вероятность",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g9m-014",
+      "prompt": "В коробке 3 красных и 7 синих шаров. Какова вероятность достать красный? Ответ запиши десятичной дробью.",
+      "type": "number",
+      "answer_config": {
+        "accepted": [
+          "0,3"
+        ],
+        "tolerance": 0.0001
+      },
+      "points": 10,
+      "explanation": "Всего 10 шаров, благоприятных исходов 3: 3/10 = 0,3.",
+      "topic": "Функции, последовательности и вероятность",
+      "difficulty": "normal"
+    },
+    {
+      "external_id": "g9m-015",
+      "prompt": "Как разложить x² − 9 на множители?",
+      "type": "single_choice",
+      "answer_config": {
+        "correct": [
+          "(x−3)(x+3)"
+        ]
+      },
+      "points": 10,
+      "explanation": "Это разность квадратов: a² − b² = (a − b)(a + b).",
+      "topic": "Алгебра и геометрия",
+      "difficulty": "normal",
+      "options": [
+        {
+          "label": "(x−3)(x+3)",
+          "value": "(x−3)(x+3)"
+        },
+        {
+          "label": "(x−9)(x+1)",
+          "value": "(x−9)(x+1)"
+        },
+        {
+          "label": "(x−3)²",
+          "value": "(x−3)²"
+        }
+      ]
+    },
+    {
+      "external_id": "g9m-016",
+      "prompt": "Какой график имеет функция y = kx + b?",
+      "type": "single_choice",
+      "answer_config": {
+        "correct": [
+          "прямая"
+        ]
+      },
+      "points": 10,
+      "explanation": "Линейная функция задаёт прямую.",
+      "topic": "Алгебра и геометрия",
+      "difficulty": "normal",
+      "options": [
+        {
+          "label": "прямая",
+          "value": "прямая"
+        },
+        {
+          "label": "парабола",
+          "value": "парабола"
+        },
+        {
+          "label": "окружность",
+          "value": "окружность"
+        }
+      ]
+    },
+    {
+      "external_id": "g9m-017",
+      "prompt": "Чему равен sin 30°?",
+      "type": "single_choice",
+      "answer_config": {
+        "correct": [
+          "0,5"
+        ]
+      },
+      "points": 10,
+      "explanation": "Табличное значение sin 30° = 1/2.",
+      "topic": "Алгебра и геометрия",
+      "difficulty": "normal",
+      "options": [
+        {
+          "label": "0",
+          "value": "0"
+        },
+        {
+          "label": "0,5",
+          "value": "0,5"
+        },
+        {
+          "label": "1",
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "external_id": "g9m-018",
+      "prompt": "Какая система имеет бесконечно много решений?",
+      "type": "single_choice",
+      "answer_config": {
+        "correct": [
+          "x+y=2 и 2x+2y=4"
+        ]
+      },
+      "points": 10,
+      "explanation": "Второе уравнение получено умножением первого на 2, поэтому прямые совпадают.",
+      "topic": "Алгебра и геометрия",
+      "difficulty": "normal",
+      "options": [
+        {
+          "label": "x+y=2 и 2x+2y=4",
+          "value": "x+y=2 и 2x+2y=4"
+        },
+        {
+          "label": "x+y=2 и x+y=3",
+          "value": "x+y=2 и x+y=3"
+        },
+        {
+          "label": "x=1 и y=1",
+          "value": "x=1 и y=1"
+        }
+      ]
+    },
+    {
+      "external_id": "g9m-019",
+      "prompt": "Как называется сторона прямоугольного треугольника напротив прямого угла?",
+      "type": "single_choice",
+      "answer_config": {
+        "correct": [
+          "гипотенуза"
+        ]
+      },
+      "points": 10,
+      "explanation": "Гипотенуза лежит напротив угла 90°.",
+      "topic": "Алгебра и геометрия",
+      "difficulty": "normal",
+      "options": [
+        {
+          "label": "катет",
+          "value": "катет"
+        },
+        {
+          "label": "гипотенуза",
+          "value": "гипотенуза"
+        },
+        {
+          "label": "медиана",
+          "value": "медиана"
+        }
+      ]
+    },
+    {
+      "external_id": "g9m-020",
+      "prompt": "Какова формула площади круга?",
+      "type": "single_choice",
+      "answer_config": {
+        "correct": [
+          "πr²"
+        ]
+      },
+      "points": 10,
+      "explanation": "Площадь круга радиуса r равна πr².",
+      "topic": "Алгебра и геометрия",
+      "difficulty": "normal",
+      "options": [
+        {
+          "label": "2πr",
+          "value": "2πr"
+        },
+        {
+          "label": "πr²",
+          "value": "πr²"
+        },
+        {
+          "label": "πd",
+          "value": "πd"
+        }
+      ]
+    },
+    {
+      "external_id": "g9m-021",
+      "prompt": "Что является областью определения функции y = 1/x?",
+      "type": "single_choice",
+      "answer_config": {
+        "correct": [
+          "все числа, кроме 0"
+        ]
+      },
+      "points": 10,
+      "explanation": "Делить на ноль нельзя, поэтому x ≠ 0.",
+      "topic": "Алгебра и геометрия",
+      "difficulty": "normal",
+      "options": [
+        {
+          "label": "все числа",
+          "value": "все числа"
+        },
+        {
+          "label": "все числа, кроме 0",
+          "value": "все числа, кроме 0"
+        },
+        {
+          "label": "только положительные числа",
+          "value": "только положительные числа"
+        }
+      ]
+    },
+    {
+      "external_id": "g9m-022",
+      "prompt": "Как изменится площадь квадрата, если сторону увеличить в 2 раза?",
+      "type": "single_choice",
+      "answer_config": {
+        "correct": [
+          "увеличится в 4 раза"
+        ]
+      },
+      "points": 10,
+      "explanation": "Площадь пропорциональна квадрату стороны: (2a)² = 4a².",
+      "topic": "Алгебра и геометрия",
+      "difficulty": "normal",
+      "options": [
+        {
+          "label": "увеличится в 2 раза",
+          "value": "увеличится в 2 раза"
+        },
+        {
+          "label": "увеличится в 4 раза",
+          "value": "увеличится в 4 раза"
+        },
+        {
+          "label": "не изменится",
+          "value": "не изменится"
+        }
+      ]
+    },
+    {
+      "external_id": "g9m-023",
+      "prompt": "Сумма углов любого треугольника равна 180°.",
+      "type": "boolean",
+      "answer_config": {
+        "correct": [
+          true
+        ]
+      },
+      "points": 10,
+      "explanation": "В евклидовой геометрии сумма внутренних углов треугольника равна 180°.",
+      "topic": "Теория и свойства",
+      "difficulty": "hard"
+    },
+    {
+      "external_id": "g9m-024",
+      "prompt": "Диагонали любого параллелограмма равны.",
+      "type": "boolean",
+      "answer_config": {
+        "correct": [
+          false
+        ]
+      },
+      "points": 10,
+      "explanation": "Они делятся точкой пересечения пополам, но равны только в частных случаях, например у прямоугольника.",
+      "topic": "Теория и свойства",
+      "difficulty": "hard"
+    },
+    {
+      "external_id": "g9m-025",
+      "prompt": "Если дискриминант квадратного уравнения отрицателен, действительных корней нет.",
+      "type": "boolean",
+      "answer_config": {
+        "correct": [
+          true
+        ]
+      },
+      "points": 10,
+      "explanation": "При D < 0 квадратное уравнение не имеет действительных корней.",
+      "topic": "Теория и свойства",
+      "difficulty": "hard"
+    },
+    {
+      "external_id": "g9m-026",
+      "prompt": "Число √2 является рациональным.",
+      "type": "boolean",
+      "answer_config": {
+        "correct": [
+          false
+        ]
+      },
+      "points": 10,
+      "explanation": "√2 — иррациональное число.",
+      "topic": "Теория и свойства",
+      "difficulty": "hard"
+    },
+    {
+      "external_id": "g9m-027",
+      "prompt": "Функция y = x² является убывающей на всей числовой прямой.",
+      "type": "boolean",
+      "answer_config": {
+        "correct": [
+          false
+        ]
+      },
+      "points": 10,
+      "explanation": "Она убывает при x ≤ 0 и возрастает при x ≥ 0.",
+      "topic": "Теория и свойства",
+      "difficulty": "hard"
+    },
+    {
+      "external_id": "g9m-028",
+      "prompt": "Вертикальные углы равны.",
+      "type": "boolean",
+      "answer_config": {
+        "correct": [
+          true
+        ]
+      },
+      "points": 10,
+      "explanation": "Это основное свойство вертикальных углов.",
+      "topic": "Теория и свойства",
+      "difficulty": "hard"
+    },
+    {
+      "external_id": "g9m-029",
+      "prompt": "Медиана треугольника делит противоположную сторону пополам.",
+      "type": "boolean",
+      "answer_config": {
+        "correct": [
+          true
+        ]
+      },
+      "points": 10,
+      "explanation": "По определению медиана соединяет вершину с серединой противоположной стороны.",
+      "topic": "Теория и свойства",
+      "difficulty": "hard"
+    },
+    {
+      "external_id": "g9m-030",
+      "prompt": "При умножении обеих частей неравенства на отрицательное число знак неравенства меняется.",
+      "type": "boolean",
+      "answer_config": {
+        "correct": [
+          true
+        ]
+      },
+      "points": 10,
+      "explanation": "Умножение на отрицательное число меняет направление сравнения.",
+      "topic": "Теория и свойства",
+      "difficulty": "hard"
+    }
+  ]
+}
