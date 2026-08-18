@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use FormaFlow\Entries\Infrastructure\Http\EntryController;
+use FormaFlow\Entries\Infrastructure\Http\EntryShareController;
 use FormaFlow\Entries\Infrastructure\Http\PublicApiEntryController;
 use FormaFlow\Forms\Infrastructure\Http\FormController;
 use FormaFlow\Forms\Infrastructure\Http\PublicApiFormController;
@@ -13,6 +14,15 @@ use FormaFlow\Reminders\Infrastructure\Http\PushSubscriptionController;
 use FormaFlow\Reminders\Infrastructure\Http\QuizAssignmentController;
 use FormaFlow\Reminders\Infrastructure\Http\UserSearchController;
 use FormaFlow\Payments\Infrastructure\Http\PaymentController;
+use FormaFlow\Learning\Infrastructure\Http\LearningAssessmentController;
+use FormaFlow\Learning\Infrastructure\Http\LearningCycleController;
+use FormaFlow\Learning\Infrastructure\Http\LearningProgressController;
+use FormaFlow\Learning\Infrastructure\Http\StudyScheduleController;
+use FormaFlow\Learning\Infrastructure\Http\TutorController;
+use FormaFlow\Learning\Infrastructure\Http\LearningMediaController;
+use FormaFlow\Workspaces\Infrastructure\Http\ManagedLearnerController;
+use FormaFlow\Workspaces\Infrastructure\Http\WorkspaceController;
+use FormaFlow\Workspaces\Infrastructure\Http\WorkspaceInvitationController;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -23,17 +33,45 @@ Route::options('{any}', static function () {
 Route::prefix('v1')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/managed-login', [AuthController::class, 'managedLogin']);
 
     // Public access for shared results
     Route::get('/public/entries/{id}', [PublicApiEntryController::class, 'show']);
     Route::get('/public/forms/{id}', [PublicApiFormController::class, 'show']);
-    Route::post('/public/forms/import', [PublicApiFormController::class, 'import']);
 
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::get('/profile', [AuthController::class, 'profile']);
         Route::patch('/profile', [AuthController::class, 'updateProfile']);
         Route::post('/refresh', [AuthController::class, 'refresh']);
+        Route::get('/workspaces', [WorkspaceController::class, 'index']);
+        Route::patch('/workspaces/{workspace}/modules/{module}', [WorkspaceController::class, 'updateModule']);
+        Route::get('/workspaces/{workspace}/learners', [ManagedLearnerController::class, 'index']);
+        Route::post('/workspaces/{workspace}/learners', [ManagedLearnerController::class, 'store']);
+        Route::get('/workspaces/{workspace}/invitations', [WorkspaceInvitationController::class, 'index']);
+        Route::post('/workspaces/{workspace}/invitations', [WorkspaceInvitationController::class, 'store']);
+        Route::post('/workspaces/invitations/accept', [WorkspaceInvitationController::class, 'accept']);
+        Route::post('/workspaces/{workspace}/learning/import/preview', [LearningAssessmentController::class, 'preview']);
+        Route::post('/workspaces/{workspace}/learning/import', [LearningAssessmentController::class, 'import']);
+        Route::post('/workspaces/{workspace}/learning/media', [LearningMediaController::class, 'store']);
+        Route::get('/workspaces/{workspace}/learning/library', [LearningAssessmentController::class, 'library']);
+        Route::post('/workspaces/{workspace}/learning/library/{pack}/install', [LearningAssessmentController::class, 'installBuiltIn']);
+        Route::get('/workspaces/{workspace}/learning/assessments', [LearningAssessmentController::class, 'index']);
+        Route::get('/workspaces/{workspace}/learning/assessments/{assessment}/editor', [LearningAssessmentController::class, 'editor']);
+        Route::get('/workspaces/{workspace}/learning/assessments/{assessment}/versions/current', [LearningAssessmentController::class, 'currentVersion']);
+        Route::patch('/workspaces/{workspace}/learning/assessments/{assessment}/questions/{field}', [LearningAssessmentController::class, 'updateQuestion']);
+        Route::post('/workspaces/{workspace}/learning/assessments/{assessment}/publish', [LearningAssessmentController::class, 'publish']);
+        Route::post('/workspaces/{workspace}/learning/assignments', [LearningCycleController::class, 'createAssignment']);
+        Route::post('/workspaces/{workspace}/learning/assignments/{assignment}/attempts', [LearningCycleController::class, 'startAttempt']);
+        Route::post('/workspaces/{workspace}/learning/attempts/{attempt}/submit', [LearningCycleController::class, 'submit']);
+        Route::get('/workspaces/{workspace}/learning/today', [LearningCycleController::class, 'today']);
+        Route::get('/workspaces/{workspace}/learning/reviews/due', [LearningCycleController::class, 'dueReviews']);
+        Route::post('/workspaces/{workspace}/learning/reviews/{review}/answer', [LearningCycleController::class, 'answerReview']);
+        Route::get('/workspaces/{workspace}/learning/progress', [LearningProgressController::class, 'index']);
+        Route::get('/workspaces/{workspace}/learning/progress/{learner}', [LearningProgressController::class, 'timeline']);
+        Route::get('/workspaces/{workspace}/learning/schedules/{learner}', [StudyScheduleController::class, 'show']);
+        Route::put('/workspaces/{workspace}/learning/schedules/{learner}', [StudyScheduleController::class, 'upsert']);
+        Route::post('/workspaces/{workspace}/learning/tutor/explain', [TutorController::class, 'explain']);
         Route::get('/users/search', UserSearchController::class);
         Route::get('/push/config', [PushSubscriptionController::class, 'config']);
         Route::post('/push/subscriptions', [PushSubscriptionController::class, 'store']);
@@ -63,6 +101,7 @@ Route::prefix('v1')->group(function () {
             Route::post('/', [EntryController::class, 'store']);
             Route::patch('{id}', [EntryController::class, 'update']);
             Route::delete('{id}', [EntryController::class, 'destroy']);
+            Route::post('{id}/share', [EntryShareController::class, 'store']);
         });
 
         Route::prefix('reports')->group(function () {

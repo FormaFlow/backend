@@ -12,6 +12,8 @@ src/FormaFlow/
 ├── Entries/            # Контекст записей и ответов пользователей
 ├── Reports/            # Контекст аналитики и генерации отчетов
 ├── Identity/           # Контекст аутентификации и пользователей
+├── Learning/           # Версии тестов, назначения, попытки, XP и tutor contract
+├── Workspaces/         # Семьи, роли и управляемые профили учеников
 └── Shared/             # Общий код (Domain, Application, Infrastructure)
 ```
 
@@ -89,6 +91,14 @@ php artisan migrate
 # Или через Makefile
 make test
 ```
+
+## Learning MVP
+
+- `POST /api/v1/managed-login` — вход ученика по коду семьи, логину и PIN.
+- `/api/v1/workspaces/{id}/learning/*` — контент, назначения, попытки, очередь ошибок, прогресс и расписания.
+- `php artisan learning:send-reminders` — Web Push ребёнку и отложенное уведомление родителю.
+- `TUTOR_DRIVER=mock` — локальный учебный помощник; контракт `TutorGateway` предназначен для адаптера BroBot.
+- Встроенный пакет `grade-1-math-foundation-100` содержит 100 оригинальных вопросов и устанавливается из админки.
 ## Деплой
 
 ```bash

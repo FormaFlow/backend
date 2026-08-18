@@ -8,6 +8,7 @@ use FormaFlow\Entries\Application\Find\FindEntryByIdQuery;
 use FormaFlow\Entries\Application\Find\FindEntryByIdQueryHandler;
 use FormaFlow\Forms\Application\Find\FindFormByIdQuery;
 use FormaFlow\Forms\Application\Find\FindFormByIdQueryHandler;
+use FormaFlow\Entries\Infrastructure\Persistence\Eloquent\EntryModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,6 +23,15 @@ final readonly class PublicEntryController
 
     public function show(Request $request, string $id)
     {
+        $entryModel = EntryModel::query()->find($id);
+        $token = (string)$request->query('share_token', '');
+        if ($entryModel === null
+            || $token === ''
+            || $entryModel->public_share_token_hash === null
+            || !$entryModel->public_share_expires_at?->isFuture()
+            || !hash_equals($entryModel->public_share_token_hash, hash('sha256', $token))) {
+            return response('Entry not found', Response::HTTP_NOT_FOUND);
+        }
         $lang = $request->query('lang', 'en');
         App::setLocale($lang);
 
@@ -38,7 +48,7 @@ final readonly class PublicEntryController
         }
 
         $frontendUrl = config('app.frontend_url', 'https://app.formaflow.indeveler.ru');
-        $url = "{$frontendUrl}/entries/{$id}/result?lang={$lang}";
+        $url = "{$frontendUrl}/entries/{$id}/result?lang={$lang}&share_token={$token}";
 
         $title = $form->name()->value();
         $description = $form->description() ?? __('share.check_entry');

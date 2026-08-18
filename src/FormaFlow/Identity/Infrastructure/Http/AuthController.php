@@ -6,6 +6,9 @@ namespace FormaFlow\Identity\Infrastructure\Http;
 
 use FormaFlow\Identity\Infrastructure\Http\Resources\UserResource;
 use FormaFlow\Users\Infrastructure\Persistence\Eloquent\UserModel;
+use FormaFlow\Workspaces\Application\WorkspaceProvisioner;
+use FormaFlow\Workspaces\Infrastructure\Persistence\Eloquent\WorkspaceMembershipModel;
+use FormaFlow\Workspaces\Infrastructure\Persistence\Eloquent\WorkspaceModel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -18,7 +21,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class AuthController extends Controller
 {
-    public function register(Request $request): JsonResponse
+    public function register(Request $request, WorkspaceProvisioner $workspaceProvisioner): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|min:2|max:255',
@@ -43,6 +46,7 @@ final class AuthController extends Controller
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
+        $workspace = $workspaceProvisioner->provisionFor($user);
 
         return response()->json([
             'id' => $user->id,
@@ -54,7 +58,73 @@ final class AuthController extends Controller
                 'email_verified_at' => $user->email_verified_at,
                 'timezone' => $user->timezone,
             ],
+            'workspace' => [
+                'id' => $workspace->id,
+                'name' => $workspace->name,
+                'slug' => $workspace->slug,
+                'type' => $workspace->type,
+                'timezone' => $workspace->timezone,
+                'role' => 'owner',
+            ],
         ], Response::HTTP_CREATED);
+    }
+
+    public function managedLogin(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'workspace' => 'required|string|max:255',
+            'login' => 'required|string|max:32',
+            'pin' => 'required|string',
+        ]);
+        $workspaceSlug = mb_strtolower(trim($validated['workspace']));
+        $login = mb_strtolower(trim($validated['login']));
+        $key = 'managed-login:' . $request->ip() . ':' . $workspaceSlug . ':' . $login;
+        if (RateLimiter::tooManyAttempts($key, 5)) {
+            return response()->json(['message' => 'Too many login attempts.'], Response::HTTP_TOO_MANY_REQUESTS);
+        }
+
+        $workspace = WorkspaceModel::query()->where('slug', $workspaceSlug)->first();
+        $membership = $workspace === null ? null : WorkspaceMembershipModel::query()
+            ->with('user.learnerProfile')
+            ->where('workspace_id', $workspace->id)
+            ->where('role', 'learner')
+            ->where('status', 'active')
+            ->whereHas('user', static fn($query) => $query
+                ->where('account_type', 'managed_learner')
+                ->where('login_name', $login))
+            ->first();
+
+        if ($membership === null || !Hash::check($validated['pin'], $membership->user->password)) {
+            RateLimiter::hit($key, 60);
+            throw ValidationException::withMessages(['login' => ['The provided credentials are incorrect.']]);
+        }
+        RateLimiter::clear($key);
+        $user = $membership->user;
+        $workspace->load('modules');
+
+        return response()->json([
+            'token' => $user->createToken('managed-learner-token')->plainTextToken,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => null,
+                'login' => $user->login_name,
+                'account_type' => $user->account_type,
+                'target_grade' => $user->learnerProfile?->target_grade,
+                'timezone' => $user->learnerProfile?->timezone ?? $user->timezone,
+            ],
+            'workspace' => [
+                'id' => $workspace->id,
+                'name' => $workspace->name,
+                'slug' => $workspace->slug,
+                'type' => $workspace->type,
+                'timezone' => $workspace->timezone,
+                'role' => $membership->role,
+                'modules' => $workspace->modules->mapWithKeys(
+                    static fn($module): array => [$module->module_key => (bool)$module->enabled]
+                ),
+            ],
+        ]);
     }
 
     public function logout(Request $request): JsonResponse

@@ -32,10 +32,13 @@ final class EntryModel extends Model
         'created_at',
         'score',
         'duration',
+        'public_share_token_hash',
+        'public_share_expires_at',
     ];
 
     protected $casts = [
         'data' => 'array',
+        'public_share_expires_at' => 'datetime',
     ];
 
     public function form(): BelongsTo
