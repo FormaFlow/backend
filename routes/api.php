@@ -62,6 +62,9 @@ Route::prefix('v1')->group(function () {
         Route::patch('/workspaces/{workspace}/learning/assessments/{assessment}/questions/{field}', [LearningAssessmentController::class, 'updateQuestion']);
         Route::post('/workspaces/{workspace}/learning/assessments/{assessment}/publish', [LearningAssessmentController::class, 'publish']);
         Route::post('/workspaces/{workspace}/learning/assignments', [LearningCycleController::class, 'createAssignment']);
+        Route::patch('/workspaces/{workspace}/learning/assignments/{assignment}', [LearningCycleController::class, 'updateAssignment']);
+        Route::delete('/workspaces/{workspace}/learning/assignments/{assignment}', [LearningCycleController::class, 'deleteAssignment']);
+        Route::post('/workspaces/{workspace}/learning/assignments/{assignment}/reopen', [LearningCycleController::class, 'reopenAssignment']);
         Route::post('/workspaces/{workspace}/learning/assignments/{assignment}/attempts', [LearningCycleController::class, 'startAttempt']);
         Route::post('/workspaces/{workspace}/learning/attempts/{attempt}/submit', [LearningCycleController::class, 'submit']);
         Route::get('/workspaces/{workspace}/learning/today', [LearningCycleController::class, 'today']);

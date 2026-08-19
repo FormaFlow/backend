@@ -83,7 +83,22 @@ final class LearningProgressController
             ->orderByDesc('a.completed_at')
             ->select(['a.id', 'f.name as assessment_title', 'la.subject_code', 'a.score', 'a.max_points', 'a.completed_at'])
             ->get();
-        return response()->json(['attempts' => $attempts]);
+        $assignments = DB::table('learning_assignments as a')
+            ->join('learning_assessments as la', 'la.id', '=', 'a.assessment_id')
+            ->join('forms as f', 'f.id', '=', 'la.form_id')
+            ->where('a.workspace_id', $workspaceId)
+            ->where('a.learner_user_id', $learnerId)
+            ->orderByDesc('a.assigned_at')
+            ->select(['a.id', 'a.status', 'a.assigned_at', 'a.due_at', 'a.completed_at', 'f.name as assessment_title', 'la.subject_code'])
+            ->get()
+            ->map(function (object $assignment): array {
+                $assignmentAttempts = DB::table('learning_attempts')
+                    ->where('assignment_id', $assignment->id)
+                    ->orderByDesc('started_at')
+                    ->get(['id', 'status', 'score', 'max_points', 'started_at', 'completed_at']);
+                return (array)$assignment + ['attempts' => $assignmentAttempts];
+            });
+        return response()->json(['assignments' => $assignments, 'attempts' => $attempts]);
     }
 
     private function averagePercent(iterable $attempts): int

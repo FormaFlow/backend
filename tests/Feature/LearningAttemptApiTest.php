@@ -32,29 +32,33 @@ final class LearningAttemptApiTest extends TestCase
         $attemptId = $attempt->json('attempt.id');
         $questions = $attempt->json('assessment.questions');
         self::assertArrayNotHasKey('answer_config', $questions[0]);
+        $answers = [];
+        foreach ($questions as $question) {
+            $answers[$question['id']] = $question['prompt'] === '2 + 3' ? '5' : '4';
+        }
+        $wrongQuestion = collect($questions)->firstWhere('prompt', 'Больше?');
 
         $response = $this->actingAs($learner, 'sanctum')
             ->postJson("/api/v1/workspaces/{$workspaceId}/learning/attempts/{$attemptId}/submit", [
                 'idempotency_key' => 'submit-once',
-                'responses' => [
-                    $questions[0]['id'] => '5',
-                    $questions[1]['id'] => '4',
-                ],
+                'responses' => $answers,
             ])
             ->assertOk()
             ->assertJsonPath('result.score', 10)
             ->assertJsonPath('result.max_points', 20)
-            ->assertJsonPath('result.questions.0.is_correct', true)
-            ->assertJsonPath('result.questions.1.is_correct', false)
             ->assertJsonPath('result.xp_total', 20)
             ->assertJsonPath('result.streak.current', 1);
+        $resultQuestions = collect($response->json('result.questions'))->keyBy('prompt');
+        self::assertTrue($resultQuestions['2 + 3']['is_correct']);
+        self::assertFalse($resultQuestions['Больше?']['is_correct']);
+        self::assertSame('7', $resultQuestions['Больше?']['correct_answer']['correct'][0]);
 
         $this->assertDatabaseHas('learning_assignments', ['id' => $assignmentId, 'status' => 'completed']);
         $this->assertDatabaseHas('learning_attempts', ['id' => $attemptId, 'status' => 'completed', 'score' => 10]);
         $this->assertDatabaseHas('entries', ['user_id' => $learner->id, 'score' => 10]);
         $this->assertDatabaseHas('learning_review_items', [
             'learner_user_id' => $learner->id,
-            'question_id' => $questions[1]['id'],
+            'question_id' => $wrongQuestion['id'],
             'stage' => 0,
             'status' => 'due',
         ]);
@@ -67,7 +71,7 @@ final class LearningAttemptApiTest extends TestCase
         $this->actingAs($learner, 'sanctum')
             ->postJson("/api/v1/workspaces/{$workspaceId}/learning/tutor/explain", [
                 'attempt_id' => $attemptId,
-                'question_id' => $questions[1]['id'],
+                'question_id' => $wrongQuestion['id'],
                 'message' => 'Почему мой ответ неверный?',
             ])
             ->assertOk()
@@ -103,7 +107,8 @@ final class LearningAttemptApiTest extends TestCase
             ['idempotency_key' => 'wrong', 'responses' => [$questions[0]['id'] => '0', $questions[1]['id'] => '0']],
         )->assertOk();
 
-        $reviewId = DB::table('learning_review_items')->where('question_id', $questions[0]['id'])->value('id');
+        $mathQuestion = collect($questions)->firstWhere('prompt', '2 + 3');
+        $reviewId = DB::table('learning_review_items')->where('question_id', $mathQuestion['id'])->value('id');
         $this->actingAs($learner, 'sanctum')
             ->postJson("/api/v1/workspaces/{$workspaceId}/learning/reviews/{$reviewId}/answer", [
                 'idempotency_key' => 'review-1',
@@ -111,6 +116,9 @@ final class LearningAttemptApiTest extends TestCase
             ])
             ->assertOk()
             ->assertJsonPath('review.stage', 1)
+            ->assertJsonPath('feedback.is_correct', true)
+            ->assertJsonPath('feedback.correct_answer.accepted.0', '5')
+            ->assertJsonPath('feedback.explanation', 'Пять')
             ->assertJsonPath('review.status', 'scheduled')
             ->assertJsonPath('review.next_review_at', '2026-08-18T09:00:00+00:00');
 
@@ -122,7 +130,60 @@ final class LearningAttemptApiTest extends TestCase
             ])
             ->assertOk()
             ->assertJsonPath('review.stage', 1)
+            ->assertJsonPath('feedback.is_correct', false)
+            ->assertJsonPath('feedback.correct_answer.accepted.0', '5')
             ->assertJsonPath('review.next_review_at', '2026-08-19T09:00:00+00:00');
+        Carbon::setTestNow();
+    }
+
+    public function test_owner_can_manage_assignment_history_and_reopen_a_completed_assignment(): void
+    {
+        Carbon::setTestNow('2026-08-17 09:00:00');
+        [$owner, $learner, $workspaceId, $assessmentId] = $this->scenario();
+        $assignmentId = $this->actingAs($owner, 'sanctum')
+            ->postJson("/api/v1/workspaces/{$workspaceId}/learning/assignments", [
+                'assessment_id' => $assessmentId,
+                'learner_user_id' => $learner->id,
+                'due_at' => '2026-08-20T18:00:00+03:00',
+            ])->assertCreated()->json('assignment.id');
+
+        $this->actingAs($owner, 'sanctum')
+            ->patchJson("/api/v1/workspaces/{$workspaceId}/learning/assignments/{$assignmentId}", [
+                'due_at' => '2026-08-21T18:00:00+03:00',
+            ])->assertOk()->assertJsonPath('assignment.status', 'assigned');
+
+        $attempt = $this->actingAs($learner, 'sanctum')
+            ->postJson("/api/v1/workspaces/{$workspaceId}/learning/assignments/{$assignmentId}/attempts")
+            ->assertCreated();
+        $questions = $attempt->json('assessment.questions');
+        $this->actingAs($learner, 'sanctum')->postJson(
+            "/api/v1/workspaces/{$workspaceId}/learning/attempts/" . $attempt->json('attempt.id') . '/submit',
+            ['idempotency_key' => 'first-run', 'responses' => [
+                $questions[0]['id'] => 'wrong', $questions[1]['id'] => 'wrong',
+            ]],
+        )->assertOk();
+
+        $this->actingAs($owner, 'sanctum')
+            ->getJson("/api/v1/workspaces/{$workspaceId}/learning/progress/{$learner->id}")
+            ->assertOk()
+            ->assertJsonPath('assignments.0.id', $assignmentId)
+            ->assertJsonPath('assignments.0.status', 'completed')
+            ->assertJsonCount(1, 'assignments.0.attempts');
+
+        $this->actingAs($owner, 'sanctum')
+            ->postJson("/api/v1/workspaces/{$workspaceId}/learning/assignments/{$assignmentId}/reopen")
+            ->assertOk()
+            ->assertJsonPath('assignment.status', 'assigned');
+
+        $secondAttempt = $this->actingAs($learner, 'sanctum')
+            ->postJson("/api/v1/workspaces/{$workspaceId}/learning/assignments/{$assignmentId}/attempts")
+            ->assertCreated();
+        self::assertNotSame($attempt->json('attempt.id'), $secondAttempt->json('attempt.id'));
+        self::assertSame(2, DB::table('learning_attempts')->where('assignment_id', $assignmentId)->count());
+
+        $this->actingAs($owner, 'sanctum')
+            ->deleteJson("/api/v1/workspaces/{$workspaceId}/learning/assignments/{$assignmentId}")
+            ->assertConflict();
         Carbon::setTestNow();
     }
 

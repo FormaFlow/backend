@@ -120,6 +120,79 @@ final readonly class LearningCycleController
         return response()->json($this->attemptPayload($attempt), Response::HTTP_CREATED);
     }
 
+    public function updateAssignment(Request $request, string $workspaceId, string $assignmentId): JsonResponse
+    {
+        if (!$this->canManage($request, $workspaceId)) {
+            return $this->forbidden();
+        }
+        $validated = $request->validate([
+            'due_at' => 'sometimes|nullable|date',
+            'learner_user_id' => 'sometimes|required|uuid',
+        ]);
+        $assignment = DB::table('learning_assignments')->where([
+            'workspace_id' => $workspaceId, 'id' => $assignmentId,
+        ])->first();
+        if ($assignment === null) {
+            return response()->json(['message' => 'Assignment not found'], Response::HTTP_NOT_FOUND);
+        }
+        if (isset($validated['learner_user_id']) && $validated['learner_user_id'] !== $assignment->learner_user_id) {
+            if (DB::table('learning_attempts')->where('assignment_id', $assignmentId)->exists()) {
+                return response()->json(['message' => 'Assignment with attempts cannot be reassigned'], Response::HTTP_CONFLICT);
+            }
+            if (!$this->hasRole($workspaceId, $validated['learner_user_id'], ['learner'])) {
+                return response()->json(['message' => 'Learner not found'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+        }
+        $changes = ['updated_at' => now()];
+        if (array_key_exists('due_at', $validated)) {
+            $changes['due_at'] = $validated['due_at'];
+        }
+        if (isset($validated['learner_user_id'])) {
+            $changes['learner_user_id'] = $validated['learner_user_id'];
+        }
+        DB::table('learning_assignments')->where('id', $assignmentId)->update($changes);
+
+        return response()->json(['assignment' => $this->assignmentPayload($workspaceId, $assignmentId)]);
+    }
+
+    public function deleteAssignment(Request $request, string $workspaceId, string $assignmentId): JsonResponse
+    {
+        if (!$this->canManage($request, $workspaceId)) {
+            return $this->forbidden();
+        }
+        $assignment = DB::table('learning_assignments')->where([
+            'workspace_id' => $workspaceId, 'id' => $assignmentId,
+        ])->first();
+        if ($assignment === null) {
+            return response()->json(['message' => 'Assignment not found'], Response::HTTP_NOT_FOUND);
+        }
+        if (DB::table('learning_attempts')->where('assignment_id', $assignmentId)->exists()) {
+            return response()->json(['message' => 'Assignment history cannot be deleted'], Response::HTTP_CONFLICT);
+        }
+        DB::table('learning_assignments')->where('id', $assignmentId)->delete();
+        return response()->json(null, Response::HTTP_NO_CONTENT);
+    }
+
+    public function reopenAssignment(Request $request, string $workspaceId, string $assignmentId): JsonResponse
+    {
+        if (!$this->canManage($request, $workspaceId)) {
+            return $this->forbidden();
+        }
+        $assignment = DB::table('learning_assignments')->where([
+            'workspace_id' => $workspaceId, 'id' => $assignmentId,
+        ])->first();
+        if ($assignment === null) {
+            return response()->json(['message' => 'Assignment not found'], Response::HTTP_NOT_FOUND);
+        }
+        if ($assignment->status !== 'completed') {
+            return response()->json(['message' => 'Only completed assignments can be reopened'], Response::HTTP_CONFLICT);
+        }
+        DB::table('learning_assignments')->where('id', $assignmentId)->update([
+            'status' => 'assigned', 'completed_at' => null, 'updated_at' => now(),
+        ]);
+        return response()->json(['assignment' => $this->assignmentPayload($workspaceId, $assignmentId)]);
+    }
+
     public function submit(Request $request, string $workspaceId, string $attemptId): JsonResponse
     {
         if (!$this->hasRole($workspaceId, $request->user()->id, ['learner'])) {
@@ -269,7 +342,18 @@ final readonly class LearningCycleController
             ]);
         });
         $fresh = DB::table('learning_review_items')->where('id', $reviewId)->first();
-        return response()->json(['review' => $this->reviewPayload($fresh)]);
+        $question = $this->decode($fresh->question_snapshot);
+        $reviewAttempt = DB::table('learning_review_attempts')->where([
+            'review_item_id' => $reviewId, 'idempotency_key' => $validated['idempotency_key'],
+        ])->first();
+        return response()->json([
+            'review' => $this->reviewPayload($fresh),
+            'feedback' => [
+                'is_correct' => (bool)$reviewAttempt->is_correct,
+                'correct_answer' => $question['answer_config'],
+                'explanation' => $question['explanation'] ?? null,
+            ],
+        ]);
     }
 
     public function today(Request $request, string $workspaceId): JsonResponse
@@ -325,7 +409,7 @@ final readonly class LearningCycleController
             unset($question['answer_config'], $question['explanation'], $question['explanation_media_id']);
             $question['prompt_media_url'] = $this->mediaUrl($question['prompt_media_id'] ?? null);
             return $question;
-        }, $snapshot['questions']);
+        }, $this->orderedQuestions($snapshot['questions'], $attempt->id));
         return ['attempt' => [
             'id' => $attempt->id,
             'assignment_id' => $attempt->assignment_id,
@@ -340,11 +424,13 @@ final readonly class LearningCycleController
         $version = LearningAssessmentVersionModel::query()->findOrFail($attempt->assessment_version_id);
         $responses = DB::table('learning_responses')->where('attempt_id', $attemptId)->get()->keyBy('question_id');
         $questions = [];
-        foreach ($version->snapshot['questions'] as $question) {
+        foreach ($this->orderedQuestions($version->snapshot['questions'], $attempt->id) as $question) {
             $response = $responses->get($question['id']);
             $questions[] = [
                 'id' => $question['id'],
                 'prompt' => $question['prompt'],
+                'type' => $question['type'],
+                'options' => $question['options'] ?? [],
                 'prompt_media_url' => $this->mediaUrl($question['prompt_media_id'] ?? null),
                 'answer' => $response === null ? null : $this->decode($response->answer),
                 'is_correct' => $response !== null && (bool)$response->is_correct,
@@ -391,6 +477,40 @@ final readonly class LearningCycleController
             'question_id' => $question['id'],
             'created_at' => now(),
         ]);
+    }
+
+    /** @param array<int, array<string, mixed>> $questions */
+    private function orderedQuestions(array $questions, string $attemptId): array
+    {
+        usort($questions, static fn(array $left, array $right): int => strcmp(
+            hash('sha256', $attemptId . ':' . $left['id']),
+            hash('sha256', $attemptId . ':' . $right['id']),
+        ));
+        return $questions;
+    }
+
+    private function assignmentPayload(string $workspaceId, string $assignmentId): array
+    {
+        $assignment = DB::table('learning_assignments as a')
+            ->join('learning_assessments as la', 'la.id', '=', 'a.assessment_id')
+            ->join('forms as f', 'f.id', '=', 'la.form_id')
+            ->join('users as u', 'u.id', '=', 'a.learner_user_id')
+            ->where('a.workspace_id', $workspaceId)
+            ->where('a.id', $assignmentId)
+            ->select(['a.*', 'f.name as assessment_title', 'la.subject_code', 'u.name as learner_name'])
+            ->first();
+        return [
+            'id' => $assignment->id,
+            'assessment_id' => $assignment->assessment_id,
+            'assessment_title' => $assignment->assessment_title,
+            'subject_code' => $assignment->subject_code,
+            'learner_user_id' => $assignment->learner_user_id,
+            'learner_name' => $assignment->learner_name,
+            'status' => $assignment->status,
+            'assigned_at' => CarbonImmutable::parse($assignment->assigned_at)->toIso8601String(),
+            'due_at' => $assignment->due_at === null ? null : CarbonImmutable::parse($assignment->due_at)->toIso8601String(),
+            'completed_at' => $assignment->completed_at === null ? null : CarbonImmutable::parse($assignment->completed_at)->toIso8601String(),
+        ];
     }
 
     private function addXp(string $workspaceId, string $learnerId, string $reason, string $sourceType, string $sourceId, int $points): void
