@@ -6,6 +6,7 @@ namespace FormaFlow\Learning\Infrastructure\Http;
 
 use Carbon\CarbonImmutable;
 use FormaFlow\Entries\Infrastructure\Persistence\Eloquent\EntryModel;
+use FormaFlow\Learning\Application\LearningAssignmentNotifier;
 use FormaFlow\Learning\Domain\QuestionGrader;
 use FormaFlow\Learning\Infrastructure\Persistence\Eloquent\LearningAssessmentModel;
 use FormaFlow\Learning\Infrastructure\Persistence\Eloquent\LearningAssessmentVersionModel;
@@ -19,8 +20,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 final readonly class LearningCycleController
 {
-    public function __construct(private QuestionGrader $grader)
-    {
+    public function __construct(
+        private QuestionGrader $grader,
+        private LearningAssignmentNotifier $assignmentNotifier,
+    ) {
     }
 
     public function createAssignment(Request $request, string $workspaceId): JsonResponse
@@ -62,6 +65,8 @@ final readonly class LearningCycleController
             'updated_at' => now(),
         ]);
 
+        $notificationSent = $this->assignmentNotifier->notify($id);
+
         return response()->json(['assignment' => [
             'id' => $id,
             'assessment_id' => $assessment->id,
@@ -69,7 +74,7 @@ final readonly class LearningCycleController
             'learner_user_id' => $validated['learner_user_id'],
             'status' => 'assigned',
             'due_at' => isset($validated['due_at']) ? CarbonImmutable::parse($validated['due_at'])->toIso8601String() : null,
-        ]], Response::HTTP_CREATED);
+        ], 'notification_sent' => $notificationSent], Response::HTTP_CREATED);
     }
 
     public function startAttempt(Request $request, string $workspaceId, string $assignmentId): JsonResponse

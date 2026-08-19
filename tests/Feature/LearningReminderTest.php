@@ -45,7 +45,8 @@ final class LearningReminderTest extends TestCase
             'daily_time' => '18:30', 'timezone' => 'Europe/Moscow', 'weekdays' => [1, 2, 3, 4, 5],
             'guardian_delay_minutes' => 60, 'enabled' => true,
         ])->assertOk();
-        foreach ([[$learner->id, 'learner'], [$owner->id, 'owner']] as [$userId, $suffix]) {
+        $scheduleId = DB::table('study_schedules')->where('learner_user_id', $learner->id)->value('id');
+        foreach ([[$owner->id, 'owner']] as [$userId, $suffix]) {
             DB::table('push_subscriptions')->insert([
                 'id' => (string)Str::uuid(), 'user_id' => $userId,
                 'endpoint' => "https://push.example.test/{$suffix}", 'public_key' => 'public',
@@ -64,7 +65,16 @@ final class LearningReminderTest extends TestCase
         $this->app->instance(PushGateway::class, $gateway);
         $dispatcher = $this->app->make(StudyReminderDispatcher::class);
 
+        self::assertSame(0, $dispatcher->dispatchDue());
+        self::assertSame('no_subscription', DB::table('learning_notification_log')->where(['schedule_id' => $scheduleId, 'kind' => 'learner_due'])->value('status'));
+        DB::table('push_subscriptions')->insert([
+            'id' => (string)Str::uuid(), 'user_id' => $learner->id,
+            'endpoint' => 'https://push.example.test/learner', 'public_key' => 'public',
+            'auth_token' => 'auth', 'content_encoding' => 'aes128gcm',
+            'created_at' => now(), 'updated_at' => now(),
+        ]);
         self::assertSame(1, $dispatcher->dispatchDue());
+        self::assertSame('sent', DB::table('learning_notification_log')->where(['schedule_id' => $scheduleId, 'kind' => 'learner_due'])->value('status'));
         self::assertSame('/learn', $gateway->deliveries[0]['payload']['url']);
         Carbon::setTestNow('2026-08-17 16:31:00');
         self::assertSame(1, $dispatcher->dispatchDue());

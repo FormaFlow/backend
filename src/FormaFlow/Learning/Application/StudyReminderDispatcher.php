@@ -68,30 +68,34 @@ final readonly class StudyReminderDispatcher
 
     private function notifyOnce(object $schedule, string $kind, string $date, string $userId, array $payload): int
     {
-        if (
-            DB::table('learning_notification_log')->where([
-            'schedule_id' => $schedule->id, 'kind' => $kind, 'local_date' => $date,
-            ])->exists()
-        ) {
+        $logKey = ['schedule_id' => $schedule->id, 'kind' => $kind, 'local_date' => $date];
+        $existingStatus = DB::table('learning_notification_log')->where($logKey)->value('status');
+        if ($existingStatus === 'sent') {
             return 0;
         }
         $subscriptions = PushSubscriptionModel::query()->where('user_id', $userId)->get();
-        $status = 'no_subscription';
-        if ($subscriptions->isNotEmpty()) {
-            $expired = $this->pushGateway->send($subscriptions->map(static fn($subscription): array => [
-                'endpoint' => $subscription->endpoint,
-                'public_key' => $subscription->public_key,
-                'auth_token' => $subscription->auth_token,
-                'content_encoding' => $subscription->content_encoding,
-            ])->all(), $payload);
-            if ($expired !== []) {
-                PushSubscriptionModel::query()->whereIn('endpoint', $expired)->delete();
-            }
-            $status = $subscriptions->count() > count(array_unique($expired)) ? 'sent' : 'expired';
+        if ($subscriptions->isEmpty()) {
+            DB::table('learning_notification_log')->updateOrInsert($logKey, [
+                'id' => DB::table('learning_notification_log')->where($logKey)->value('id') ?? (string)Str::uuid(),
+                'status' => 'no_subscription', 'processed_at' => now(),
+                'created_at' => now(), 'updated_at' => now(),
+            ]);
+            return 0;
         }
-        DB::table('learning_notification_log')->insert([
-            'id' => (string)Str::uuid(), 'schedule_id' => $schedule->id, 'kind' => $kind,
-            'local_date' => $date, 'status' => $status, 'processed_at' => now(),
+
+        $expired = $this->pushGateway->send($subscriptions->map(static fn($subscription): array => [
+            'endpoint' => $subscription->endpoint,
+            'public_key' => $subscription->public_key,
+            'auth_token' => $subscription->auth_token,
+            'content_encoding' => $subscription->content_encoding,
+        ])->all(), $payload);
+        if ($expired !== []) {
+            PushSubscriptionModel::query()->whereIn('endpoint', $expired)->delete();
+        }
+        $status = $subscriptions->count() > count(array_unique($expired)) ? 'sent' : 'expired';
+        DB::table('learning_notification_log')->updateOrInsert($logKey, [
+            'id' => DB::table('learning_notification_log')->where($logKey)->value('id') ?? (string)Str::uuid(),
+            'status' => $status, 'processed_at' => now(),
             'created_at' => now(), 'updated_at' => now(),
         ]);
         return 1;
