@@ -31,7 +31,7 @@ final class ManagedLearnerController
             ->where('status', 'active')
             ->orderBy('created_at')
             ->get()
-            ->map(fn(WorkspaceMembershipModel $membership): array => $this->serialize($membership->user))
+            ->map(fn(WorkspaceMembershipModel $membership): array => $this->serialize($membership->user, $workspaceId))
             ->all();
 
         return response()->json(['learners' => $learners]);
@@ -55,9 +55,9 @@ final class ManagedLearnerController
             'timezone' => 'sometimes|string|timezone',
         ]);
         $login = Str::lower($validated['login']);
-        $duplicate = WorkspaceMembershipModel::query()
+        $duplicate = DB::table('learner_access_credentials')
             ->where('workspace_id', $workspaceId)
-            ->whereHas('user', static fn($query) => $query->where('login_name', $login))
+            ->where('login_name', $login)
             ->exists();
         if ($duplicate) {
             throw ValidationException::withMessages(['login' => ['This login is already used in the workspace.']]);
@@ -86,12 +86,72 @@ final class ManagedLearnerController
                 'target_grade' => $validated['target_grade'],
                 'timezone' => $validated['timezone'] ?? $workspace->timezone,
             ]);
+            DB::table('learner_access_credentials')->insert([
+                'id' => (string)Str::uuid(),
+                'workspace_id' => $workspace->id,
+                'user_id' => $user->id,
+                'login_name' => $login,
+                'pin_hash' => Hash::make($validated['pin']),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
 
             return $user;
         });
 
         $user->load('learnerProfile');
-        return response()->json(['learner' => $this->serialize($user)], Response::HTTP_CREATED);
+        return response()->json(['learner' => $this->serialize($user, $workspaceId)], Response::HTTP_CREATED);
+    }
+
+    public function credentials(Request $request, string $workspaceId, string $learnerId): JsonResponse
+    {
+        if (!$this->canManage($request, $workspaceId)) {
+            return response()->json(['message' => 'Forbidden'], Response::HTTP_FORBIDDEN);
+        }
+        if (!WorkspaceMembershipModel::query()->where([
+            'workspace_id' => $workspaceId,
+            'user_id' => $learnerId,
+            'role' => 'learner',
+            'status' => 'active',
+        ])->exists()) {
+            return response()->json(['message' => 'Learner not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $validated = $request->validate([
+            'login' => ['required', 'string', 'min:3', 'max:32', 'regex:/^[a-zA-Z0-9._-]+$/'],
+            'pin' => ['required', 'string', 'regex:/^[0-9]{4,8}$/'],
+        ]);
+        $login = Str::lower($validated['login']);
+        if (DB::table('learner_access_credentials')
+            ->where('workspace_id', $workspaceId)
+            ->where('login_name', $login)
+            ->where('user_id', '!=', $learnerId)
+            ->exists()) {
+            throw ValidationException::withMessages(['login' => ['This login is already used in the workspace.']]);
+        }
+
+        DB::transaction(function () use ($workspaceId, $learnerId, $login, $validated): void {
+            $credential = DB::table('learner_access_credentials')->where([
+                'workspace_id' => $workspaceId, 'user_id' => $learnerId,
+            ])->first();
+            $values = [
+                'login_name' => $login,
+                'pin_hash' => Hash::make($validated['pin']),
+                'updated_at' => now(),
+            ];
+            if ($credential === null) {
+                DB::table('learner_access_credentials')->insert($values + [
+                    'id' => (string)Str::uuid(),
+                    'workspace_id' => $workspaceId,
+                    'user_id' => $learnerId,
+                    'created_at' => now(),
+                ]);
+            } else {
+                DB::table('learner_access_credentials')->where('id', $credential->id)->update($values);
+            }
+        });
+
+        return response()->json(['credentials' => ['login' => $login]]);
     }
 
     private function canManage(Request $request, string $workspaceId): bool
@@ -104,13 +164,16 @@ final class ManagedLearnerController
             ->exists();
     }
 
-    private function serialize(UserModel $user): array
+    private function serialize(UserModel $user, string $workspaceId): array
     {
+        $login = DB::table('learner_access_credentials')->where([
+            'workspace_id' => $workspaceId, 'user_id' => $user->id,
+        ])->value('login_name');
         return [
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
-            'login' => $user->login_name,
+            'login' => $login,
             'target_grade' => $user->learnerProfile?->target_grade,
             'timezone' => $user->learnerProfile?->timezone ?? $user->timezone,
         ];

@@ -42,7 +42,7 @@ final class StudyScheduleController
             'enabled' => ['required', 'boolean'],
         ]);
         $guardianId = $validated['guardian_user_id'] ?? $request->user()->id;
-        if (!$this->memberHasRole($workspaceId, $guardianId, ['owner', 'admin'])) {
+        if (!$this->memberHasRole($workspaceId, $guardianId, ['owner', 'admin', 'guardian'])) {
             return response()->json(['message' => 'Guardian not found'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
         $existing = DB::table('study_schedules')->where([

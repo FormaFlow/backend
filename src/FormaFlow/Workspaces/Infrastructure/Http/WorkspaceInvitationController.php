@@ -30,7 +30,7 @@ final class WorkspaceInvitationController
         }
         $validated = $request->validate([
             'email' => ['required', 'email', 'max:255'],
-            'role' => ['required', 'in:admin,member'],
+            'role' => ['required', 'in:admin,guardian,member'],
         ]);
         $email = mb_strtolower(trim($validated['email']));
         $token = Str::random(64);

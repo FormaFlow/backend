@@ -36,7 +36,9 @@ final class LearningProgressController
             return [
                 'id' => $user->id,
                 'name' => $user->name,
-                'login' => $user->login_name,
+                'login' => DB::table('learner_access_credentials')->where([
+                    'workspace_id' => $workspaceId, 'user_id' => $user->id,
+                ])->value('login_name'),
                 'target_grade' => $user->learnerProfile?->target_grade,
                 'assignments' => [
                     'total' => (clone $assignments)->count(),
@@ -119,6 +121,6 @@ final class LearningProgressController
     {
         return WorkspaceMembershipModel::query()->where([
             'workspace_id' => $workspaceId, 'user_id' => $request->user()->id, 'status' => 'active',
-        ])->whereIn('role', ['owner', 'admin'])->exists();
+        ])->whereIn('role', ['owner', 'admin', 'guardian'])->exists();
     }
 }

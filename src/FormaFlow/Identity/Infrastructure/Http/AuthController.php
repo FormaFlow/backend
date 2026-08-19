@@ -12,6 +12,7 @@ use FormaFlow\Workspaces\Infrastructure\Persistence\Eloquent\WorkspaceModel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Validator;
@@ -84,17 +85,19 @@ final class AuthController extends Controller
         }
 
         $workspace = WorkspaceModel::query()->where('slug', $workspaceSlug)->first();
-        $membership = $workspace === null ? null : WorkspaceMembershipModel::query()
+        $credential = $workspace === null ? null : DB::table('learner_access_credentials')
+            ->where('workspace_id', $workspace->id)
+            ->where('login_name', $login)
+            ->first();
+        $membership = $credential === null ? null : WorkspaceMembershipModel::query()
             ->with('user.learnerProfile')
             ->where('workspace_id', $workspace->id)
+            ->where('user_id', $credential->user_id)
             ->where('role', 'learner')
             ->where('status', 'active')
-            ->whereHas('user', static fn($query) => $query
-                ->where('account_type', 'managed_learner')
-                ->where('login_name', $login))
             ->first();
 
-        if ($membership === null || !Hash::check($validated['pin'], $membership->user->password)) {
+        if ($membership === null || !Hash::check($validated['pin'], $credential->pin_hash)) {
             RateLimiter::hit($key, 60);
             throw ValidationException::withMessages(['login' => ['The provided credentials are incorrect.']]);
         }
@@ -103,12 +106,12 @@ final class AuthController extends Controller
         $workspace->load('modules');
 
         return response()->json([
-            'token' => $user->createToken('managed-learner-token')->plainTextToken,
+            'token' => $user->createToken('managed-learner-token', ['managed-workspace:' . $workspace->id])->plainTextToken,
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => null,
-                'login' => $user->login_name,
+                'login' => $credential->login_name,
                 'account_type' => $user->account_type,
                 'target_grade' => $user->learnerProfile?->target_grade,
                 'timezone' => $user->learnerProfile?->timezone ?? $user->timezone,

@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Middleware\RestrictManagedLearnerToken;
 use FormaFlow\Entries\Infrastructure\Http\EntryController;
 use FormaFlow\Entries\Infrastructure\Http\EntryShareController;
 use FormaFlow\Entries\Infrastructure\Http\PublicApiEntryController;
@@ -39,7 +40,7 @@ Route::prefix('v1')->group(function () {
     Route::get('/public/entries/{id}', [PublicApiEntryController::class, 'show']);
     Route::get('/public/forms/{id}', [PublicApiFormController::class, 'show']);
 
-    Route::middleware(['auth:sanctum'])->group(function () {
+    Route::middleware(['auth:sanctum', RestrictManagedLearnerToken::class])->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::get('/profile', [AuthController::class, 'profile']);
         Route::patch('/profile', [AuthController::class, 'updateProfile']);
@@ -48,6 +49,7 @@ Route::prefix('v1')->group(function () {
         Route::patch('/workspaces/{workspace}/modules/{module}', [WorkspaceController::class, 'updateModule']);
         Route::get('/workspaces/{workspace}/learners', [ManagedLearnerController::class, 'index']);
         Route::post('/workspaces/{workspace}/learners', [ManagedLearnerController::class, 'store']);
+        Route::put('/workspaces/{workspace}/learners/{learner}/credentials', [ManagedLearnerController::class, 'credentials']);
         Route::get('/workspaces/{workspace}/invitations', [WorkspaceInvitationController::class, 'index']);
         Route::post('/workspaces/{workspace}/invitations', [WorkspaceInvitationController::class, 'store']);
         Route::post('/workspaces/invitations/accept', [WorkspaceInvitationController::class, 'accept']);
